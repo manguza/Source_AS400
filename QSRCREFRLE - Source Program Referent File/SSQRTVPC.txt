@@ -1,0 +1,326 @@
+     **/COPY QRPGLEREF,SSQRTVPC
+      ****************************************************************
+      *                                                              *
+      *  FILE NAME...: SSQRTVPC          REF.NO:                     *
+      *                                                              *
+      *  DESCRIPTION.: RETRIEVE SS PARM VALUES                       *
+      *                                                              *
+      *  DATE CREATED: 17/01/2008                                    *
+      *                                                              *
+      *  AUTHOR......: LIMEL                                         *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      * SSQRTVPC IS A PART OF CIF/38 BANK ACCOUNTING SYSTEM          *
+      *    COPYRIGHT 1999 BY SILVERLAKE SYSTEM SDN BHD               *
+      *    KUALA LUMPUR, MALAYSIA.                                   *
+      *                                                              *
+      ****************************************************************
+      * PASS IN PARAMETER:                                           *
+      *   P8FILE   - NAME OF SS PARAMETER FILE TO RETRIEVE           *
+      *   P8KEY    - KEY VALUE OF THE FILE                           *
+      *   P8KEYNUM - NO OF KEY USED TO CHAIN FILE                    *
+      *   P8OPTION - POGRAM OPTION (E.G. '*CLOSE' TO CLOSE FILE)     *
+      *   P8ERROR  - ERROR INDICATOR DEFAULT BLANK.                  *
+      *                                                              *
+      * PASS OUT PARAMETER:                                          *
+      *   P8DATA   - DATA RETRIEVED FROM SS PARM FILE                *
+      *   P8ERROR  - ERROR SET ON '1' IF RECORD NOT FOUND            *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      *  MODIFICATION LOGS:                                          *
+      *                                                              *
+      *  INIT  REF.#     DATE    DESCRIPTION                         *
+      *  ----  -----  --------  ------------------------------------ *
+      *  JAYS  SS01   27/07/09  add new file for SSFXRP              *
+      *  JAYS  SS02   05/02/10  add new file for SSPAR7, SSPAR9      *
+      *  CHL   SS03   11/02/10  add new file for SSPARG              *
+      *  wll   SS05   15/03/10  add new file for SSSPAR.SSJOBR       *
+      *  ALEX  SS06   16/03/10  Add SSCOUNL1 and SSFXRPL1            *
+      *  EWP   SS07   23/06/10  Add SSPARTL1                         *
+      *  IVAN  SS08   06/07/10  Add SSPARH, SSRATEL1, SSRATEL2       *
+      *  EWP   SS09   09/08/10  Add SSDATAL0                         *
+      *  DOL   T1001  21/08/12  Add SSFXAR                           *
+      ****************************************************************
+     **============================================
+     ** SRSSRTVP - SR TO RETRIEVE SS KEY VALUE
+     **============================================
+     **
+     C     SRSSRTVP      BEGSR
+     **
+     C     PLSSRTVP      PLIST
+     C                   PARM                    P8FILE
+     C                   PARM                    P8KEY
+     C                   PARM                    P8KEYNUM
+     C                   PARM                    P8DATA
+     C                   PARM                    P8OPTION
+     C                   PARM                    P8ERROR
+     **
+     **  PASS IN KEY FIELD
+     C                   SELECT
+     C                   WHEN      P8FILE      = 'SSAPPL'
+     C                   MOVEL     DSKYAPPL      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSCFUN'
+     C                   MOVEL     DSKYCFUN      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSCHOL'
+     C                   MOVEL     DSKYCHOL      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSCLAS'
+     C*SS01              MOVEL     DSKYCLAS      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSCLDR'     OR
+     C                             P8FILE      = 'SSCLDRL1'
+     C                   MOVEL     DSKYCLDR      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSCLDRL2'
+     C                   MOVEL     DSKYCLDR2     P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSCOUN'
+     C                   MOVEL     DSKYCOUN      P8KEY
+     **
+SS06 C                   WHEN      P8FILE      = 'SSCOUNL1'
+SS06 C                   MOVEL     DSKYCOUNL1    P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSDATA'
+SS09 C                             OR P8FILE   = 'SSDATAL0'
+     C                   MOVEL     DSKYDATA      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSFXRT'
+     C                   MOVEL     DSKYFXRT      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSMAIL'
+     C*SS01              MOVEL     DSKYMAIL      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSOFFR'
+     C                   MOVEL     DSKYOFFR      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSPARC'
+     C                   MOVEL     DSKYPARC      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSPARR'
+     C                   MOVEL     DSKYPARR      P8KEY
+     C                   CLEAR                   DSSSPARR
+     **
+     C                   WHEN      P8FILE      = 'SSPARW'
+     C                   MOVEL     DSKYPARW      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRMG'     OR
+     C*SS01                        P8FILE      = 'SSPRMGL1'
+     C*SS01              MOVEL     DSKYPRMG      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPROF'     OR
+     C*SS01                        P8FILE      = 'SSPROFL1'
+     C*SS01              MOVEL     DSKYPROF      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRPC'
+     C*SS01              MOVEL     DSKYPRPC      P8KEY
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRPI'
+     C*SS01              MOVEL     DSKYPRPI      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSRATE'
+SS08 C                             OR P8FILE   = 'SSRATEL1'
+SS08 C                             OR P8FILE   = 'SSRATEL2'
+     C                   MOVEL     DSKYRATE      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSSTAT'
+     C                   MOVEL     DSKYSTAT      P8KEY
+     **
+     C*                  WHEN      P8FILE      = 'SSARCH'
+     C*                  MOVEL     DSKYARCH      P8KEY
+     **
+     C**                 WHEN      P8FILE      = 'SSRATB'
+     C**                 MOVEL     DSKYRATB      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'MNUBNK'
+     C                   MOVEL     DSKYMBNK      P8KEY
+     **
+SS01 C                   WHEN      P8FILE      = 'SSFXRP'
+SS01 C                   MOVEL     DSKYFXRP      P8KEY
+     **
+SS06 C                   WHEN      P8FILE      = 'SSFXRPL1'
+SS06 C                   MOVEL     DSKYFXRPL1    P8KEY
+     **
+T1001C                   WHEN      P8FILE      = 'SSFXAR'
+T1001C                   MOVEL     DSKYFXAR      P8KEY
+     **
+T1001C                   WHEN      P8FILE      = 'SSFXARL1'
+T1001C                   MOVEL     DSKYFXAR      P8KEY
+     **
+SS01 C                   WHEN      P8FILE      = 'SSPARA'
+SS01 C                   MOVEL     DSKYPARA      P8KEY
+     **
+SS01 C                   WHEN      P8FILE      = 'SSPARB'
+SS01 C                   MOVEL     DSKYPARB      P8KEY
+     **
+SS03 C                   WHEN      P8FILE      = 'SSPARG'
+SS03 C                   MOVEL     DSKYPARG      P8KEY
+     **
+     C                   WHEN      P8FILE      = 'SSPAR1'
+     C**no need to move  MOVEL     DSKYPAR1      P8KEY
+     **
+SS02 C                   WHEN      P8FILE      = 'SSPAR7'
+SS02 C                   MOVEL     DSKYPAR7      P8KEY
+     **
+SS02 C                   WHEN      P8FILE      = 'SSPAR8'
+SS02 C                   MOVEL     DSKYPAR8      P8KEY
+     **
+SS02 C**CKW              WHEN      P8FILE      = 'SSPAR9'
+SS02 C**CKW              MOVEL     DSKYPAR9      P8KEY
+     **
+SS05 C                   WHEN      P8FILE      = 'SSSPAR'
+SS05 C                   MOVEL     DSKYSPAR      P8KEY
+     **
+SS05 C                   WHEN      P8FILE      = 'SSJOBR'
+SS05 C                   MOVEL     DSKYSPAR      P8KEY
+     **
+SS07 C                   WHEN      P8FILE      = 'SSPARTL1'
+SS07 C                   MOVEL     DSKYPARTL1    P8KEY
+     **
+SS08 C                   WHEN      P8FILE      = 'SSPARH'
+SS08 C                   MOVEL     DSKYPARH      P8KEY
+     **
+     C                   OTHER
+     ** FILE NOT SUPPORTED TURN ON ERROR
+     C                   EVAL      P8ERROR     = '1'
+     C                   LEAVESR
+     **
+     C                   ENDSL
+     **
+     C                   CALL      'SSRTVP'      PLSSRTVP
+     **
+     ** IF ERROR?
+     C                   IF        P8ERROR    <> *BLANKS
+     C                   LEAVESR
+     C                   ENDIF
+     **
+     **  RETURN DATA
+     C                   SELECT
+     C                   WHEN      P8FILE      = 'SSPAR1'
+     C                   MOVEL     P8DATA        DSSSPAR1
+     **
+     C                   WHEN      P8FILE      = 'SSAPPL'
+     C                   MOVEL     P8DATA        DSSSAPPL
+     **
+     C                   WHEN      P8FILE      = 'SSCFUN'
+     C                   MOVEL     P8DATA        DSSSCFUN
+     **
+     C                   WHEN      P8FILE      = 'SSCHOL'
+     C                   MOVEL     P8DATA        DSSSCHOL
+     **
+     C*SS01              WHEN      P8FILE      = 'SSCLAS'
+     C*SS01              MOVEL     P8DATA        DSSSCLAS
+     **
+     C                   WHEN      P8FILE      = 'SSCLDR'     OR
+     C                             P8FILE      = 'SSCLDRL1'
+     C                   MOVEL     P8DATA        DSSSCLDR
+     **
+     C                   WHEN      P8FILE      = 'SSCOUN'     OR
+SS06 C                             P8FILE      = 'SSCOUNL1'
+     C                   MOVEL     P8DATA        DSSSCOUN
+     **
+     C                   WHEN      P8FILE      = 'SSDATA'
+SS09 C                             OR P8FILE   = 'SSDATAL0'
+     C                   MOVEL     P8DATA        DSSSDATA
+     **
+     C                   WHEN      P8FILE      = 'SSFXRT'
+     C                   MOVEL     P8DATA        DSSSFXRT
+     **
+     C*SS01              WHEN      P8FILE      = 'SSMAIL'
+     C*SS01              MOVEL     P8DATA        DSSSMAIL
+     **
+     C                   WHEN      P8FILE      = 'SSOFFR'
+     C                   MOVEL     P8DATA        DSSSOFFR
+     **
+     C                   WHEN      P8FILE      = 'SSPARC'
+     C                   MOVEL     P8DATA        DSSSPARC
+     **
+     C                   WHEN      P8FILE      = 'SSPARR'
+     C                   MOVEL     P8DATA        DSSSPARR
+     **
+     C                   WHEN      P8FILE      = 'SSPARW'
+     C                   MOVEL     P8DATA        DSSSPARW
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRMG'     OR
+     C*SS01                        P8FILE      = 'SSPRMGL1'
+     C*SS01              MOVEL     P8DATA        DSSSPRMG
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPROF'     OR
+     C*SS01                        P8FILE      = 'SSPROFL1'
+     C*SS01              MOVEL     P8DATA        DSSSPROF
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRPC'
+     C*SS01              MOVEL     P8DATA        DSSSPRPC
+     **
+     C*SS01              WHEN      P8FILE      = 'SSPRPI'
+     C*SS01              MOVEL     P8DATA        DSSSPRPI
+     **
+     C                   WHEN      P8FILE      = 'SSRATE'
+SS08 C                             OR P8FILE   = 'SSRATEL1'
+SS08 C                             OR P8FILE   = 'SSRATEL2'
+     C                   MOVEL     P8DATA        DSSSRATE
+     **
+     C                   WHEN      P8FILE      = 'SSSTAT'
+     C                   MOVEL     P8DATA        DSSSSTAT
+     **
+     C*                  WHEN      P8FILE      = 'SSARCH'
+     C*                  MOVEL     P8DATA        DSSSARCH
+     **
+     C**                 WHEN      P8FILE      = 'SSRATB'
+     C**                 MOVEL     P8DATA        DSSSRATB
+     **
+     C                   WHEN      P8FILE      = 'MNUBNK'
+     C                   MOVEL     P8DATA        DSMNUBNK
+     **
+SS01 C                   WHEN      P8FILE      = 'SSFXRP'     OR
+SS06 C                             P8FILE      = 'SSFXRPL1'
+SS01 C                   MOVEL     P8DATA        DSSSFXRP
+     **
+T1001C                   WHEN      P8FILE      = 'SSFXAR'     OR
+T1001C                             P8FILE      = 'SSFXARL1'
+T1001C                   MOVEL     P8DATA        DSSSFXAR
+     **
+SS01 C                   WHEN      P8FILE      = 'SSPARA'
+SS01 C                   MOVEL     P8DATA        DSSSPARA
+     **
+SS01 C                   WHEN      P8FILE      = 'SSPARB'
+SS01 C                   MOVEL     P8DATA        DSSSPARB
+     **
+SS03 C                   WHEN      P8FILE      = 'SSPARG'
+SS03 C                   MOVEL     P8DATA        DSSSPARG
+     **
+SS02 C                   WHEN      P8FILE      = 'SSPAR7'
+SS02 C                   MOVEL     P8DATA        DSSSPAR7
+     **
+SS02 C                   WHEN      P8FILE      = 'SSPAR8'
+SS02 C                   MOVEL     P8DATA        DSSSPAR8
+     **
+SS02 C***CKW             WHEN      P8FILE      = 'SSPAR9'
+SS02 C***CKW             MOVEL     P8DATA        DSSSPAR9
+     **
+SS05 C                   WHEN      P8FILE      = 'SSSPAR'
+SS05 C                   MOVEL     P8DATA        DSSSSPAR
+     **
+SS05 C                   WHEN      P8FILE      = 'SSJOBR'
+SS05 C                   MOVEL     P8DATA        DSSSJOBR
+     **
+SS07 C                   WHEN      P8FILE      = 'SSPARTL1'
+SS07 C                   MOVEL     P8DATA        DSSSPART
+     **
+SS08 C                   WHEN      P8FILE      = 'SSPARH'
+SS08 C                   MOVEL     P8DATA        DSSSPARH
+     **
+     C                   OTHER
+     **
+     ** FILE NOT SUPPORTED TURN ON ERROR
+     C                   EVAL      P8ERROR     = '1'
+     C                   LEAVESR
+     **
+     C                   ENDSL
+     **
+     C     ERSSRTVP      ENDSR
+     **============================================
+

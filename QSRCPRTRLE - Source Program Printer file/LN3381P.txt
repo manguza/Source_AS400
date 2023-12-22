@@ -1,0 +1,108 @@
+     A*-------------------------------------------------------------------------
+     A*  Printer File : Distributor Financing Program Summary Report
+     A*  Created By   : Sartra T.
+     A*  Date         : 18/03/2013
+     A*  Ref No.      : CR#866
+     A*  Distribution : All branches
+     A*  Frequency    : Daily
+     A*  Report Type  : Batch
+     A*  Report Witdh : 198
+     A*  Country      : Thailand
+     A*-------------------------------------------------------------------------
+     A*  MODIFICATION LOGS:
+     A*  REF.#  NAME     DATE      DESCRIPTION
+     A*  -----  ----  ----------   ---------------------------------------------
+     A*
+     A*-------------------------------------------------------------------------
+     A                                      REF(LNFREF)
+     A          R HEADNG
+     A                                      SKIPB(002)
+     A            RDLINE1      198         1
+     A            RDLINE2      198         1
+     A                                      SPACEB(001)
+     A            RDLINE3      198         1
+     A                                      SPACEB(001)
+     A            RDLINE4      198         1
+     A                                      SPACEB(001)
+     A            RDLINE5      198         1
+     A                                      SPACEB(001)
+     A            RPTTTL       100         1
+     A                                      SPACEB(001)
+     A*-------------------------------------------------------------------------
+     A          R HEADNG1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Principle Name:'
+     A            OCFCIFN   R             +2
+     A                                      REFFLD(CFCIFN)
+     A            OCFCIFND  R             +2
+     A                                      REFFLD(CFNA1  CFFREF)
+     A*-------------------------------------------------------------------------
+     A          R HEADNGT
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Distributor Name'
+     A                                   +45'Currency'
+     A                                   +12
+     A                                      'Credit Limit'
+     A                                    +8
+     A                                      'Outstanding Balance'
+     A                                    +7
+     A                                      'Future-Dated Disbursement'
+     A                                   +15
+     A                                      'Available Balance'
+     A*-------------------------------------------------------------------------
+     A          R SPACELN1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      '-----------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      -----------------------'
+     A*-------------------------------------------------------------------------
+     A          R DETAIL1
+     A                                      SPACEB(001)
+     A            OCFRCIF   R              1REFFLD(CFRCIF CFFREF)
+     A            OCFRCIFD  R             +2REFFLD(CFNA1  CFFREF)
+     A            OCURTYP   R             +2
+     A                                      REFFLD(CURTYP)
+     A            ODRLIMT   R             +4REFFLD(DRLIMT)
+     A                                      EDTCDE(J)
+     A            OCBAL     R             +4REFFLD(CBAL)
+     A                                      EDTCDE(J)
+     A            OFUTDIS       17  2     +9
+     A                                      EDTCDE(J)
+     A            OAVLAMT       17  2     +9
+     A                                      EDTCDE(J)
+     A*-
+     A            OJFXLSC   R             64
+     A                                      REFFLD(JFXLSC SSFXRP)
+     A                                      SPACEB(001)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Total'
+     A            T1DRLIMT      19  2    +63
+     A                                      EDTCDE(J)
+     A            T1CBAL        19  2     +1
+     A                                      EDTCDE(J)
+     A            T1FUTDIS      19  2     +6
+     A                                      EDTCDE(J)
+     A            T1AVLAMT      19  2     +6
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R SPACELN3
+     A                                      SPACEB(001)
+     A*-------------------------------------------------------------------------
+     A          R ENDRPT
+     A                                      SPACEB(001)
+     A            RDEORPT      198         1
+     A*-------------------------------------------------------------------------
+     A          R NOREC
+     A                                      SPACEB(001)
+     A            RDNOREC      198         1
+     A*-------------------------------------------------------------------------
+

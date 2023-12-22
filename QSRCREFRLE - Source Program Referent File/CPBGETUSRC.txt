@@ -1,0 +1,14 @@
+    Š *************************************************************************
+     C     SRGETUSER     BEGSR
+    Š *
+     C                   CALL      'QUSRJOBI'
+     C                   PARM                    THEDATA
+     C                   PARM                    RCVVARLN
+     C                   PARM                    FORMAT
+     C                   PARM                    JOBQ
+     C                   PARM                    JOBID
+     C                   PARM                    ErrorCode
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+

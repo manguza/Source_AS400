@@ -1,0 +1,51 @@
+     H OPTION(*SRCSTMT:*NODEBUGIO) DFTACTGRP(*NO)
+    Š *************************************************************************
+    Š *šField Definitions Retrieve current user profile information.
+     D ErrorCode       S              8    inz(X'0000000000000000')
+     D RCVVARLN        S              4    inz(X'00000100')
+     D FORMAT          S              8    inz('JOBI0600')
+     D JOBQ            S             26    inz('*')
+     D JOBID           S             16
+
+    Š *šData Sturcture Retrieve current user profile information.
+     D THEDATA         DS
+     D  QUSBR05                1      4B 0
+     D  QUSBA05                5      8B 0
+     D  QUSJN08                9     18
+     D  QUSUN07               19     28
+     D  QUSJNBR07             29     34
+     D  QUSIJID05             35     50
+     D  QUSJS14               51     60
+     D  QUSJT08               61     61
+     D  QUSJS15               62     62
+     D  QUSJS16               63     70
+     D  QUSES00               71     71
+     D  QUSSN00               72     81
+     D  QUSSL06               82     91
+     D  QUSCUN                92    101
+     D  QUSDE                102    102
+     D  QUSEK                103    103
+     D  QUSCK00              104    104
+     D  QUSPRC               105    108B 0
+     D  QUSURC               109    112B 0
+     D  QUSPGMRC             113    116B 0
+     D  QUSSE02              117    126
+     D  QUSDN                127    136
+     D  QUSGPN               137    146
+     D   QUSGRP                      10    DIM(00015)
+     D   QUSGN00                     10    OVERLAY(QUSGRP:00001)
+     D  QUSJUID              297    306
+     D  QUSJUIDS             307    307
+
+    Š *************************************************************************
+    Š *
+     C                   CALL      'QUSRJOBI'
+     C                   PARM                    THEDATA
+     C                   PARM                    RCVVARLN
+     C                   PARM                    FORMAT
+     C                   PARM                    JOBQ
+     C                   PARM                    JOBID
+     C                   PARM                    ErrorCode
+    Š *
+     C                   MOVE      *ON           *INLR
+

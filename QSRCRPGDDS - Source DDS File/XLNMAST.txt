@@ -1,0 +1,29 @@
+     A          R RXLNMAST
+    ŠA**
+     A            BKN            2S 0       COLHDG('Bank Number')
+     A            BRN            5S 0       COLHDG('Branch Number')
+     A            RBRN           5S 0       COLHDG('Reporting Branch')
+     A            ACCTNO        19S 0       COLHDG('Account Number')
+     A            ACTYPE         1A         COLHDG('Account Type')
+     A            FSNAME        20A         COLHDG('Formatted short name')
+     A            CIFNO         19S 0       COLHDG('CIF Number')
+     A            MCLNID         1A         COLHDG('Multi CCY Loan Code')
+     A            TYPE          10A         COLHDG('Loan Type')
+     A            CURTYP         4A         COLHDG('Currency Type')
+     A            STATUS         1S 0       COLHDG('Status')
+     A            CBAL          17S 2       COLHDG('Current Balance')
+     A            ORGDT8         8S 0       COLHDG('Original Loan Date')
+     A            STSDT8         8S 0       COLHDG('Status Date')
+    ŠA**˜Maintenance Log
+     A            MNLUID        10A         COLHDG('Last Maint User ID')
+     A            MNLWID        20A         COLHDG('Last Maint' 'Workstation')
+     A            MNLDT8         8S 0       COLHDG('Last Maint Date')
+     A            MNLTIM          T         COLHDG('Last Maint Time')
+     A            MNCUID        10A         COLHDG('Created User ID')
+     A            MNCWID        20A         COLHDG('Created Workstation')
+     A            MNCDT8         8S 0       COLHDG('Created Date')
+     A            MNCTIM          T         COLHDG('Created Time')
+    ŠA**˜Key
+     A          K ACCTNO
+     A          K ACTYPE
+

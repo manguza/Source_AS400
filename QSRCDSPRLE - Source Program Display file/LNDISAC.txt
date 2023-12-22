@@ -1,0 +1,570 @@
+     A*%%TS  SD  20231215  134236  SSPRUK      REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(27 132 *DS3)
+     A                                      CA03(03 'Exit')
+     A                                      CA05(05 'Refresh')
+     A                                      CA06(06 'Add')
+     A                                      CA12(12 'Previous')
+    ŠA************************************************************************
+    ŠA*˜SUBFILE RECORD FORMAT
+     A          R SDATA                     SFL
+     A*%%TS  SD  20231213  142624  SSPRUK      REL-V7R4M0  5770-WDS
+     A            OPT            1A  I  9  3
+     A            ACCTNO    R        O  9  7REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A            CIFNO     R        O  9 28REFFLD(RXLNMAST/CIFNO SSPRUK/XLNMAS-
+     A                                      T)
+     A                                      EDTCDE(Z)
+     A            FSNAME    R        O  9 50REFFLD(RXLNMAST/FSNAME SSPRUK/XLNMA-
+     A                                      ST)
+     A            CBAL      R        O  9 72REFFLD(RXLNMAST/CBAL SSPRUK/XLNMAST)
+     A                                      EDTCDE(N)
+     A            TYPE      R        O  9 97REFFLD(RXLNMAST/TYPE SSPRUK/XLNMAST)
+     A            ORGDT8    R        O  9109REFFLD(RXLNMAST/ORGDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            STATUS    R        O  9122REFFLD(RXLNMAST/STATUS SSPRUK/XLNMA-
+     A                                      ST)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE CONTROL RECORD FORMAT
+     A          R SCTL                      SFLCTL(SDATA)
+     A*%%TS  SD  20231213  142115  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      SFLSIZ(9999)
+     A                                      SFLPAG(0015)
+     A                                      OVERLAY
+     A  31                                  SFLDSP
+     A  32                                  SFLDSPCTL
+     A  30                                  SFLCLR
+     A  33                                  SFLEND(*SCRBAR *MORE)
+     A            RCDNBR         4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  2USER
+     A                                  1124DATE
+     A                                      EDTCDE(Y)
+     A                                  2124TIME
+     A                                  1 59'Loan Master File'
+     A                                      DSPATR(UL)
+     A                                      COLOR(WHT)
+     A                                  4  2'Position to ...'
+     A                                      COLOR(BLU)
+     A            ACSRCH    R        B  4 18REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A  65                                  DSPATR(RI)
+     A  65                                  COLOR(RED)
+     A                                  5  2'Option...'
+     A                                      COLOR(BLU)
+     A                                  5 12'2=Change'
+     A                                      COLOR(BLU)
+     A                                  5 22'4=Delete'
+     A                                      COLOR(BLU)
+     A                                  5 32'5=Display'
+     A                                      COLOR(BLU)
+     A                                  7 72'Current Balance'
+     A                                      COLOR(BLU)
+     A                                  7119'Status'
+     A                                      COLOR(BLU)
+     A                                  7 28'Customer Number'
+     A                                      COLOR(BLU)
+     A                                  7  7'Account Number'
+     A                                      COLOR(BLU)
+     A                                  7  2'Otp'
+     A                                      COLOR(BLU)
+     A            MSGERR        50A  O  6  2COLOR(RED)
+     A                                  7 97'Loan Type'
+     A                                      COLOR(BLU)
+     A                                  7109'Original'
+     A                                      COLOR(BLU)
+     A                                  8109'Loan Date'
+     A                                      COLOR(BLU)
+     A                                  7 50'Formatted'
+     A                                      COLOR(BLU)
+     A                                  8 50'short name'
+     A                                      COLOR(BLU)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE ADD RECORD
+     A          R SADD
+     A*%%TS  SD  20231215  134236  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1124DATE
+     A                                      EDTCDE(Y)
+     A                                  2124TIME
+     A                                  1 59'Loan Master File'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A                                  2 65'Add'
+     A                                      COLOR(RED)
+     A                                  4  2'Bank Number :'
+     A                                      COLOR(BLU)
+     A                                  4 16'69'
+     A                                  5  2'Branch Number :'
+     A                                      COLOR(BLU)
+     A                                  6  2'Reporting Branch :'
+     A                                      COLOR(BLU)
+     A                                  7  2'Account Number :'
+     A                                      COLOR(BLU)
+     A                                  8  2'Account Type :'
+     A                                      COLOR(BLU)
+     A                                  9  2'Formatted short name :'
+     A                                      COLOR(BLU)
+     A                                 10  2'Customer Number :'
+     A                                      COLOR(BLU)
+     A                                 11  2'Multi CCY Loan Code :'
+     A                                      COLOR(BLU)
+     A                                 12  2'Loan Type :'
+     A                                      COLOR(BLU)
+     A                                 13  2'Currency Type :'
+     A                                      COLOR(BLU)
+     A                                 14  2'Status :'
+     A                                      COLOR(BLU)
+     A                                 15  2'Current Balance :'
+     A                                      COLOR(BLU)
+     A                                 16  2'Original Loan Date :'
+     A                                      COLOR(BLU)
+     A                                 17  2'Status Date :'
+     A                                      COLOR(BLU)
+     A                                 18  2'Created User ID :'
+     A                                      COLOR(BLU)
+     A                                 19  2'Created Workstation :'
+     A                                      COLOR(BLU)
+     A                                 20  2'Created Date :'
+     A                                      COLOR(BLU)
+     A                                 21  2'Created Time :'
+     A                                      COLOR(BLU)
+     A            ABRN      R        I  5 18REFFLD(RXLNMAST/BRN SSPRUK/XLNMAST)
+     A            ARBRN     R        I  6 21REFFLD(RXLNMAST/RBRN SSPRUK/XLNMAST)
+     A            AACCTNO   R        I  7 19REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A  70                                  DSPATR(RI)
+     A  70                                  COLOR(RED)
+     A            AACTYPE   R        I  8 17REFFLD(RXLNMAST/ACTYPE SSPRUK/XLNMA-
+     A                                      ST)
+     A  71                                  DSPATR(RI)
+     A  71                                  COLOR(RED)
+     A            AFSNAME   R        I  9 25REFFLD(RXLNMAST/FSNAME SSPRUK/XLNMA-
+     A                                      ST)
+     A            ACIFNO    R        I 10 20REFFLD(RXLNMAST/CIFNO SSPRUK/XLNMAS-
+     A                                      T)
+     A  72                                  DSPATR(RI)
+     A  72                                  COLOR(RED)
+     A            AMCLNID   R        I 11 24REFFLD(RXLNMAST/MCLNID SSPRUK/XLNMA-
+     A                                      ST)
+     A            ATYPE     R        I 12 14REFFLD(RXLNMAST/TYPE SSPRUK/XLNMAST)
+     A            ACURTYP   R        I 13 18REFFLD(RXLNMAST/CURTYP SSPRUK/XLNMA-
+     A                                      ST)
+     A            ASTATUS   R        O 14 11REFFLD(RXLNMAST/STATUS SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A                                 14 15'(1=Active, 2=Closed, 3=Matured, 4=-
+     A                                      New)'
+     A            ACBAL     R        I 15 20REFFLD(RXLNMAST/CBAL SSPRUK/XLNMAST)
+     A            AORGDT8   R        O 16 23REFFLD(RXLNMAST/ORGDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            ASTSDT8   R        O 17 16REFFLD(RXLNMAST/STSDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            AMNCUID   R        O 18 20REFFLD(RXLNMAST/MNCUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            AMNCWID   R        O 19 24REFFLD(RXLNMAST/MNCWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            AMNCDT8   R        O 20 17REFFLD(RXLNMAST/MNCDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            AMNCTIM   R        O 21 17REFFLD(RXLNMAST/MNCTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A                                 27  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 27 11'F5=Refresh'
+     A                                      COLOR(BLU)
+     A                                 27120'F12=Previous'
+     A                                      COLOR(BLU)
+     A            MSGERRADD     50A  O 25  2COLOR(RED)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE CHANGE RECORD
+     A          R SCHG
+     A*%%TS  SD  20231215  133757  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1124DATE
+     A                                      EDTCDE(Y)
+     A                                  2124TIME
+     A                                  1 59'Loan Master File'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A                                  2 64'Change'
+     A                                      COLOR(RED)
+     A                                  4  2'Bank Number :'
+     A                                      COLOR(BLU)
+     A                                  4 21'Branch Number :'
+     A                                      COLOR(BLU)
+     A                                  4 44'('
+     A                                  4 97')'
+     A                                  4107'Reporting Branch :'
+     A                                      COLOR(BLU)
+     A                                  5  2'Account Number :'
+     A                                      COLOR(BLU)
+     A                                  6  2'Account Type :'
+     A                                      COLOR(BLU)
+     A                                  7  2'Formatted short name :'
+     A                                      COLOR(BLU)
+     A                                  8  2'Customer Number :'
+     A                                      COLOR(BLU)
+     A                                  9  2'Multi CCY Loan Code :'
+     A                                      COLOR(BLU)
+     A                                 10  2'Loan Type :'
+     A                                      COLOR(BLU)
+     A                                 11  2'Currency Type :'
+     A                                      COLOR(BLU)
+     A                                 12  2'Status :'
+     A                                      COLOR(BLU)
+     A                                 13  2'Current Balance :'
+     A                                      COLOR(BLU)
+     A                                 14  2'Original Loan Date :'
+     A                                      COLOR(BLU)
+     A                                 15  2'Status Date :'
+     A                                      COLOR(BLU)
+     A                                 16  2'Created User ID :'
+     A                                      COLOR(BLU)
+     A                                 17  2'Created Workstation :'
+     A                                      COLOR(BLU)
+     A                                 18  2'Created Date :'
+     A                                      COLOR(BLU)
+     A                                 19  2'Created Time :'
+     A                                      COLOR(BLU)
+     A                                 20  2'Last Maint User ID :'
+     A                                      COLOR(BLU)
+     A                                 21  2'Last Maint Workstation :'
+     A                                      COLOR(BLU)
+     A                                 22  2'Last Maint Date :'
+     A                                      COLOR(BLU)
+     A                                 23  2'Last Maint Time :'
+     A                                      COLOR(BLU)
+     A            BKN       R        O  4 16REFFLD(RXLNMAST/BKN SSPRUK/XLNMAST)
+     A            BRN       R        O  4 37REFFLD(RXLNMAST/BRN SSPRUK/XLNMAST)
+     A            JDNAME    R        O  4 46REFFLD(RXSSDATA/JDNAME SSPRUK/XSSDA-
+     A                                      TA)
+     A            RBRN      R        O  4126REFFLD(RXLNMAST/RBRN SSPRUK/XLNMAST)
+     A            CACCTNO   R        O  5 19REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A            CACTYPE   R        O  6 17REFFLD(RXLNMAST/ACTYPE SSPRUK/XLNMA-
+     A                                      ST)
+     A            CFSNAME   R        O  7 25REFFLD(RXLNMAST/FSNAME SSPRUK/XLNMA-
+     A                                      ST)
+     A            CCIFNO    R        O  8 20REFFLD(RXLNMAST/CIFNO SSPRUK/XLNMAS-
+     A                                      T)
+     A                                      EDTCDE(Z)
+     A            CMCLNID   R        B  9 24REFFLD(RXLNMAST/MCLNID SSPRUK/XLNMA-
+     A                                      ST)
+     A            CTYPE     R        B 10 14REFFLD(RXLNMAST/TYPE SSPRUK/XLNMAST)
+     A            CCURTYP   R        B 11 18REFFLD(RXLNMAST/CURTYP SSPRUK/XLNMA-
+     A                                      ST)
+     A            CSTATUS   R        B 12 11REFFLD(RXLNMAST/STATUS SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A  73                                  DSPATR(RI)
+     A  73                                  COLOR(RED)
+     A                                 12 15'(1=Active, 2=Closed, 3=Matured, 4=-
+     A                                      New)'
+     A            CCBAL     R        B 13 20REFFLD(RXLNMAST/CBAL SSPRUK/XLNMAST)
+     A            CORGDT8   R        O 14 23REFFLD(RXLNMAST/ORGDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            CSTSDT8   R        O 15 16REFFLD(RXLNMAST/STSDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            CMNCUID   R        O 16 20REFFLD(RXLNMAST/MNCUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            CMNCWID   R        O 17 24REFFLD(RXLNMAST/MNCWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            CMNCDT8   R        O 18 17REFFLD(RXLNMAST/MNCDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            CMNCTIM   R        O 19 17REFFLD(RXLNMAST/MNCTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A            CMNLUID   R        O 20 23REFFLD(RXLNMAST/MNLUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            CMNLWID   R        O 21 27REFFLD(RXLNMAST/MNLWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            CMNLDT8   R        O 22 20REFFLD(RXLNMAST/MNLDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            CMNLTIM   R        O 23 20REFFLD(RXLNMAST/MNLTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A                                 27  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 27 11'F5=Refresh'
+     A                                      COLOR(BLU)
+     A                                 27120'F12=Previous'
+     A                                      COLOR(BLU)
+     A            MSGERRADD     50A  O 25  2COLOR(RED)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE DELETE RECORD
+     A          R SDLT
+     A*%%TS  SD  20231213  141835  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1124DATE
+     A                                      EDTCDE(Y)
+     A                                  2124TIME
+     A                                  1 59'Loan Master File'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A                                  2 64'Delete'
+     A                                      COLOR(RED)
+     A                                  4  2'Bank Number :'
+     A                                      COLOR(BLU)
+     A                                  4 21'Branch Number :'
+     A                                      COLOR(BLU)
+     A                                  4 44'('
+     A                                  4 97')'
+     A                                  4107'Reporting Branch :'
+     A                                      COLOR(BLU)
+     A                                  5  2'Account Number :'
+     A                                      COLOR(BLU)
+     A                                  6  2'Account Type :'
+     A                                      COLOR(BLU)
+     A                                  7  2'Formatted short name :'
+     A                                      COLOR(BLU)
+     A                                  8  2'Customer Number :'
+     A                                      COLOR(BLU)
+     A                                  9  2'Multi CCY Loan Code :'
+     A                                      COLOR(BLU)
+     A                                 10  2'Loan Type :'
+     A                                      COLOR(BLU)
+     A                                 11  2'Currency Type :'
+     A                                      COLOR(BLU)
+     A                                 12  2'Status :'
+     A                                      COLOR(BLU)
+     A                                 13  2'Current Balance :'
+     A                                      COLOR(BLU)
+     A                                 14  2'Original Loan Date :'
+     A                                      COLOR(BLU)
+     A                                 15  2'Status Date :'
+     A                                      COLOR(BLU)
+     A                                 16  2'Created User ID :'
+     A                                      COLOR(BLU)
+     A                                 17  2'Created Workstation :'
+     A                                      COLOR(BLU)
+     A                                 18  2'Created Date :'
+     A                                      COLOR(BLU)
+     A                                 19  2'Created Time :'
+     A                                      COLOR(BLU)
+     A                                 20  2'Last Maint User ID :'
+     A                                      COLOR(BLU)
+     A                                 21  2'Last Maint Workstation :'
+     A                                      COLOR(BLU)
+     A                                 22  2'Last Maint Date :'
+     A                                      COLOR(BLU)
+     A                                 23  2'Last Maint Time :'
+     A                                      COLOR(BLU)
+     A            BKN       R        O  4 16REFFLD(RXLNMAST/BKN SSPRUK/XLNMAST)
+     A            BRN       R        O  4 37REFFLD(RXLNMAST/BRN SSPRUK/XLNMAST)
+     A            JDNAME    R        O  4 46REFFLD(RXSSDATA/JDNAME SSPRUK/XSSDA-
+     A                                      TA)
+     A            RBRN      R        O  4126REFFLD(RXLNMAST/RBRN SSPRUK/XLNMAST)
+     A            ACCTNO    R        O  5 19REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A            ACTYPE    R        O  6 17REFFLD(RXLNMAST/ACTYPE SSPRUK/XLNMA-
+     A                                      ST)
+     A            FSNAME    R        O  7 25REFFLD(RXLNMAST/FSNAME SSPRUK/XLNMA-
+     A                                      ST)
+     A            CIFNO     R        O  8 20REFFLD(RXLNMAST/CIFNO SSPRUK/XLNMAS-
+     A                                      T)
+     A                                      EDTCDE(Z)
+     A            MCLNID    R        O  9 24REFFLD(RXLNMAST/MCLNID SSPRUK/XLNMA-
+     A                                      ST)
+     A            TYPE      R        O 10 14REFFLD(RXLNMAST/TYPE SSPRUK/XLNMAST)
+     A            CURTYP    R        O 11 18REFFLD(RXLNMAST/CURTYP SSPRUK/XLNMA-
+     A                                      ST)
+     A            STATUS    R        O 12 11REFFLD(RXLNMAST/STATUS SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A                                 12 15'(1=Active, 2=Closed, 3=Matured, 4=-
+     A                                      New)'
+     A            CBAL      R        O 13 20REFFLD(RXLNMAST/CBAL SSPRUK/XLNMAST)
+     A                                      EDTCDE(N)
+     A            ORGDT8    R        O 14 23REFFLD(RXLNMAST/ORGDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            STSDT8    R        O 15 16REFFLD(RXLNMAST/STSDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNCUID    R        O 16 20REFFLD(RXLNMAST/MNCUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNCWID    R        O 17 24REFFLD(RXLNMAST/MNCWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNCDT8    R        O 18 17REFFLD(RXLNMAST/MNCDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNCTIM    R        O 19 17REFFLD(RXLNMAST/MNCTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLUID    R        O 20 23REFFLD(RXLNMAST/MNLUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLWID    R        O 21 27REFFLD(RXLNMAST/MNLWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLDT8    R        O 22 20REFFLD(RXLNMAST/MNLDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNLTIM    R        O 23 20REFFLD(RXLNMAST/MNLTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A                                 27  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 27 11'F5=Refresh'
+     A                                      COLOR(BLU)
+     A                                 27120'F12=Previous'
+     A                                      COLOR(BLU)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE DISPLAY RECORD
+     A          R SDSP
+     A*%%TS  SD  20231213  141835  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1124DATE
+     A                                      EDTCDE(Y)
+     A                                  2124TIME
+     A                                  1 59'Loan Master File'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A                                  2 64'Display'
+     A                                      COLOR(RED)
+     A                                  4  2'Bank Number :'
+     A                                      COLOR(BLU)
+     A                                  4 21'Branch Number :'
+     A                                      COLOR(BLU)
+     A                                  4 44'('
+     A                                  4 97')'
+     A                                  4107'Reporting Branch :'
+     A                                      COLOR(BLU)
+     A                                  5  2'Account Number :'
+     A                                      COLOR(BLU)
+     A                                  6  2'Account Type :'
+     A                                      COLOR(BLU)
+     A                                  7  2'Formatted short name :'
+     A                                      COLOR(BLU)
+     A                                  8  2'Customer Number :'
+     A                                      COLOR(BLU)
+     A                                  9  2'Multi CCY Loan Code :'
+     A                                      COLOR(BLU)
+     A                                 10  2'Loan Type :'
+     A                                      COLOR(BLU)
+     A                                 11  2'Currency Type :'
+     A                                      COLOR(BLU)
+     A                                 12  2'Status :'
+     A                                      COLOR(BLU)
+     A                                 13  2'Current Balance :'
+     A                                      COLOR(BLU)
+     A                                 14  2'Original Loan Date :'
+     A                                      COLOR(BLU)
+     A                                 15  2'Status Date :'
+     A                                      COLOR(BLU)
+     A                                 16  2'Created User ID :'
+     A                                      COLOR(BLU)
+     A                                 17  2'Created Workstation :'
+     A                                      COLOR(BLU)
+     A                                 18  2'Created Date :'
+     A                                      COLOR(BLU)
+     A                                 19  2'Created Time :'
+     A                                      COLOR(BLU)
+     A                                 20  2'Last Maint User ID :'
+     A                                      COLOR(BLU)
+     A                                 21  2'Last Maint Workstation :'
+     A                                      COLOR(BLU)
+     A                                 22  2'Last Maint Date :'
+     A                                      COLOR(BLU)
+     A                                 23  2'Last Maint Time :'
+     A                                      COLOR(BLU)
+     A            BKN       R        O  4 16REFFLD(RXLNMAST/BKN SSPRUK/XLNMAST)
+     A            BRN       R        O  4 37REFFLD(RXLNMAST/BRN SSPRUK/XLNMAST)
+     A            JDNAME    R        O  4 46REFFLD(RXSSDATA/JDNAME SSPRUK/XSSDA-
+     A                                      TA)
+     A            RBRN      R        O  4126REFFLD(RXLNMAST/RBRN SSPRUK/XLNMAST)
+     A            ACCTNO    R        O  5 19REFFLD(RXLNMAST/ACCTNO SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A            ACTYPE    R        O  6 17REFFLD(RXLNMAST/ACTYPE SSPRUK/XLNMA-
+     A                                      ST)
+     A            FSNAME    R        O  7 25REFFLD(RXLNMAST/FSNAME SSPRUK/XLNMA-
+     A                                      ST)
+     A            CIFNO     R        O  8 20REFFLD(RXLNMAST/CIFNO SSPRUK/XLNMAS-
+     A                                      T)
+     A                                      EDTCDE(Z)
+     A            MCLNID    R        O  9 24REFFLD(RXLNMAST/MCLNID SSPRUK/XLNMA-
+     A                                      ST)
+     A            TYPE      R        O 10 14REFFLD(RXLNMAST/TYPE SSPRUK/XLNMAST)
+     A            CURTYP    R        O 11 18REFFLD(RXLNMAST/CURTYP SSPRUK/XLNMA-
+     A                                      ST)
+     A            STATUS    R        O 12 11REFFLD(RXLNMAST/STATUS SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTCDE(Z)
+     A                                 12 15'(1=Active, 2=Closed, 3=Matured, 4=-
+     A                                      New)'
+     A            CBAL      R        O 14 20REFFLD(RXLNMAST/CBAL SSPRUK/XLNMAST)
+     A                                      EDTCDE(N)
+     A            ORGDT8    R        O 15 23REFFLD(RXLNMAST/ORGDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            STSDT8    R        O 16 16REFFLD(RXLNMAST/STSDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNCUID    R        O 17 20REFFLD(RXLNMAST/MNCUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNCWID    R        O 18 24REFFLD(RXLNMAST/MNCWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNCDT8    R        O 19 17REFFLD(RXLNMAST/MNCDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNCTIM    R        O 20 17REFFLD(RXLNMAST/MNCTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLUID    R        O 21 23REFFLD(RXLNMAST/MNLUID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLWID    R        O 22 27REFFLD(RXLNMAST/MNLWID SSPRUK/XLNMA-
+     A                                      ST)
+     A            MNLDT8    R        O 23 20REFFLD(RXLNMAST/MNLDT8 SSPRUK/XLNMA-
+     A                                      ST)
+     A                                      EDTWRD('    /  / 0')
+     A            MNLTIM    R        O 24 20REFFLD(RXLNMAST/MNLTIM SSPRUK/XLNMA-
+     A                                      ST)
+     A                                 27  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 27 11'F5=Refresh'
+     A                                      COLOR(BLU)
+     A                                 27120'F12=Previous'
+     A                                      COLOR(BLU)
+    ŠA************************************************************************
+     A*˜WINDOW MASSAGE SUCCESSED
+     A          R WINSUC
+     A*%%TS  SD  20231213  132638  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      WINDOW(10 45 3 40)
+     A                                      WDWBORDER((*CHAR '===||==='))
+     A                                      RMVWDW
+     A                                      USRRSTDSP
+     A            MSGWIN        30A  O  2  6
+    ŠA************************************************************************
+     A*˜WINDOW MASSAGE DELETE
+     A          R WINDLT
+     A*%%TS  SD  20231213  132638  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      WINDOW(8 45 8 40)
+     A                                      WDWBORDER((*CHAR '===||==='))
+     A                                      RMVWDW
+     A                                      USRRSTDSP
+     A            MSGWIN1       35A  O  3  3DSPATR(UL)
+     A                                      COLOR(RED)
+     A                                  2  3'You Must Sure Delete Account Numbe-
+     A                                      r'
+     A            YESNO          1A  I  5 20
+     A                                  4 13'(Y=Yes / N=No)'
+     A            MSGWIN2       35A  O  7  3DSPATR(UL)
+     A                                      COLOR(BLU)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE FOOTER
+     A          R FOOTER
+     A*%%TS  SD  20231129  165948  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                 27  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 27 11'F5=Refresh'
+     A                                      COLOR(BLU)
+     A                                 27 23'F6=Add'
+     A                                      COLOR(BLU)
+     A                                 27120'F12=Previous'
+     A                                      COLOR(BLU)
+

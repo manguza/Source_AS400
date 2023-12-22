@@ -1,0 +1,749 @@
+     F* LAST CHANGED
+     F*REF#  DATE     DESCRIPTION OF CHANGE     IR No/Change No.
+     F*---   ----     ---------------------     ----------------
+     A*********************************************************************/
+     A                                      REF(LNPREF)
+     A                                      UNIQUE
+     A          R RXLNPAR2                  TEXT('Loan Type Parameter File')
+     A            PTYPE     R
+WFO  A            PCURTY    R
+C001 A            PSHDSC    R
+     A            PTYDSC    R
+R1001A            PLTYDS    R
+     A            PLNGRP    R
+     A            PGRDSC    R
+     A            LP2CRT    R
+WFO  A            LP2PRD    R
+V001 A            PGBOOK    R
+MRY  A            PLONGP    R
+H001 A            PRDGRP    R
+ISL  A            PISLTP    R
+AM02 A            PAPTYP    R
+M001 A            PMCLNI    R
+M001 A            PSYNLN    R
+     A            PIBASE    R
+MRY  A            PSIBAS    R
+MRY  A            PMDINT    R
+MRY  A            PYRBSE    R
+C001 A            PYBSEL    R
+C001 A            PYBSEC    R
+MRY  A            PANACT    R
+     A            PDEPTC    R
+     ** Islamic information
+I002 A            PICEPT    R
+I002 A            PISFUN    R
+SS01 A            PISTYF    R
+SS01 A            PMPOCT    R
+SS01 A            PIJACT    R
+SS01 A            PMUYCT    R
+SS01 A            POOLID    R
+SS01 A            PIDINC    R
+I002 A            FULMTD    R
+I002 A            GPPMTD    R
+I002 A            COMMTD    R
+I002 A            PRFGPP    R
+I002 A            PRFPFT    R
+A001 A            PMNGTR    R
+A001 A            PMXGTR    R
+A001 A            PMGPPC    R
+I004 A            PFLCOM    R
+I005 A            PSPLSD    R
+I002 A            PUPLSD    R
+AM01 A            PREBNT    R
+     ** Product control
+     A            PALWBD    R
+     A            PBKDYS    R
+I002 A            PLIMIT    R
+M021 A            PMAXLM    R
+SS09 A            PMINLM    R
+M021 A            PMAXTM    R
+M021 A            PMAXTC    R
+R1001A            PMINTM    R
+R1001A            PMINTC    R
+H002 A            PEFFD8    R
+I003 A            PEXPD8    R
+H001 A            PAGELM    R
+H001 A            PRDDLR    R
+     ** Interest information
+M033 A            PACMIN    R
+I002 A            PRATE     R
+I002 A            PRATN     R
+M001 A            PRVARI    R
+M001 A            PVARC     R
+     A            PMINRT    R
+SS09 A            PMINRN    R
+SS09 A            PMINVR    R
+SS09 A            PMINVC    R
+     A            PMAXRT    R
+SS09 A            PMAXRN    R
+SS09 A            PMAXVR    R
+SS09 A            PMAXVC    R
+R1005A            PMAXIC    R
+MRY  A            PRFLOR    R
+MRY  A            PRCEIL    R
+A004 A            PVCEIL    R
+A004 A            PVFLOR    R
+     A            PMINCG    R
+MRY  A            PCRATE    R
+MRY  A            PDREST    R
+MRY  A            PMRATE    R
+M021 A            PRDRST    R
+H001 A            PMXAVM    R
+H002 A            PERNAI    R
+OS01 A            PERNAL    R
+OS01 A            PERNAC    R
+     ** Late charge information
+I003 A            PACMLC    R
+     A            PLATCD    R
+     A            PLCTYP    R
+     A            PTAKLC    R
+     A            PMAXLC    R
+MRY  A            PWVELC    R
+AM01 A            PLCFR     R
+AM01 A            PLCFC     R
+     ** Payment information
+     A            PFREQ     R
+     A            PFCODE    R
+MRY  A            PIFREQ    R
+MRY  A            PIFCOD    R
+     A            PPMTCD    R
+MRY  A            PUPPCD    R
+MRY  A            PDFPCD    R
+     ** Auto Set Rate Review Date
+SS01 A            PCRRD     R
+SS01 A            PPRTM     R
+SS01 A            PPRCD     R
+     ** Auto Set Payment Date
+C001 A            PADJDD    R
+M001 A            PADJID    R
+C001 A            PFFPDT    R
+MRY  A            PCFPDT    R
+R1007A            PRCFPD    R
+MRY  A            PUPDOB    R
+MRY  A            PDAFP     R
+MRY  A            PCNIPD    R
+MRY  A            PUPIOB    R
+MRY  A            PDANIP    R
+     **AM01
+     A            PCLCD     R
+     A            PUPLCB    R
+     A            PDANLC    R
+     A            PCCFD     R
+     A            PUPCFB    R
+     A            PDANCF    R
+C002 A            PASMAT    R
+MRY  A            PMTHBK    R
+SS09 A            PDAYBK    R
+     A            PPRCPM    R
+R1001A            PVRAMT    R
+     **AM01
+     A            PGFREL    R
+     A            PGFRCD    R
+     A            PGFUL     R
+     A            PGFUCD    R
+     A            PGAVAI    R
+     A            PGAVCD    R
+     ** Past due info
+     A            P1MMPD    R
+     A            P2MMPD    R
+     A            P3MMPD    R
+     A            P4MMPD    R
+     A            P5MMPD    R
+     A            P6MMPD    R
+SS02 A            P4SCMO    R
+MG   A            P1DDPD    R
+MG   A            P2DDPD    R
+MG   A            P3DDPD    R
+MG   A            P4DDPD    R
+MG   A            P5DDPD    R
+MG   A            P6DDPD    R
+SS02 A            P4SCDA    R
+SS02 A            P1RADA    R
+SS02 A            P2RADA    R
+     A            PPDRPT    R
+     A            PRHSNW    R
+     A            PRHSPD    R
+     A            PRHSPO    R
+     A            PDHSDY    R
+     ** Update maturity date
+H002 A            PCMATD    R
+MRY  A            PUMATD    R
+MRY  A            PUMDRC    R
+MRY  A            PUMDCP    R
+M001 A            PUMDDB    R
+AM01 A            PRCMRT    R
+OS01 A            PSDDYM    R
+OS01 A            PDDAYM    R
+SS09 A            PTYPTR    R
+R1001A            PNSGGC    R
+C001 A* REAMORTIZE OPTION
+     A            PREAMO    R
+MRY  A            PCPAMR    R
+C001 A            PABKD     R
+SS08 A            PRUEXI    R
+M001 A            PREAMG    R
+C001 A* C-REAMORTIZE ON CBAL, D-REAMORTIZE ON AMTREL, BLANK-REAMORTIZE ON ORGAMT
+C001 A            POREAM    R
+C001 A            POCPAM    R
+C001 A            POABKD    R
+SS08 A            POREXI    R
+R1001A            PDNCPM    R
+R1001A            PNPMGR    R
+R1002A            PMCINS    R
+R1002A            PAIRRA    R
+R1002A            PAIPLA    R
+R1002A            PAIMAT    R
+R1001A            PMXPHL    R
+R1001A            PMXHTL    R
+     ** Date for rebate computation
+     A            PRDTBK    R
+     A            PRDTDL    R
+     A            PRDTCL    R
+     A            PRDTAH    R
+     A            PRDTMS    R
+MG   A            PRDTTT    R
+SS02 A            PRDTDR    R
+SS02 A            PRDTSD    R
+SS02 A            PRDTSM    R
+SS02 A            PDRGCD    R
+     ** Days for rebate computation
+     A            PRLDBK    R
+     A            PRLDDL    R
+     A            PRLDCL    R
+     A            PRLDAH    R
+     A            PRLDMS    R
+MG   A            PRLDTT    R
+SS01 A            PRLDDR    R
+SS01 A            PRLDSD    R
+SS01 A            PRLDSM    R
+     ** Extra month earning on 1st day
+     A            PRMEBK    R
+     A            PRMEDL    R
+     A            PRMECL    R
+     A            PRMEAH    R
+     A            PRMEMS    R
+MG   A            PRMETT    R
+SS01 A            PRMEDR    R
+SS01 A            PRMESD    R
+SS01 A            PRMESM    R
+     A** R=Rule 78  S=Straight line  O=Islamic  D=Daily   A=Actual
+     A            PRMTBK    R
+     A            PRMTDL    R
+     A            PRMTCL    R
+     A            PRMTAH    R
+     A            PRMTMS    R
+MG   A            PRMTTT    R
+SS01 A            PRMTDR    R
+SS01 A            PRMTSD    R
+SS01 A            PRMTSM    R
+     ** Rebate method upon payoff
+     ** R=Rule 78  S=Straight line
+V002 A            PRPOBK    R
+V002 A            PRPODL    R
+V002 A            PRPOCL    R
+V002 A            PRPOAH    R
+V002 A            PRPOMS    R
+V002 A            PRPOTT    R
+SS02 A            PRPODR    R
+SS02 A            PRPOSD    R
+SS02 A            PRPOSM    R
+     ** Minimum amount to rebate
+     A            PMNRBK    R
+     A            PMNRDL    R
+     A            PMNRCL    R
+     A            PMNRAH    R
+     A            PMNRMS    R
+MG   A            PMNRTT    R
+SS01 A            PMNRDR    R
+SS01 A            PMNRSD    R
+SS01 A            PMNRSM    R
+     ** Compute rebate on Calender/Anniversary
+MRY  A            PRCABK    R
+MRY  A            PRCADL    R
+MRY  A            PRCACL    R
+MRY  A            PRCAAH    R
+MRY  A            PRCAMS    R
+MG   A            PRCATT    R
+SS02 A            PRCADR    R
+SS02 A            PRCASD    R
+SS02 A            PRCASM    R
+     ** Extra month earning upon payoff
+MG   A            PREXBK    R
+MG   A            PREXDL    R
+MG   A            PREXCL    R
+MG   A            PREXAH    R
+MG   A            PREXMS    R
+MG   A            PREXTT    R
+SS02 A            PREXDR    R
+SS02 A            PREXSD    R
+SS02 A            PREXSM    R
+     ** Refund upon payoff
+C002 A            PRFDBK    R
+C002 A            PRFDDL    R
+C002 A            PRFDCL    R
+C002 A            PRFDAH    R
+C002 A            PRFDMS    R
+C002 A            PRFDTT    R
+SS02 A            PRFDLR    R
+SS02 A            PRFDSD    R
+SS02 A            PRFDSM    R
+     ** Capitalised Info
+MRY  A            PCAPMT    R
+MRY  A            PCAPNP    R
+MG   A            PCAPIN    R
+MG   A            PCAPLC    R
+MG   A            PCAPCA    R
+MRY  A            PCPCOM    R
+MRY  A            PCTYPE    R
+MRY  A            PCAPFL    R
+MRY  A            PACCAP    R
+     ** Add on balance for accrue b4 1st payment date
+MRY  A            PACMC     R
+MRY  A            PACOC     R
+MRY  A            PACLC     R
+MRY  A            PACINT    R
+M001 A            PACCF     R
+M019 A            PACRIN    R
+M019 A            PACRLC    R
+M024 A            PACMOR    R
+     ** Cater for Add on accrual
+M001 A            PPBORG    R
+MRY  A            PPBMC     R
+MRY  A            PPBOC     R
+MRY  A            PPBLC     R
+MRY  A            PPBINT    R
+M001 A            PPBCF     R
+M019 A            PPBRIN    R
+SS09 A            PPBMIN    R
+M019 A            PPBRLC    R
+     ** Add on balance for accrue on maturity
+M019 A            PACMC3    R
+M019 A            PACOC3    R
+M019 A            PACLC3    R
+M019 A            PACIN3    R
+M019 A            PACCF3    R
+M019 A            PACRI3    R
+SS09 A            PACMI3    R
+M019 A            PACRL3    R
+     ** Add on balance for accrue on recall
+M023 A            PACMCR    R
+M023 A            PACOCR    R
+M023 A            PACLCR    R
+M023 A            PACINR    R
+M023 A            PACCFR    R
+M023 A            PACRIR    R
+SS09 A            PACMIR    R
+M023 A            PACRLR    R
+     ** Cater for Add on LC accrual
+MG   A            PLCMC     R
+M019 A            PLCOC     R
+MG   A            PLCLC     R
+MG   A            PLCIN     R
+M001 A            PLCCF     R
+SS09 A            PLCRI     R
+SS09 A            PLCMI     R
+SS09 A            PLCRL     R
+     ** Cater for Add on LC accrual upon matured
+M019 A            PLCMC3    R
+M019 A            PLCOC3    R
+M019 A            PLCLC3    R
+M019 A            PLCIN3    R
+M019 A            PLCCF3    R
+SS09 A            PLCRI3    R
+SS09 A            PLCMI3    R
+SS09 A            PLCRL3    R
+     ** Cater for Add on LC accrual upon recall
+M023 A            PLCMCR    R
+M023 A            PLCOCR    R
+M023 A            PLCLCR    R
+M023 A            PLCINR    R
+M023 A            PLCCFR    R
+SS09 A            PLCRIR    R
+SS09 A            PLCMIR    R
+SS09 A            PLCRLR    R
+     ** Forecast billing
+M023 A            PBILIN    R
+M023 A            PBILLC    R
+M023 A            PBILCF    R
+M032 A            PBILFE    R
+C001 A** FEES
+MRY  A            PEPEN     R
+     ** INT IN LIEU OF NOTICE
+C001 A            PFILON    R
+R1001A            PCTINT    R
+R1001A            PILCC     R
+R1001A            PILCT     R
+M021 A            PFILCT    R
+M021 A            PFILCD    R
+C002 A            PODGRC    R
+MRY  A            PPTERM    R
+MRY  A            PPTMCD    R
+C008 A            PPTMIN    R
+MRY  A            PDFESN    R
+MRY  A            PDFESC    R
+C008 A            PDFESI    R
+     ** PREPAYMENT FEES
+C001 A            PFPREP    R
+AM01 A            PFPRP2    R
+C001 A            PFPRCT    R
+C001 A            PFPRCD    R
+R1001A            PNTCPR    R
+R1006A            PNTCPF    R
+R1005A            PNTMPR    R
+C001 A            PFPR1     R
+C001 A            PFPR2     R
+C001 A            PFPR3     R
+C001 A            PFPR4     R
+M021 A            PFPRP1    R
+SS09 A            PFPRBL    R
+R1001A            PFPRPI    R
+R1001A            PFPRPM    R
+R1002A            PFALP     R
+R1001A            PAWAIV    R
+AM01 A            PFPR11    R
+C005 A            PFPR5     R
+V001 A            PFPR6     R
+V001 A            PFPR7     R
+V001 A            PFPR8     R
+M021 A            PFESM1    R
+SS09 A            PFERBL    R
+R1001A            PFESMI    R
+R1001A            PFESMM    R
+R1002A            PFESLP    R
+R1002A            PFWAIV    R
+V001 A            PFPR9     R
+H001 A            PFPR10    R
+M001 A            PPCIND    R
+M001 A            PDCIND    R
+C001 A            PFWMTH    R
+V001 A            PFWFUL    R
+M001 A            PLODTR    R
+M001 A            PLODTC    R
+V001 A            PFPRTI    R
+     ** BUY BACK FEES
+C005 A            PFBYCD    R
+C005 A            PFBYCT    R
+     ** REPLACEMENT COSTS
+M001 A            PFREPL    R
+M001 A            PFRPOM    R
+M001 A            PFRCTP    R
+M032 A            PFRP1     R
+M032 A            PFRP2     R
+M032 A            PFRP3     R
+M032 A            PFRP4     R
+AM01 A            PFRPP1    R
+SS09 A            PFRRBL    R
+AM01 A            PFRPP2    R
+R1002A            PFRRPI    R
+R1002A            PFRRPM    R
+R1002A            PFRSLP    R
+R1002A            PRWAIV    R
+M032 A            PFRP5     R
+M032 A            PFRP6     R
+M032 A            PFRP7     R
+M032 A            PFRP8     R
+AM01 A            PFRP9     R
+SS09 A            PFSRBL    R
+AM01 A            PFRP10    R
+R1002A            PFRPPI    R
+R1002A            PFRPPM    R
+R1002A            PFRPLP    R
+R1002A            PPWAIV    R
+     ** Cancellation Fee
+C001 A            PFCANC    R
+C001 A            PFCACT    R
+C001 A            PFCACD    R
+C001 A            PFCA1     R
+C001 A            PFCA2     R
+V001 A            PFCA3     R
+V001 A            PFCA4     R
+V001 A            PFCA5     R
+     ** Commitment Fees
+MG   A            PCMRTN    R
+C001 A            PCMRT     R
+C001 A            PFUDRW    R
+C001 A            PFUDPC    R
+C001 A            PFUDER    R
+C001 A            PFUDAR    R
+C001 A            PMINUL    R
+C001 A            PMULPC    R
+R1001A            PCOMFE    R
+R1001A            PSTAGL    R
+AM01 A            PCFFR     R
+AM01 A            PCFFC     R
+     ** NPL Information
+MG   A            PNPLF     R
+CNK  A            PRMSUP    R
+H001 A            PNPLDY    R
+H001 A            PPLMO     R
+H001 A            PPLDY     R
+H001 A            PNPL3M    R
+H001 A            PNPL3D    R
+H001 A            PPL3MO    R
+H001 A            PPL3DY    R
+MRY  A            PCLWBK    R
+MRY  A            PNPLMT    R
+MRY  A            PNDNPL    R
+C004 A            PNPLCD    R
+H001 A            PNPLEM    R
+C007 A            PPLOPT    R
+C007 A            PNPLOP    R
+C006 A            PSUPCL    R
+C006 A            PNPLTX    R
+A002 A            PVARMO    R
+A002 A            PVARR     R
+H002 A            PTGAAS    R
+R1001A            PCODDO    R
+R1001A            PNODD     R
+R1001A            PNODM     R
+R1001A            PRUFPN    R
+     A* Suspend interest
+SS09 A            PSUPF     R
+R1001A            PSTSUP    R
+R1001A            PNDTXB    R
+R1001A            PNMTXB    R
+SS09 A            PSUPPM    R
+SS09 A            PSUPPD    R
+SS09 A            PSUPIM    R
+SS09 A            PSUPID    R
+SS09 A            PSP3PM    R
+SS09 A            PSP3PD    R
+SS09 A            PSP3IM    R
+SS09 A            PSP3ID    R
+R1001A            PINSRJ    R
+     ** CAR
+M021 A            PCART     R
+M021 A            PCARF     R
+AM01 A            PCAR1M    R
+AM01 A            PCAR3M    R
+AM01 A            PCARMD    R
+R1001A            PLCL3M    R
+R1001A            PLCG3M    R
+R1001A            PLMCOD    R
+SS02 A            PSPFLG    R
+     ** Auto Charge off
+SS09 A            PMPDCO    R
+SS09 A            PDPDCO    R
+SS09 A            PCOMTH    R
+R1001A            PSAMEI    R
+R1001A            PSAMEC    R
+     A* TDR - Trouble Debt Restruturing
+SS09 A            PGEXPM    R
+SS09 A            PGEXPD    R
+     ** Schedule
+MRY  A            PDRWDN    R
+SS03 A            PRDRAW    R
+C003 A            PTIERD    R
+MRY  A            PALTRT    R
+     A            PALTSC    R
+H001 A            PPRSCH    R
+H001 A            PINVRO    R
+MRY  A            PROLM     R
+R1001A            POMETD    R
+AM01 A            PROLNT    R
+H002 A            PLLSCH    R
+H001 A            PTWSCH    R
+SS05 A            PANRGC    R
+     A            PHASAR    R
+R1001A            PAGENC    R
+R1001A            PAUTDB    R
+R1001A            PRTRYS    R
+     A            PMIAMR    R
+C031 A            PUPRAT    R
+     A            PESCRO    R
+     A            PESCPO    R
+     ** Miscellaneous Codes
+     A            PSTATU    R
+     A            PPARTI    R
+     A            PCLSZR    R
+R1001A            PCAZBG    R
+R1001A            PCAZBT    R
+MG   A            PNEGBL    R
+R1008A            POVPIN    R
+     A            POTOL     R
+R1001A            POTCB     R
+R1001A            POTOT     R
+R1001A            POTOC     R
+R1001A            PREDEM    R
+R1001A            PADJBL    R
+M001 A            PREBIL    R
+AM01 A            PSKBIL    R
+     A            PBLNDY    R
+R1001A            PMIHAM    R
+R1001A            PMXHAM    R
+M001 A            PPBADV    R
+R1003A            P2BLNT    R
+     A            PMTBOA    R
+AM01 A            PSPFAB    R
+     A            PBILAW    R
+     A            PBILDY    R
+C001 A            PSPLTO    R
+MRY  A            PINALC    R
+C001 A            PNOADV    R
+SS09 A            PNFPMA    R
+MRY  A            PNEARD    R
+SS09 A            PNEARA    R
+MRY  A            PADJBK    R
+AM01 A            PADJAC    R
+MRY  A            PBKFUL    R
+MRY  A            PLSADV    R
+MRY  A            PLSARR    R
+SS31 A            PLSRTS    R
+MRY  A            PCALBK    R
+MRY  A            PINPAY    R
+MG   A            PINMAT    R
+     A            PUSESP    R
+C001 A            PADVPM    R
+OS01 A            PUADVP    R
+M024 A            PADVIN    R
+     ** Notices & Report
+     A            PHMAIL    R
+     A            PINCLU    R
+M001 A            PSNDCL    R
+     A            PPDNOT    R
+     A            PCDNOT    R
+MRY  A            PRMIND    R
+R1001A            PPAYCD    R
+R1001A            PWADVP    R
+R1001A            PLGENS    R
+R1001A            PSTFRQ    R
+R1001A            PSTFRC    R
+R1001A            PBCFTD    R
+     A            PBLLBR    R
+     A            PMNNEW    R
+     A            PPRCNO    R
+MG   A            PNCRTC    R
+     A            PPRRTC    R
+MG   A            PRTCDY    R
+MG   A            PRTCMX    R
+     A            PCPN      R
+     A            PDCBTR    R
+     ** SIC Code
+     A            PLSIC1    R
+     A            PLSIC2    R
+     A            PLSIC3    R
+     A            PLSIC4    R
+SS01 A            PLSIC5    R
+SS01 A            PLSIC6    R
+SS01 A            PLSIC7    R
+SS01 A            PLSIC8    R
+     **
+     ** Field in PAR2 but not used
+MG   A            PCALRE    R
+     A            PCLASS    R
+V001 A            PSTAFF    R
+     A            PALMTY    R
+     A            PRBEXF    R
+     A            PTITLE    R
+     A            PDOCTR    R
+MG   A            P1098C    R
+M021 A            PCGCRP    R
+MG   A            PCRREP    R
+MG   A            PCRTYP    R
+MRY  A            PKINTR    R
+MRY  A            PSHARE    R
+C007 A            PWHCD     R
+I001 A            PDISRB    R
+H001 A            PATOPI    R
+     **
+     A* DEFAULT RATE INFORMATION
+H002 A            PROMOT    R
+R1001A            PRENRT    R
+SS09 A            PROCLB    R
+H002 A            PROARR    R
+M019 A            PROATC    R
+AM01 A            PRORAT    R
+H002 A            PRORTN    R
+H002 A            PROVRI    R
+H002 A            PROVRC    R
+R1009A            PSTDRT    R
+R1009A            PSTDRN    R
+R1009A            PSTDVR    R
+R1009A            PSTDVC    R
+H002 A            PAVADY    R
+H002 A            PAVAMO    R
+     *** HP'S REQUIREMENT
+H001 A            PROEXP    R
+A003 A            P5SHEX    R
+A003 A            P5SIEX    R
+H001 A            PRCFLG    R
+H001 A            PINCTV    R
+R1004A            P5REMC    R
+SS02 A            PDFD1     R
+SS02 A            PDTD1     R
+SS02 A            PDDD1     R
+SS02 A            PDFD2     R
+SS02 A            PDTD2     R
+SS02 A            PDDD2     R
+SS02 A            PDFD3     R
+SS02 A            PDTD3     R
+SS02 A            PDDD3     R
+SS02 A            PDFD4     R
+SS02 A            PDTD4     R
+SS02 A            PDDD4     R
+R1003A            PDFD5     R
+R1003A            PDTD5     R
+R1003A            PDDD5     R
+R1003A            PDFD6     R
+R1003A            PDTD6     R
+R1003A            PDDD6     R
+SS02 A            PDLMTD    R
+SS02 A            PAGHPA    R
+SS02 A            PSUBJC    R
+SS02 A            PTMDR     R
+SS02 A            PTMCDR    R
+SS02 A            PTMSD     R
+SS02 A            PTMCSD    R
+SS02 A            PTMSM     R
+SS02 A            PTMCSM    R
+SS04 A            P2SVAT    R
+SS04 A            P2SVTC    R
+SS04 A            P2MINV    R
+     *** LEASING REQUIREMENT
+H002 A            PFTICD    R
+H002 A            PFTICT    R
+A006 A            PLNCSV    R
+     A** LOAN PRODUCT PARAMETER
+K0001A            LPPTEM    R
+K0001A            LPPPCC    R
+K0001A            LPPRAT    R
+K0001A            LPPIND    R
+K0001A            LPPMIN    R
+K0001A            PPINTB    R
+K0001A            PMXPDD    R
+K0001A            PPMOVR    R
+K0001A            PMXAVR    R
+K0002A            LLEGAC    R
+K0002A            PUPDMR    R
+K0003A            PADDIN    R
+K0003A            PADDCT    R
+K0003A            PADDCC    R
+K0003A            PMXPMT    R
+K0004A            PNRPM     R
+     A***
+     A          K PTYPE
+WFO  A          K PCURTY
+     A***
+     ** Field removed from LNPAR2
+     A*M019       PPPPCD    R
+A005 A*M020       PMCLIN    R
+C006 A***C006     PSUP12    R
+     A*           PBNMIN    R
+     A*           PBNMSE    R
+     A*           PBNMST    R
+     A*           PBNMAG    R
+     A*           PSCHEM    R
+     A*           PSCALE    R
+C002 A****        PRFUND    R
+I001 A**I006      PIALLW    R
+I001 A**I006      PAALLW    R
+I001 A**I006      PMAXCA    R
+I002 A**          SIBASE    R
+I002 A**          SMDINT    R
+I002 A**          SYRBSE    R
+I002 A***MRY      SRATE     R
+H001 A* HLB
+     A*
+H001 A*           PARELP    R
+H002 A*           PNPLDR    R
+

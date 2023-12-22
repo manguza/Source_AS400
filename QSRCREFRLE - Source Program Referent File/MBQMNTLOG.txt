@@ -1,0 +1,62 @@
+     **============================================
+     ** sr - maint log
+     **============================================
+     C     SRMNTCTL      BEGSR
+     ** MAINTENANCE PARAMETER LIST
+     C     MNTPAR        PLIST
+SS01 C                   PARM                    M3APCD
+     C                   PARM                    HDUSID
+     C*R101              PARM                    WHDTMLI_JOB      10
+     C*R101              PARM                    WHDTMLI_JOBN
+R101 C                   PARM                    WSSPWID          20
+R101 C                   PARM                    WPSJBNO           6
+     C                   PARM                    PSPGM
+     C                   PARM                    SSPDT8
+     C                   PARM                    SSPTIM
+SS01 C                   PARM                    INFILE           10
+SS01 C                   PARM                    INFILE2          10
+SS01 C                   PARM                    SSABNK
+SS01 C                   PARM                    SSABRN
+     C                   PARM                    SSTBNK
+     C                   PARM                    SSTBRN
+     C                   PARM                    HDSUP1
+SS01 C                   PARM                    HDTCOD
+SS01 C                   PARM                    HDSRID
+SS01 C                   PARM                    SSACNO
+SS01 C                   PARM                    SSACTY
+SS01 C                   PARM                    SSACCY
+SS01 C                   PARM                    SSCIFN
+SS01 C                   PARM                    CRTSPC            1
+     C                   PARM                    BUFFER
+     C                   PARM                    MNTREQ            8
+     C                   PARM                    ERRIN             1
+PG   C                   Parm                    mntKEYIN        100
+SSML C                   PARM                    blist
+     **
+     C**                 EVAL      SSPDT8      = MBAND8
+???  C**                 EVAL      SSPDT8      = SP1NB8
+     C**CKW              TIME                    SSPTIM
+     C                   EVAL      SSTBNK      = HDBKNO
+     C                   EVAL      SSTBRN      = HDBRNO
+     C                   EVAL      CRTSPC      = 'Y'
+     C
+     ** fill buffer - old + new
+SSML C                   IF        INFILE = '*MULTI'
+SSML  *SrBuffer willl prepare BUFFER
+SSML C                   ELSE
+     C                   EXSR      SRMOVBUFF
+SSML C                   ENDIF
+     **
+     C                   MOVE      *BLANKS       ERRIN
+     **
+     ** CALL MAINTENANCE HANDLER
+     C*SS01              CALL      'MBMCTLC'     MNTPAR
+SS01 C                   CALL      'SSMCTLLOG'   MNTPAR
+     **
+     C                   MOVE      *BLANKS       MNTREQ
+SSML C                   IF        INFILE = '*MULTI'
+SSML C                   CLEAR                   BUFFER
+SSML C                   ENDIF
+     **
+     C                   ENDSR
+

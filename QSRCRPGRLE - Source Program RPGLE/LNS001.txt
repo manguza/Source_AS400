@@ -1,0 +1,680 @@
+     H/COPY QSRCREFRLE,COPYRIGHTH
+     H DEBUG(*YES)
+    Š *************************************************************************
+     FLNDISAC   CF   E             WORKSTN INFDS(INFDS)
+     F                                     SFILE(SDATA:RRN)
+     FXLNMAST   UF A E           K DISK
+     FXSSDATA   IF A E           K DISK
+    Š *
+     D/COPY QSRCREFRLE,MBQTXHD
+     D/COPY QSRCREFRLE,LNQTXHD
+     D/COPY QSRCREFRLE,SSQRTVPD
+    Š *šVariable declaration
+     D RRN             S              4S 0
+     D WSAVRRN         S              4S 0
+     D WMAXRRN         S              4S 0
+     D WRCDNBR         S              4S 0
+     D ACSRHCN1        S             19S 0 DIM(9999) INZ(0)
+     D ACSRHCN1IDX     S              4S 0
+     D TOTAL           S              4S 0
+     D WRESETS         S              1    INZ('Y')
+     D WERR            S              1    INZ(*BLANK)
+     D SAVSTATUS       S                   LIKE(STATUS)
+
+    Š *šData Sturcture
+     D INFDS           DS
+     D  INFILE                83     92
+     D  LENLNCONA            125    126B 0
+     D  CURRENTRRN           378    379I 0
+     D  DB_RRN               397    400I 0
+
+    Š *šField Definitions Retrieve current user profile information.
+     D ErrorCode       S              8    inz(X'0000000000000000')
+     D RCVVARLN        S              4    inz(X'00000100')
+     D FORMAT          S              8    inz('JOBI0600')
+     D JOBQ            S             26    inz('*')
+     D JOBID           S             16
+
+    Š *šData Sturcture Retrieve current user profile information.
+     D THEDATA         DS
+     D  QUSBR05                1      4B 0
+     D  QUSBA05                5      8B 0
+     D  QUSJN08                9     18
+     D  QUSUN07               19     28
+     D  QUSJNBR07             29     34
+     D  QUSIJID05             35     50
+     D  QUSJS14               51     60
+     D  QUSJT08               61     61
+     D  QUSJS15               62     62
+     D  QUSJS16               63     70
+     D  QUSES00               71     71
+     D  QUSSN00               72     81
+     D  QUSSL06               82     91
+     D  QUSCUN                92    101
+     D  QUSDE                102    102
+     D  QUSEK                103    103
+     D  QUSCK00              104    104
+     D  QUSPRC               105    108B 0
+     D  QUSURC               109    112B 0
+     D  QUSPGMRC             113    116B 0
+     D  QUSSE02              117    126
+     D  QUSDN                127    136
+     D  QUSGPN               137    146
+     D   QUSGRP                      10    DIM(00015)
+     D   QUSGN00                     10    OVERLAY(QUSGRP:00001)
+     D  QUSJUID              297    306
+     D  QUSJUIDS             307    307
+
+    Š *šWorking Variabletion
+     D PANEL           S              8
+
+    Š *šIndicator Usage
+     D INDICATORPRT    S               *   INZ(%ADDR(*IN))
+     D                 DS                  BASED(INDICATORPRT)
+     D EXIT                   03     03
+     D REFRESH                05     05
+     D ADD                    06     06
+     D PERVIOUS               12     12
+     D SFLCLR                 30     30
+     D SFLDSP                 31     31
+     D SFLDSPCTL              32     32
+     D SFLEND                 33     33
+     D VALIDSCH               65     65
+     D VALIDACC               70     70
+     D VALIDACT               71     71
+     D VALIDCIF               72     72
+     D VALIDSTS               73     73
+
+    Š *šRename Field
+     IRXSSDATA
+     I              MNLDT8                      JMNLDT8
+     I              MNLUID                      JMNLUID
+     I              MNLWID                      JMNLWID
+     I              MNLTIM                      JMNLTIM
+     I              MNCUID                      JMNCUID
+     I              MNCDT8                      JMNCDT8
+     I              MNCTIM                      JMNCTIM
+     I              MNCWID                      JMNCWID
+
+    Š *šKey List
+     C     XMASKEY       KLIST
+     C                   KFLD                    ACCTNO
+     C                   KFLD                    ACTYPE
+    Š *š
+     C     XSDATAKY      KLIST
+     C                   KFLD                    BKN
+     C                   KFLD                    BRN
+    Š *š
+     C     XMASKEYADD    KLIST
+     C                   KFLD                    AACCTNO
+     C                   KFLD                    AACTYPE
+    Š *************************************************************************
+    Š *˜Main Program                                                         Š*
+    Š *************************************************************************
+    Š *
+     C                   EXSR      SRGETUSER
+     C                   EXSR      SRINZDSP
+    Š *
+     C                   DOW       PANEL         <> *BLANK
+     C                   EXSR      SRDSINQ
+     C                   ENDDO
+    Š *
+     C                   MOVE      '1'           *INLR
+    Š *************************************************************************
+    Š *˜SR - SRDSINQ Loop Inquiry Display Subfile                            Š*
+    Š *************************************************************************
+     C     SRDSINQ       BEGSR
+    Š * Set Panel
+     C                   EVAL      PANEL         = 'INQ'
+     C                   DOW       PANEL         = 'INQ'
+    Š * Refill sfl
+     C                   IF        WRESETS       = 'Y'
+     C                   EXSR      SRCLRSFL
+     C                   ENDIF
+     C                   WRITE     FOOTER
+     C                   EXSR      SRDSP
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXT
+     C     ADD           CASEQ     *ON           SRDSADD
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   CAS                     SRCHKOTP
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSADD Loop Add Display Subfile (F6)                           Š*
+    Š *************************************************************************
+     C     SRDSADD       BEGSR
+    Š * ADD
+     C                   EVAL      PANEL         = 'ADD'
+     C                   EXSR      SRREFESH
+     C                   DOW       PANEL         = 'ADD'
+    Š * Refill sfl
+     C                   EXFMT     SADD
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXT
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   CAS                     SRADD
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSCHG Loop Change Display Subfile (Option 2)                  Š*
+    Š *************************************************************************
+     C     SRDSCHG       BEGSR
+    Š * Change
+     C                   EVAL      PANEL         = 'CHG'
+     C                   EXSR      SRREFESH
+    Š * Move Value from file to subfile
+     C     XMASKEY       CHAIN     XLNMAST                            90
+     C     XSDATAKY      CHAIN     XSSDATA                            91
+     C     *IN90         IFEQ      *OFF
+     C                   EVAL      SAVSTATUS     = STATUS
+    Š *
+     C                   EXSR      SRMOVEVAL
+    Š *
+     C                   DOW       PANEL         = 'CHG'
+    Š * Refill sfl
+     C                   EXFMT     SCHG
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXT
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   CAS                     SRCHG
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSDLT Loop Delete Display Subfile (Option 4)                  Š*
+    Š *************************************************************************
+     C     SRDSDLT       BEGSR
+    Š * Change
+     C                   EVAL      PANEL         = 'DLT'
+    Š * Move Value from file to subfile
+     C     XMASKEY       CHAIN     XLNMAST                            90
+     C     XSDATAKY      CHAIN     XSSDATA                            91
+     C     *IN90         IFEQ      *OFF
+    Š *
+     C                   DOW       PANEL         = 'DLT'
+    Š * Refill sfl
+     C                   EXFMT     SDLT
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXT
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   CAS                     SRDLT
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSDSP Loop Display Data Subfile (Option 5)                  Š  *
+    Š *************************************************************************
+     C     SRDSDSP       BEGSR
+    Š * Change
+     C                   EVAL      PANEL         = 'DSP'
+    Š * Move Value from file to subfile
+     C     XMASKEY       CHAIN     XLNMAST                            90
+     C     XSDATAKY      CHAIN     XSSDATA                            91
+     C     *IN90         IFEQ      *OFF
+    Š *
+     C                   DOW       PANEL         = 'DSP'
+    Š * Refill sfl
+     C                   EXFMT     SDSP
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXT
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCLRSFL  Clear Subfile                                         Š*
+    Š *************************************************************************
+     C     SRCLRSFL      BEGSR
+    Š * Clear Screen
+     C                   EVAL      SFLCLR        = *ON
+     C                   WRITE     SCTL
+     C                   EVAL      SFLCLR        = *OFF
+    Š * Initial Counter
+     C                   EVAL      RRN           = 0
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      *IN60         = *OFF
+    Š * Load SFL
+     C                   EXSR      SRLOADSFL
+    Š * Setting
+     C                   EVAL      SFLEND        = *ON
+     C                   EVAL      WRESETS       = 'N'
+     C                   EVAL      WSAVRRN       = RRN
+     C                   EVAL      WMAXRRN       = RRN
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRLOADSFL Load Subfile                                          Š*
+    Š *************************************************************************
+     C     SRLOADSFL     BEGSR
+    Š *
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      TOTAL         = 0
+     C                   MOVEL(P)  *OFF          WKEOLOOP          1
+    Š *
+     C     *START        SETLL     XLNMAST
+     C                   DOU       WKEOLOOP      = *ON
+     C                   READ      XLNMAST
+     C                   IF        %EOF(XLNMAST)
+     C                   LEAVE
+     C                   ELSE
+    Š *
+     C                   EVAL      RRN           = RRN + 1
+     C                   EVAL      TOTAL         = TOTAL + 1
+     C                   EVAL      ACSRHCN1(RRN) = ACCTNO
+    Š *
+     C                   WRITE     SDATA
+    Š *
+     C                   ENDIF
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSP Display Subfile                                           Š*
+    Š *************************************************************************
+     C     SRDSP         BEGSR
+    Š * No data to Display
+     C                   IF        WSAVRRN       = 0
+     C                   EVAL      SFLCLR        = *ON
+     C                   ELSE
+     C                   EVAL      SFLCLR        = *OFF
+     C                   ENDIF
+    Š * Set Inidicator
+     C                   EVAL      SFLDSP        = *ON
+     C                   EVAL      SFLDSPCTL     = *ON
+    Š * Display Screen
+     C                   EXFMT     SCTL
+    Š * Reset Inidicator
+     C                   EVAL      SFLDSP        = *OFF
+     C                   EVAL      SFLDSPCTL     = *OFF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SPRCSRC                                                         Š*
+    Š *************************************************************************
+     C     SPRCSRC       BEGSR
+    Š *
+     C                   EVAL      RCDNBR        = CURRENTRRN
+     C                   IF        ACSRCH        <> 0
+    Š * Validate
+     C                   EXSR      SRVALIDSCH
+     C                   EVAL      ACSRHCN1IDX = %LOOKUP(ACSRCH:ACSRHCN1)
+    Š *
+     C                   SELECT
+     C                   WHEN      ACSRHCN1IDX > 0
+     C                   EVAL      RCDNBR        = ACSRHCN1IDX
+     C                   EVAL      WRCDNBR       = ACSRHCN1IDX
+     C                   CLEAR                   ACSRCH
+     C                   CLEAR                   MSGERR
+     C                   ENDSL
+    Š *
+     C                   ELSE
+     C                   EVAL      RCDNBR        = CURRENTRRN
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRADD Add data to XLNMAST                                       Š*
+    Š *************************************************************************
+     C     SRADD         BEGSR
+    Š * Move Value from subfile to file
+     C     XMASKEYADD    CHAIN     XLNMAST                            90
+     C     *IN90         IFEQ      *ON
+    Š *
+     C                   EXSR      SRVALIDADD
+    Š *
+     C                   IF        WERR          = 'N'
+     C                   Z-ADD     69            BKN
+     C                   Z-ADD     ABRN          BRN
+     C                   Z-ADD     ARBRN         RBRN
+     C                   Z-ADD     AACCTNO       ACCTNO
+     C                   MOVEL(P)  AACTYPE       ACTYPE
+     C                   MOVEL(P)  AFSNAME       FSNAME
+     C                   Z-ADD     ACIFNO        CIFNO
+     C                   MOVEL(P)  AMCLNID       MCLNID
+     C                   MOVEL(P)  ATYPE         TYPE
+     C                   MOVEL(P)  ACURTYP       CURTYP
+     C                   Z-ADD     4             STATUS
+     C                   Z-ADD     ACBAL         CBAL
+     C                   EVAL      ORGDT8        = %DEC(%DATE())
+     C                   EVAL      STSDT8        = %DEC(%DATE())
+     C                   EVAL      MNCUID        = QUSUN07
+     C                   EVAL      MNCWID        = 'LNS001'
+     C                   EVAL      MNCDT8        = %DEC(%DATE())
+     C                   TIME                    MNCTIM
+     C                   WRITE     RXLNMAST
+     C                   EVAL      MSGWIN        = 'Add Data Successful'
+     C                   WRITE     WINSUC
+     C                   EXFMT     WINSUC
+    Š *
+     C                   ELSE
+     C                   EVAL      VALIDACC      = *ON
+     C                   EVAL      VALIDACT      = *ON
+     C                   EVAL      VALIDCIF      = *ON
+     C                   EVAL      MSGERRADD     = 'Data Cannot be Blank'
+     C                   LEAVESR
+     C                   ENDIF
+    Š *
+     C                   EVAL      PANEL         = 'INQ'
+     C                   EVAL      WRESETS       = 'Y'
+    Š *
+     C                   ELSE
+     C                   EVAL      MSGWIN        = 'Write Duplicate Data'
+     C                   WRITE     WINSUC
+     C                   EXFMT     WINSUC
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCHG Change data to XLNMAST                                    Š*
+    Š *************************************************************************
+     C     SRCHG         BEGSR
+    Š * Move Value from subfile to file
+     C     XMASKEY       CHAIN     XLNMAST                            90
+     C     *IN90         IFEQ      *OFF
+    Š *
+     C                   MOVEL(P)  CMCLNID       MCLNID
+     C                   MOVEL(P)  CTYPE         TYPE
+     C                   MOVEL(P)  CCURTYP       CURTYP
+    Š *
+     C     CSTATUS       IFNE      1
+     C     CSTATUS       ORNE      2
+     C     CSTATUS       ORNE      3
+     C     CSTATUS       ORNE      4
+     C                   EVAL      VALIDSTS      = *ON
+     C                   EVAL      MSGERRADD     = 'Status Invalid'
+     C                   LEAVESR
+     C                   ELSE
+     C                   Z-ADD     CSTATUS       STATUS
+     C                   ENDIF
+    Š *
+     C                   Z-ADD     CCBAL         CBAL
+    Š *
+     C     CSTATUS       IFNE      SAVSTATUS
+     C                   EVAL      STSDT8        = %DEC(%DATE())
+     C                   ENDIF
+    Š *
+     C                   EVAL      MNLUID        = QUSUN07
+     C                   EVAL      MNLWID        = 'LNS001'
+     C                   EVAL      MNLDT8        = %DEC(%DATE())
+     C                   TIME                    MNLTIM
+     C                   UPDATE    RXLNMAST
+     C                   EVAL      MSGWIN        = 'Change Data Successful'
+     C                   WRITE     WINSUC
+     C                   EXFMT     WINSUC
+     C                   EVAL      PANEL         = 'INQ'
+    Š *
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDLT Delete data to XLNMAST                                    Š*
+    Š *************************************************************************
+     C     SRDLT         BEGSR
+    Š *
+     C                   CLEAR                   MSGWIN1
+     C                   CLEAR                   MSGWIN2
+    Š *
+     C     XMASKEY       CHAIN     XLNMAST                            90
+     C     *IN90         IFEQ      *OFF
+    Š *
+     C                   EVAL      MSGWIN1       = 'If you can sure delete +
+     C                                             Account No.'
+     C                   WRITE     WINDLT
+     C                   EXFMT     WINDLT
+    Š *
+     C                   IF        YESNO         = 'Y'
+     C                   DELETE    RXLNMAST
+     C                   EVAL      MSGWIN2       = 'Deleted Successed'
+     C                   WRITE     WINDLT
+     C                   EXFMT     WINDLT
+     C                   EVAL      PANEL         = 'INQ'
+     C                   EVAL      WRESETS       = 'Y'
+    Š *
+     C                   ELSE
+     C                   EVAL      MSGWIN2       = 'Cancel Deleted'
+     C                   WRITE     WINDLT
+     C                   EXFMT     WINDLT
+     C                   ENDIF
+    Š *
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRMOVEVAL Move Value file XLNMAST to Display file               Š*
+    Š *************************************************************************
+     C     SRMOVEVAL     BEGSR
+    Š * Move Value from file to subfile
+     C                   EVAL      CACCTNO       = ACCTNO
+     C                   EVAL      CACTYPE       = ACTYPE
+     C                   EVAL      CFSNAME       = FSNAME
+     C                   EVAL      CCIFNO        = CIFNO
+     C                   EVAL      CMCLNID       = MCLNID
+     C                   EVAL      CTYPE         = TYPE
+     C                   EVAL      CCURTYP       = CURTYP
+     C                   EVAL      CSTATUS       = STATUS
+     C                   EVAL      CCBAL         = CBAL
+     C                   EVAL      CORGDT8       = ORGDT8
+     C                   EVAL      CSTSDT8       = STSDT8
+     C                   EVAL      CMNLUID       = MNLUID
+     C                   EVAL      CMNLWID       = MNLWID
+     C                   EVAL      CMNLDT8       = MNLDT8
+     C                   EVAL      CMNLTIM       = MNLTIM
+     C                   EVAL      CMNCUID       = MNCUID
+     C                   EVAL      CMNCWID       = MNCWID
+     C                   EVAL      CMNCDT8       = MNCDT8
+     C                   EVAL      CMNCTIM       = MNCTIM
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRVALIDADD Validate value ADD                                   Š*
+    Š *************************************************************************
+     C     SRVALIDADD    BEGSR
+    Š *
+     C                   EVAL      WERR          = 'Y'
+    Š *
+     C     AACCTNO       IFEQ      *ZEROS
+     C                   EVAL      VALIDACC      = *ON
+     C                   EVAL      MSGERRADD     = 'Account Number +
+     C                                             Cannot be Zeros'
+     C                   LEAVESR
+     C                   ENDIF
+    Š *
+     C     AACTYPE       IFEQ      *BLANKS
+     C                   EVAL      VALIDACT      = *ON
+     C                   EVAL      MSGERRADD     = 'Account Type +
+     C                                              Cannot be Blank'
+     C                   LEAVESR
+     C                   ENDIF
+    Š *
+     C     ACIFNO        IFEQ      *ZEROS
+     C                   EVAL      VALIDCIF      = *ON
+     C                   EVAL      MSGERRADD     = 'Customer Number +
+     C                                             Cannot be Zeros'
+     C                   LEAVESR
+     C                   ENDIF
+    Š *
+     C                   EVAL      WERR          = 'N'
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRVALIDSCH Validation Value Sreach                              Š*
+    Š *************************************************************************
+     C     SRVALIDSCH    BEGSR
+    Š *
+     C                   IF        ACSRCH        <> *ZEROS
+     C     ACSRCH        CHAIN     XLNMAST
+     C                   IF        %FOUND(XLNMAST)
+     C                   ELSE
+     C                   EVAL      VALIDSCH      = *ON
+     C                   EVAL      MSGERR        = 'Account Number not ' +
+     C                                             'Found'
+     C                   ENDIF
+    Š *
+     C                   ELSE
+     C                   EVAL      VALIDSCH      = *ON
+     C                   EVAL      MSGERR        = 'Account Number Cannot ' +
+     C                                             'Be Blank'
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCHKOTP                                                        Š*
+    Š *************************************************************************
+     C     SRCHKOTP      BEGSR
+    Š * CHECK OPTION
+    Š * Check selete option
+     C                   IF        WSAVRRN       > *ZEROS
+     C                   EXSR      SPRCSFOPT
+     C                   ENDIF
+    Š * Process search reqn
+     C                   IF        ACSRCH        <> *ZEROS
+     C                   EXSR      SPRCSRC
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SPRCSFOPT                                                       Š*
+    Š *************************************************************************
+     C     SPRCSFOPT     BEGSR
+    Š * Check selete option
+     C                   READC     SDATA
+     C                   DOW       PANEL         <> *BLANK
+     C                   SELECT
+    Š * Change
+     C                   WHEN      OPT           = '2'
+     C                   EVAL      PANEL         = 'CHG'
+     C                   EVAL      WRESETS       = 'N'
+     C                   EXSR      SRDSCHG
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+    Š * Delete
+     C                   WHEN      OPT           = '4'
+     C                   EVAL      PANEL         = 'DLT'
+     C                   EVAL      WRESETS       = 'Y'
+     C                   EXSR      SRDSDLT
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+    Š * Display
+     C                   WHEN      OPT           = '5'
+     C                   EVAL      PANEL         = 'DSP'
+     C                   EVAL      WRESETS       = 'N'
+     C                   EXSR      SRDSDSP
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+    Š *
+     C                   OTHER
+     C                   EVAL      OPT           = *BLANK
+     C                   EVAL      MSGERR        = 'Not Have Option on ' +
+     C                                             'you select'
+    Š *
+     C                   ENDSL
+    Š *
+     C                   IF        OPT           = *BLANK
+     C                   LEAVE
+     C                   ENDIF
+    Š *
+     C                   READC     SDATA
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SREXT                                                           Š*
+    Š *************************************************************************
+     C     SREXT         BEGSR
+    Š * EXIT
+     C                   EVAL      PANEL         = *BLANK
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRREFESH                                                        Š*
+    Š *************************************************************************
+     C     SRREFESH      BEGSR
+    Š * REFESH
+     C                   CLEAR                   ACSRCH
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      MSGERR        = *BLANK
+     C                   EVAL      MSGERRADD     = *BLANK
+     C                   EVAL      OPT           = *BLANK
+     C                   EVAL      VALIDSCH      = *OFF
+     C                   EVAL      VALIDACC      = *OFF
+     C                   EVAL      VALIDACT      = *OFF
+     C                   EVAL      VALIDCIF      = *OFF
+     C                   EVAL      VALIDSTS      = *OFF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRPERVIOUS                                                      Š*
+    Š *************************************************************************
+     C     SRPERVIOUS    BEGSR
+    Š * PERVIOUS
+     C                   EVAL      PANEL         = 'INQ'
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRMOVBUFF                                                       Š*
+    Š *************************************************************************
+     C     SRMOVBUFF     BEGSR
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRGETUSER Retrieve current user profile information.            Š*
+    Š *************************************************************************
+     C     SRGETUSER     BEGSR
+    Š *
+     C                   CALL      'QUSRJOBI'
+     C                   PARM                    THEDATA
+     C                   PARM                    RCVVARLN
+     C                   PARM                    FORMAT
+     C                   PARM                    JOBQ
+     C                   PARM                    JOBID
+     C                   PARM                    ErrorCode
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRINZDSP                                                        Š*
+    Š *************************************************************************
+     C     SRINZDSP      BEGSR
+    Š *
+     C                   EVAL      RRN           = 0
+     C                   EVAL      RCDNBR        = 0
+     C                   EVAL      MSGERR        = *BLANK
+     C                   EVAL      MSGERRADD     = *BLANK
+     C                   EVAL      OPT           = *BLANK
+     C                   EVAL      VALIDSCH      = *OFF
+     C                   EVAL      VALIDACC      = *OFF
+     C                   EVAL      VALIDACT      = *OFF
+     C                   EVAL      VALIDCIF      = *OFF
+     C                   EVAL      VALIDSTS      = *OFF
+     C                   CLEAR                   ACSRCH
+    Š * Initial Panel
+     C                   EVAL      PANEL         = 'INQ'
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+     C/COPY QSRCREFRLE,MBQRLS
+     C/COPY QSRCREFRLE,LNQTXHC
+     C/COPY QSRCREFRLE,MBQMNTLOG
+

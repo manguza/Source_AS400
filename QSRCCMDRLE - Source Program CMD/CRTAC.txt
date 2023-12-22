@@ -1,0 +1,33 @@
+             CMD        PROMPT('Auto Create Account On XLNMAST')
+    /*˜Define Parameterˆ*/
+             PARM       KWD(RUNN) TYPE(*DEC) LEN(2 0) DFT(0) RSTD(*NO) +
+                          PROMPT('Running Create Account')
+
+             PARM       KWD(BKN) TYPE(*DEC) LEN(2 0) RSTD(*NO) +
+                          DFT(69) CHOICE(69) PROMPT('Bank Number')
+
+             PARM       KWD(BRN) TYPE(*DEC) LEN(5 0) RSTD(*NO) +
+                          CHOICE('1, 2, 3, 4, 5, 6, 7, 8, ...') +
+                          PROMPT('Branch Number')
+
+             PARM       KWD(RBRN) TYPE(*DEC) LEN(5 0) RSTD(*NO) +
+                          CHOICE('1, 2, 3, 4, 5, 6, 7, 8, ...') +
+                          PROMPT('Reporting Branch')
+
+             PARM       KWD(FSNAME) TYPE(*CHAR) LEN(20) RSTD(*NO) +
+                          PROMPT('Formatted short name')
+
+             PARM       KWD(MCLNID) TYPE(*CHAR) LEN(1) RSTD(*YES) +
+                          VALUES(' ' 'M' 'T') PROMPT('Multi CCY +
+                          Loan Code')
+
+             PARM       KWD(TYPE) TYPE(*CHAR) LEN(10) RSTD(*NO) +
+                          PROMPT('Loan Type')
+
+             PARM       KWD(CURTYP) TYPE(*CHAR) LEN(4) RSTD(*YES) +
+                          VALUES('THB' 'USD' 'Etc.') +
+                          PROMPT('Currency Type')
+
+             PARM       KWD(CBAL) TYPE(*CHAR) LEN(17) RSTD(*NO) +
+                          DFT(0) PROMPT('Current Balance')
+

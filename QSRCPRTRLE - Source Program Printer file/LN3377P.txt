@@ -1,0 +1,309 @@
+     A*-------------------------------------------------------------------------
+     A*  Printer File : Invoice/Purchase Order Report
+     A*  Created By   : Sartra T.
+     A*  Date         : 30/01/2013
+     A*  Ref No.      : CR#866
+     A*  Distribution : All branches
+     A*  Frequency    : Monthly
+     A*  Report Type  : Batch
+     A*  Report Witdh : 198
+     A*  Country      : Thailand
+     A*-------------------------------------------------------------------------
+     A*  MODIFICATION LOGS:
+     A*  REF.#  NAME     DATE      DESCRIPTION
+     A*  -----  ----  ----------   ---------------------------------------------
+     A*
+     A*-------------------------------------------------------------------------
+     A                                      REF(LNFREF)
+     A          R HEADNG
+     A                                      SKIPB(002)
+     A            RDLINE1      198         1
+     A            RDLINE2      198         1
+     A                                      SPACEB(001)
+     A            RDLINE3      198         1
+     A                                      SPACEB(001)
+     A            RDLINE4      198         1
+     A                                      SPACEB(001)
+     A            RDLINE5      198         1
+     A                                      SPACEB(001)
+     A            RPTTTL       100         1
+     A                                      SPACEB(001)
+     A*-------------------------------------------------------------------------
+     A          R HEADNG1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'SBU       :'
+     A            OSBUCOD   R             +2
+     A                                      REFFLD(SBUCOD)
+     A            OCFCCRD   R             +2REFFLD(CFCCRD CFPARZ2)
+     A                                     1
+     A                                      'Customer  :'
+     A                                      SPACEB(001)
+     A            OCIFNO    R             +2REFFLD(CIFNO)
+     A            OCFNA1    R             +2REFFLD(CFNA1 CFFREF)
+     A                                     1
+     A                                      'Loan Type :'
+     A                                      SPACEB(001)
+     A            OTYPE     R             +2
+     A                                      REFFLD(TYPE)
+     A            OPTYDSC   R             +2
+     A                                      REFFLD(PTYDSC LNPAR2)
+     A*-------------------------------------------------------------------------
+     A          R HEADNGT
+     A                                      SPACEB(001)
+     A                                    74
+     A                                      '<------------------------'
+     A                                    +2
+     A                                      'PN/BE Details'
+     A                                    +2
+     A                                      '------------------------>'
+     A                                    +2
+     A                                      '<----------'
+     A                                    +2
+     A                                      'Invoice/Purchase Order Details'
+     A                                    +2
+     A                                      '--------->'
+     A*-
+     A                                     1
+     A                                      'Account Account No.'
+     A                                      SPACEB(001)
+     A                                    +9
+     A                                      'Original Date'
+     A                                   +10
+     A                                      'Loan Amount'
+     A                                   +11
+     A                                      'PN/BE Number'
+     A                                   +11
+     A                                      'Issued By'
+     A                                   +25
+     A                                      'Issue Date'
+     A                                    +2
+     A                                      'Invoice/PO Number'
+     A                                   +23
+     A                                      'Invoice/PO Date'
+     A*-
+     A                                     1
+     A                                      'Branch'
+     A                                      SPACEB(001)
+     A                                    +2
+     A                                      'Status'
+     A                                   +14
+     A                                      'Maturity Date'
+     A                                    +2
+     A                                      'Outstanding Balance'
+     A                                   +19
+     A                                      'PN/BE Amount'
+     A                                    +3
+     A                                      'AVAL/Acceptance By'
+     A                                   +16
+     A                                      'Value Date'
+     A                                    +2
+     A                                      'Issue By'
+     A                                   +30
+     A                                      'Invoice/PO Amount'
+     A*-------------------------------------------------------------------------
+     A          R SPACELN1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      '-----------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      -----------------------'
+     A*-------------------------------------------------------------------------
+     A          R HEADNG2
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Currency :'
+     A            OCURTYP   R             +2REFFLD(CURTYP)
+     A            OJFXLSC   R             +2REFFLD(JFXLSC SSFXRP)
+     A*-------------------------------------------------------------------------
+     A          R DETAIL1
+     A                                      SPACEB(001)
+     A            OBRN      R              1REFFLD(BRN)
+     A            OACCTNO   R             +2REFFLD(ACCTNO)
+     A            OORGDT8   R             +2REFFLD(ORGDT8)
+     A                                      EDTCDE(Y)
+     A            OORGAMT   R             +2REFFLD(ORGAMT)
+     A                                      EDTCDE(J)
+     A            OLIPICN   R            +10REFFLD(LIPICN)
+     A            OLIISBY   R             +3REFFLD(LIISBY)
+     A            OLIISBYD      20        +2
+     A            OLIISS8   R             +2REFFLD(LIISS8)
+     A                                      EDTCDE(Y)
+     A            OLIPNUM   R             +2REFFLD(LIPNUM)
+     A            OLIPDT8   R            +25REFFLD(LIPDT8)
+     A                                      EDTCDE(Y)
+     A*-
+     A            OSTATUS   R              8REFFLD(STATUS)
+     A                                      SPACEB(001)
+     A                                    +1
+     A                                      '-'
+     A            OSTATUSD      10        +1
+     A            OMATDT8   R             +7REFFLD(MATDT8)
+     A                                      EDTCDE(Y)
+     A            OOSBAL    R             +2REFFLD(OSBAL)
+     A                                      EDTCDE(J)
+     A            OLIAMT    R             +8REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            OLIAVBY   R             +2REFFLD(LIAVBY)
+     A            OLIAVBYD      20        +2
+     A            OLIIVC8   R             +2REFFLD(LIIVC8)
+     A                                      EDTCDE(Y)
+     A            OLIPISS   R             +2REFFLD(LIPISS)
+     A            OLIPISSD      20        +2
+     A            OLIPAMT   R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R DETAIL2
+     A                                      SPACEB(001)
+     A            OLIPNUM   R            143REFFLD(LIPNUM)
+     A            OLIPDT8   R            +25REFFLD(LIPDT8)
+     A                                      EDTCDE(Y)
+     A*-
+     A            OLIPISS   R            143REFFLD(LIPISS)
+     A                                      SPACEB(001)
+     A            OLIPISSD      20        +2
+     A            OLIPAMT   R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL1
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Account Total (Original Currency) -
+     A                                                  :'
+     A            T12REC         7S      158
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T1LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL2
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Currency Total(Original Currency) -
+     A                                                  :'
+     A            T21REC         7S       +4
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T2LIAMT   R             +3REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T22REC         7S      +63
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T2LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL3
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Currency Total(Local Currency - Ex-
+     A                                      change Rate :'
+     A            OEXRATE   R        O    +1
+     A                                      REFFLD(JFXMRT SSFREF)
+     A                                      EDTCDE(1)
+     A                                    +0
+     A                                      ') :'
+     A            T3LIAMT   R       2     +1REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T3LIPAMT  R            +81REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL4
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Loan Type Total (Local Currency)  -
+     A                                                  :'
+     A            T41REC         7S       +4
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T4LIAMT   R             +3REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T42REC         7S      +63
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T4LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL5
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Customer Total (Local Currency)   -
+     A                                                  :'
+     A            T51REC         7S       +4
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T5LIAMT   R             +3REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T52REC         7S      +63
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T5LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL6
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'SBU Total (Local Currency)        -
+     A                                                  :'
+     A            T61REC         7S       +4
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T6LIAMT   R             +3REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T62REC         7S      +63
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T6LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R SPACELN2
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      '-----------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      ------------------------------------
+     A                                      -----------------------'
+     A*-------------------------------------------------------------------------
+     A          R OTOTAL7
+     A                                      SPACEB(001)
+     A                                     1
+     A                                      'Reporting Branch Total (Local Curr-
+     A                                      ency)       :'
+     A            T71REC         7S       +4
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T7LIAMT   R             +3REFFLD(LIAMT)
+     A                                      EDTCDE(J)
+     A            T72REC         7S      +63
+     A                                      EDTCDE(1)
+     A                                    +1
+     A                                      'records'
+     A            T7LIPAMT  R             +1REFFLD(LIPAMT)
+     A                                      EDTCDE(J)
+     A*-------------------------------------------------------------------------
+     A          R SPACELN3
+     A                                      SPACEB(001)
+     A*-------------------------------------------------------------------------
+     A          R ENDRPT
+     A                                      SPACEB(001)
+     A            RDEORPT      198         1
+     A*-------------------------------------------------------------------------
+     A          R NOREC
+     A                                      SPACEB(001)
+     A            RDNOREC      198         1
+     A*-------------------------------------------------------------------------
+

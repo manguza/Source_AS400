@@ -1,0 +1,56 @@
+     **/COPY QRPGLEREF,SSQRTVPD
+      ****************************************************************
+      *                                                              *
+      *  FILE NAME...: SSQRTVPD          REF.NO:                     *
+      *                                                              *
+      *  DESCRIPTION.: D-SPEC FOR SSRTVP CALLER                      *
+      *                                                              *
+      *  DATE CREATED: 17/01/2008                                    *
+      *                                                              *
+      *  AUTHOR......: LIMEL                                         *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      * SSQRTVPD IS A PART OF CIF/38 BANK ACCOUNTING SYSTEM          *
+      *    COPYRIGHT 1999 BY SILVERLAKE SYSTEM SDN BHD               *
+      *    KUALA LUMPUR, MALAYSIA.                                   *
+      *                                                              *
+      ****************************************************************
+      * PASS IN PARAMETER:                                           *
+      *   P8FILE   - NAME OF SS PARAMETER FILE TO RETRIEVE           *
+      *   P8KEY    - KEY VALUE OF THE FILE                           *
+      *   P8KEYNUM - NO OF KEY USED TO CHAIN FILE                    *
+      *   P8OPTION - POGRAM OPTION (E.G. '*CLOSE' TO CLOSE FILE)     *
+      *   P8ERROR  - ERROR INDICATOR DEFAULT BLANK.                  *
+      *                                                              *
+      * PASS OUT PARAMETER:                                          *
+      *   P8DATA   - DATA RETRIEVED FROM SS PARM FILE                *
+      *   P8ERROR  - ERROR SET ON '1' IF RECORD NOT FOUND            *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      *  MODIFICATION LOGS:                                          *
+      *                                                              *
+      *  INIT  REF.#     DATE    DESCRIPTION                         *
+      *  ----  -----  --------  ------------------------------------ *
+      *  JAYS  SS01   27/07/09  Add new file of SSFXRP for Currecy   *
+      *                         code                                 *
+      *  JAYS  SS02   18/08/09  Add new key to SSFXRT                *
+      ****************************************************************
+     **
+     ** CALLER PARAMETER LIST      (PLSSRTVP      PLIST)
+     D   P8FILE        S             10
+     D   P8KEY         S            100
+     D   P8KEYNUM      S              1  0
+     D   P8DATA        S           1000
+     D   P8OPTION      S              8
+     D   P8ERROR       S              1
+     **
+     ** CALLED PROGRAM ENTRY LIST  (*ENTRY        PLIST)
+     D   E8FILE        S             10
+     D   E8KEY         S            100
+     D   E8KEYNUM      S              1  0
+     D   E8DATA        S           1000
+     D   E8OPTION      S              8
+     D   E8ERROR       S              1
+

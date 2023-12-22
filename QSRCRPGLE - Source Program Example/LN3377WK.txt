@@ -1,0 +1,60 @@
+     A*-------------------------------------------------------------------------
+     A*  File         : LN3377WK
+     A*  Created By   : Sartra T.
+     A*  Ref No.      : CR#866
+     A*  Date         : 18/02/2013
+     A*-------------------------------------------------------------------------
+     A*  MODIFICATION LOGS:
+     A*  REF.#  NAME     DATE      DESCRIPTION
+     A*  -----  ----  ----------   ---------------------------------------------
+     A*
+     A*-------------------------------------------------------------------------
+     A                                      REF(LNFREF)
+     A          R RLN3377WK
+     A            BKN       R
+     A            RBRN      R
+     A            SBUCOD    R
+     A            CFCCRD    R               REFFLD(CFCCRD CFPARZ2)
+     A            CIFNO     R
+     A            CFNA1     R               REFFLD(CFNA1  CFFREF)
+     A            TYPE      R
+     A            PTYDSC    R               REFFLD(PTYDSC LNPAR2)
+     A            CURTYP    R
+     A            JFXLSC    R               REFFLD(JFXLSC SSFXRP)
+     A            EXRATE    R               REFFLD(JFXMRT SSFXRT)
+     A            BRN       R
+     A            ACCTNO    R
+     A            STATUS    R
+     A            STATUSD   R               REFFLD(STATUSD LNRPTO)
+     A            ORGDT8    R
+     A            MATDT8    R
+     A            ORGAMT    R
+     A            OSBAL     R
+     A            LIPICN    R
+     A            LIAMT     R
+     A            LIISBY    R
+     A            LLIDNM1   R               REFFLD(LLIDNM LLTPID)
+     A            LIACBY    R
+     A            LLIDNM2   R               REFFLD(LLIDNM LLTPID)
+     A            LIAVBY    R
+     A            LLIDNM3   R               REFFLD(LLIDNM LLTPID)
+     A            LIISS8    R
+     A            LIIVC8    R
+     A            LIPNUM    R
+     A            LIPISS    R
+     A            LLIDNM4   R               REFFLD(LLIDNM LLTPID)
+     A            LIPDT8    R
+     A            LIPAMT    R
+     A            MCLNID    R
+     A            PRDGRP    R               REFFLD(PRDGRP LNPAR2)
+     A            LKTPLT    R               REFFLD(LKTPLT LLPARK)
+     A*
+     A          K BKN
+     A          K RBRN
+     A          K SBUCOD
+     A          K CIFNO
+     A          K TYPE
+     A          K CURTYP
+     A          K ACCTNO
+     A          K LIPNUM
+

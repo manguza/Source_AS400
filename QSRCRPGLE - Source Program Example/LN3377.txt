@@ -1,0 +1,499 @@
+     F*-------------------------------------------------------------------------
+     F* Program Name..: LN3377
+     F* Description...: Invoice/Purchase Order Report
+     F* Ref no........: CR#866
+     F* Date Created..: 18/02/2013
+     F* Author........: Sartra T.
+     F*--------------------------------------------------------------- ---------
+     F* LN3377   Is part of Silverlake Integrated Banking System
+     F* Copyright 1996 by Silverlake System Sdn Bhd Kuala Lumpur,
+     F* Malaysia.
+     F*-------------------------------------------------------------------------
+     F*  MODIFICATION LOGS:
+     F*  REF.#  NAME     DATE      DESCRIPTION
+     F*  -----  ----  ----------   ----------------------------------
+     F*
+     F*-------------------------------------------------------------------------
+     FLN3377WK  IF   E           K DISK
+     FLN3377P   O    E             PRINTER INFDS(PRTFDS)
+     D*
+     D*-------------------------------------------------------------------------
+     D*
+     D                 DS
+     D BREAKKEY1               1     99
+     D  X1BKN                  1      2  0
+     D  X1RBRN                 3      7  0
+     D  X1SBUCOD               8     11
+     D  X1CIFNO               12     30  0
+     D  X1TYPE                31     40
+     D  X1CURTYP              41     44
+     D  X1ACCTNO              45     63  0
+     D                 DS
+     D BREAKKEY2               1     99
+     D  X2BKN                  1      2  0
+     D  X2RBRN                 3      7  0
+     D  X2SBUCOD               8     11
+     D  X2CIFNO               12     30  0
+     D  X2TYPE                31     40
+     D  X2CURTYP              41     44
+     D  X2ACCTNO              45     63  0
+     D*
+     D/COPY QSRCREFRLE,RDFORMATD
+     D/COPY QSRCREFRLE,SSQPRTFD
+     C*-------------------------------------------------------------------------
+     C* main logic
+     C*-------------------------------------------------------------------------
+     C     *LOVAL        SETLL     LN3377WK
+     C                   DOU       WKEOFILE      = *ON
+     C*
+     C                   READ      LN3377WK
+     C                   IF        %EOF(LN3377WK)
+     C                   LEAVE
+     C                   ENDIF
+     C*
+     C                   Z-ADD     BKN           X1BKN
+     C                   Z-ADD     RBRN          X1RBRN
+     C                   MOVEL(P)  SBUCOD        X1SBUCOD
+     C                   Z-ADD     CIFNO         X1CIFNO
+     C                   MOVEL(P)  TYPE          X1TYPE
+     C                   MOVEL(P)  CURTYP        X1CURTYP
+     C                   Z-ADD     ACCTNO        X1ACCTNO
+     C*
+     C                   IF        WKFIRSTR      = *OFF
+     C                   MOVEL(P)  *ON           WKFIRSTR
+     C                   EXSR      PRTHDG
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   ENDIF
+     C*
+     C                   IF        BREAKKEY1     <> BREAKKEY2
+     C*
+     C                   SELECT
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRTOTAL3
+     C                   EXSR      SRTOTAL4
+     C                   EXSR      SRTOTAL5
+     C                   EXSR      SRTOTAL6
+     C                   Z-ADD     0             RDPAGNO
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1SBUCOD      <> X2SBUCOD
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRTOTAL3
+     C                   EXSR      SRTOTAL4
+     C                   EXSR      SRTOTAL5
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1SBUCOD      <> X2SBUCOD    OR
+     C                             X1CIFNO       <> X2CIFNO
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRTOTAL3
+     C                   EXSR      SRTOTAL4
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1SBUCOD      <> X2SBUCOD    OR
+     C                             X1CIFNO       <> X2CIFNO     OR
+     C                             X1TYPE        <> X2TYPE
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRTOTAL3
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1SBUCOD      <> X2SBUCOD    OR
+     C                             X1CIFNO       <> X2CIFNO     OR
+     C                             X1TYPE        <> X2TYPE      OR
+     C                             X1CURTYP      <> X2CURTYP
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRSPACELN
+     C                   EXSR      SRSTRLVL3
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1SBUCOD      <> X2SBUCOD    OR
+     C                             X1CIFNO       <> X2CIFNO     OR
+     C                             X1TYPE        <> X2TYPE      OR
+     C                             X1CURTYP      <> X2CURTYP    OR
+     C                             X1ACCTNO      <> X2ACCTNO
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRSPACELN
+     C*
+     C                   ENDSL
+     C*
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   MOVEL(P)  *OFF          WKDETAIL
+     C                   ENDIF
+     C*
+     C                   EXSR      SRDETAIL
+     C*
+     C                   ENDDO
+     C*end of report
+     C                   IF        WKFIRSTR      = *OFF
+     C                   EXSR      SRNOREC
+     C                   ELSE
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRTOTAL2
+     C                   EXSR      SRTOTAL3
+     C                   EXSR      SRTOTAL4
+     C                   EXSR      SRTOTAL5
+     C                   EXSR      SRTOTAL6
+     C                   EXSR      SRENDLR
+     C                   ENDIF
+     C*
+     C                   MOVE      *ON           *INLR
+     C*-------------------------------------------------------------------------
+     C     SRDETAIL      BEGSR
+     C*Write Detail
+     C*Branch Number
+     C                   Z-ADD     BRN           OBRN
+     C*Account Number
+     C                   Z-ADD     ACCTNO        OACCTNO
+     C*Status
+     C                   Z-ADD     STATUS        OSTATUS
+     C*STATUS DESCRIPTION
+     C                   MOVEL(P)  STATUSD       OSTATUSD
+     C*Original Loan Date
+     C                   Z-ADD     ORGDT8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OORGDT8
+     C*Maturity Date
+     C                   Z-ADD     MATDT8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OMATDT8
+     C*Original Balance
+     C                   Z-ADD     ORGAMT        OORGAMT
+     C*Total Outstanding
+     C                   Z-ADD     OSBAL         OOSBAL
+     C*BE /Cheque/PN Number
+     C                   MOVEL(P)  LIPICN        OLIPICN
+     C*BE /Cheque/PN Amount
+     C                   Z-ADD     LIAMT         OLIAMT
+     C*Issued By
+     C                   MOVEL(P)  LIISBY        OLIISBY
+     C*3rd Party Name
+     C                   MOVEL(P)  LLIDNM1       OLIISBYD
+     C*AVAL/Acceptance By
+     C                   IF        LIACBY        <> ' '
+     C                   MOVEL(P)  LIACBY        OLIAVBY
+     C                   MOVEL(P)  LLIDNM2       OLIAVBYD
+     C                   ELSE
+     C                   MOVEL(P)  LIAVBY        OLIAVBY
+     C                   MOVEL(P)  LLIDNM3       OLIAVBYD
+     C                   ENDIF
+     C*Issue Date
+     C                   Z-ADD     LIISS8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OLIISS8
+     C*Value Date
+     C                   Z-ADD     LIIVC8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OLIIVC8
+     C*INVOICE/PO NUMBER
+     C                   MOVEL(P)  LIPNUM        OLIPNUM
+     C*ISSUER (3RD PARTY) ID
+     C                   MOVEL(P)  LIPISS        OLIPISS
+     C*3rd Party Name
+     C                   MOVEL(P)  LLIDNM4       OLIPISSD
+     C*INVOICE/PO DATE
+     C                   Z-ADD     LIPDT8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OLIPDT8
+     C*INVOICE/PO AMOUNT
+     C                   Z-ADD     LIPAMT        OLIPAMT
+     C*
+     C                   Z-ADD     2             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   IF        WKDETAIL      = *OFF
+     C                   WRITE     DETAIL1
+     C                   MOVEL(P)  *ON           WKDETAIL
+     C                   ELSE
+     C                   WRITE     DETAIL2
+     C                   ENDIF
+     C*
+     C                   ADD       1             T12REC
+     C                   ADD       LIPAMT        T1LIPAMT
+     C*
+     C                   Z-ADD     LIAMT         SAVLIAMT
+     C                   Z-ADD     EXRATE        SAVEXRATE
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL1      BEGSR
+     C*Total by account
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL1
+     C*
+     C                   ADD       1             T21REC
+     C                   ADD       SAVLIAMT      T2LIAMT
+     C                   ADD       T12REC        T22REC
+     C                   ADD       T1LIPAMT      T2LIPAMT
+     C                   CLEAR                   T12REC
+     C                   CLEAR                   T1LIPAMT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL2      BEGSR
+     C*Total by currency
+     C     T2LIAMT       MULT      SAVEXRATE     T3LIAMT
+     C     T2LIPAMT      MULT      SAVEXRATE     T3LIPAMT
+     C                   Z-ADD     SAVEXRATE     OEXRATE
+     C*
+     C                   Z-ADD     2             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL2
+     C                   WRITE     OTOTAL3
+     C*
+     C                   ADD       T21REC        T41REC
+     C                   ADD       T3LIAMT       T4LIAMT
+     C                   ADD       T22REC        T42REC
+     C                   ADD       T3LIPAMT      T4LIPAMT
+     C                   CLEAR                   T21REC
+     C                   CLEAR                   T2LIAMT
+     C                   CLEAR                   T22REC
+     C                   CLEAR                   T2LIPAMT
+     C                   CLEAR                   T3LIAMT
+     C                   CLEAR                   T3LIPAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL3      BEGSR
+     C*Total by loan type
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL4
+     C*
+     C                   ADD       T41REC        T51REC
+     C                   ADD       T4LIAMT       T5LIAMT
+     C                   ADD       T42REC        T52REC
+     C                   ADD       T4LIPAMT      T5LIPAMT
+     C                   CLEAR                   T41REC
+     C                   CLEAR                   T4LIAMT
+     C                   CLEAR                   T42REC
+     C                   CLEAR                   T4LIPAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL4      BEGSR
+     C*Total by customer
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL5
+     C*
+     C                   ADD       T51REC        T61REC
+     C                   ADD       T5LIAMT       T6LIAMT
+     C                   ADD       T52REC        T62REC
+     C                   ADD       T5LIPAMT      T6LIPAMT
+     C                   CLEAR                   T51REC
+     C                   CLEAR                   T5LIAMT
+     C                   CLEAR                   T52REC
+     C                   CLEAR                   T5LIPAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL5      BEGSR
+     C*Total by sbu
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL6
+     C*
+     C                   ADD       T61REC        T71REC
+     C                   ADD       T6LIAMT       T7LIAMT
+     C                   ADD       T62REC        T72REC
+     C                   ADD       T6LIPAMT      T7LIPAMT
+     C                   CLEAR                   T61REC
+     C                   CLEAR                   T6LIAMT
+     C                   CLEAR                   T62REC
+     C                   CLEAR                   T6LIPAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL6      BEGSR
+     C*Total by branch
+     C                   Z-ADD     2             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN2
+     C                   WRITE     OTOTAL7
+     C*
+     C                   CLEAR                   T71REC
+     C                   CLEAR                   T7LIAMT
+     C                   CLEAR                   T72REC
+     C                   CLEAR                   T7LIPAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSPACELN     BEGSR
+     C*space line
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN3
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     PRTHDG        BEGSR
+     C*print new header
+     C                   ADD       1             RDPAGNO
+     C                   Z-ADD     X1BKN         RDBNK
+     C                   Z-ADD     X1RBRN        RDBRN
+     C                   EXSR      SrRptfmt
+     C                   EXSR      SRSTRLVL1
+     C                   EXSR      SRSTRLVL2
+     C                   EXSR      SRSTRLVL3
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSTRLVL1     BEGSR
+     C*
+     C                   WRITE     HEADNG
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSTRLVL2     BEGSR
+     C*
+     C                   MOVEL(P)  SBUCOD        OSBUCOD
+     C                   MOVEL(P)  CFCCRD        OCFCCRD
+     C                   Z-ADD     CIFNO         OCIFNO
+     C                   MOVEL(P)  CFNA1         OCFNA1
+     C                   MOVEL(P)  TYPE          OTYPE
+     C                   MOVEL(P)  PTYDSC        OPTYDSC
+     C*
+     C                   Z-ADD     3             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNG1
+     C                   Z-ADD     3             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNGT
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN1
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSTRLVL3     BEGSR
+     C*
+     C                   MOVEL(P)  CURTYP        OCURTYP
+     C                   MOVEL(P)  JFXLSC        OJFXLSC
+     C*
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNG2
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - end report
+     C*-------------------------------------------------------------------------
+     C     SRENDLR       BEGSR
+     C*
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     ENDRPT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - no record
+     C*-------------------------------------------------------------------------
+     C     SRNOREC       BEGSR
+     C*
+     C                   Z-ADD     0             RDBNK
+     C                   Z-ADD     0             RDBRN
+     C                   Z-ADD     1             RDPAGNO
+     C                   EXSR      SRRPTFMT
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG1
+     C                   WRITE     HEADNGT
+     C                   WRITE     SPACELN1
+     C                   WRITE     NOREC
+     C                   WRITE     ENDRPT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - overflow
+     C*-------------------------------------------------------------------------
+     C     SROVRFLW      BEGSR
+     C*
+     C                   IF        (P_OVERFLOW - P_CUR_LINE) <= P_LINENO
+     C                   ADD       1             RDPAGNO
+     C                   EXSR      SrRptfmt
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG1
+     C                   WRITE     HEADNGT
+     C                   WRITE     SPACELN1
+     C                   ENDIF
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* Report Format
+     C*-------------------------------------------------------------------------
+     C     SrRptfmt      BEGSR
+     C
+     C                   callp     rdreport( rdline198        :
+     C                                       %size(rdline198) :
+     C                                       'RDJOB198'       :
+     C                                       rdinputds        :
+     C                                       RDOUTPUTDS
+     C                                     )
+     C                   Eval      Rdline1 = line198_1
+     C                   Eval      Rdline2 = line198_2
+     C                   Eval      Rdline3 = line198_3
+     C                   Eval      Rdline4 = line198_4
+     C                   Eval      Rdline5 = line198_5
+     C                   Eval      Rdnorec = line198_6
+     C                   Eval      Rdeorpt = line198_7
+     C
+     C                   ENDSR
+     C*
+     C*-------------------------------------------------------------------------
+     C* Initialisation
+     C*-------------------------------------------------------------------------
+     C     *INZSR        BEGSR
+     C*
+     C********************
+     C* GET REPORT TITLE *
+     C********************
+     C                   MOVEL     'LN3377P'     Rdrptnam
+     C*
+     C                   MOVEL(P)  *OFF          WKEOFILE          1
+     C                   MOVEL(P)  *OFF          WKFIRSTR          1
+     C                   MOVEL(P)  *OFF          WKDETAIL          1
+     C*
+     C     *LIKE         DEFINE    LIAMT         SAVLIAMT
+     C     *LIKE         DEFINE    EXRATE        SAVEXRATE
+     C*
+     C                   CLEAR                   T12REC
+     C                   CLEAR                   T1LIPAMT
+     C                   CLEAR                   T21REC
+     C                   CLEAR                   T2LIAMT
+     C                   CLEAR                   T22REC
+     C                   CLEAR                   T2LIPAMT
+     C                   CLEAR                   T3LIAMT
+     C                   CLEAR                   T3LIPAMT
+     C                   CLEAR                   T41REC
+     C                   CLEAR                   T4LIAMT
+     C                   CLEAR                   T42REC
+     C                   CLEAR                   T4LIPAMT
+     C                   CLEAR                   T51REC
+     C                   CLEAR                   T5LIAMT
+     C                   CLEAR                   T52REC
+     C                   CLEAR                   T5LIPAMT
+     C                   CLEAR                   T61REC
+     C                   CLEAR                   T6LIAMT
+     C                   CLEAR                   T62REC
+     C                   CLEAR                   T6LIPAMT
+     C                   CLEAR                   T71REC
+     C                   CLEAR                   T7LIAMT
+     C                   CLEAR                   T72REC
+     C                   CLEAR                   T7LIPAMT
+     C*
+     C     PLSSDATV      PLIST
+     C                   PARM                    PIDAT8            8 0
+     C                   PARM                    PODAT8            8 0
+     C                   PARM                    PIERROR           1
+     C*
+     C                   MOVEL(P)  '*CLOSE'      rdreq
+     C                   EXSR      SrRptfmt
+     C                   MOVEL(P)  *blank        rdreq
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+

@@ -1,0 +1,98 @@
+     H/COPY QSRCREFRLE,COPYRIGHTH
+     H DEBUG(*YES)
+    Š *************************************************************************
+     FXLNPAR1   UF   E             DISK    INFDS(XLNFDS)
+     FXLNMAST   UF   E           K DISK    INFDS(XMTFDS)
+    Š *
+     D/COPY QSRCREFRLE,CPBGETUSRD
+    Š *šVariable declaration
+     D RUNN            S              2  0 INZ(0)
+
+    Š *šData Sturcture
+     D XLNFDS          DS
+     D  INFILE                83     92
+     D  LENXLNPAR1           125    126B 0
+     D  DB_RRN               397    400I 0
+
+     D XMTFDS          DS
+     D  INFILE2               83     92
+     D  LENXLNMAST           125    126B 0
+     D  DB_RRN2              397    400I 0
+
+    Š *šKey List
+
+    Š *šParm Entry List
+     C     *ENTRY        PLIST
+     C                   PARM                    inRUNN            2 0
+    Š *
+    Š *************************************************************************
+    Š *˜Main Program                                                         Š*
+    Š *************************************************************************
+    š * Get User Name
+     C                   EXSR      SRGETUSER
+    š * Get Update data for running
+     C                   EXSR      SRUPDDATA
+    Š *
+     C                   MOVE      *ON           *INLR
+    Š *************************************************************************
+    Š *˜SR - SRUPDDATA                                                       Š*
+    Š *************************************************************************
+     C     SRUPDDATA     BEGSR
+    Š *
+     C                   MOVEL(P)  *OFF          WKEOLOOP          1
+    Š *
+     C                   READ      XLNPAR1
+     C                   DOW       RUNN          <= inRUNN
+    Š *
+     C     *START        SETLL     XLNMAST
+     C                   DOU       WKEOLOOP      = *ON
+     C                   READ      XLNMAST
+     C                   IF        %EOF(XLNMAST)
+     C                   LEAVE
+     C                   ENDIF
+    Š *
+     C                   IF        STATUS        = 1
+     C                   ITER
+     C                   ENDIF
+    š * Move Value to Field file XLNMAST
+     C                   Z-ADD     1             STATUS
+    ˜ * Data Maintenanace Log
+    š * Last Maintenance log
+     C                   MOVEL(P)  QUSUN07       MNLUID
+     C                   MOVEL(P)  'PGMRUNB'     MNLWID
+     C                   EVAL      MNLDT8        = %DEC(%DATE())
+     C                   TIME                    MNLTIM
+    š * Create Maintenance log
+     C                   MOVEL(P)  *BLANK        MNCUID
+     C                   MOVEL(P)  *BLANK        MNCWID
+     C                   Z-ADD     *ZERO         MNCDT8
+     C                   CLEAR                   MNCTIM
+    š * Update Data to file XLNMAST
+     C                   UPDATE    RXLNMAST
+    Š *
+     C                   ENDDO
+    š * Move Value to Field file XLNPAR1
+     C                   ADD       LP1NUM        LP1LP8
+     C                   ADD       LP1NUM        LP1PD8
+     C                   ADD       LP1NUM        LP1NB8
+     C                   ADD       LP1NUM        LP1TR8
+    Š *
+     C                   UPDATE    RXLNPAR1
+    Š *
+     C                   ADD       1             RUNN
+    Š *
+     C                   READ      XLNPAR1
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - *INZSR                                                          Š*
+    Š *************************************************************************
+     C     *INZSR        BEGSR
+    Š *
+     C                   Z-ADD     1             RUNN
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+     C/COPY QSRCREFRLE,CPBGETUSRC
+

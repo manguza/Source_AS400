@@ -1,0 +1,5 @@
+     A* SORT BY INTEREST BASE AND MODE OF INTEREST
+     A          R RXLNPAR2                  PFILE(XLNPAR2)
+     A          K PIBASE
+     A          K PMDINT
+

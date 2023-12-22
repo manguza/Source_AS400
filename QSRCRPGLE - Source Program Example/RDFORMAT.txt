@@ -1,0 +1,608 @@
+      ****************************************************************
+      *  Program.....: RDFORMAT                                      *
+      *  DESCRIPTION.: Report Format                                 *
+      *  DATE CREATED: 17/07/2011                                    *
+      *  CREATED BY..: azmir/wll                                     *
+      *  PROGRAMMER..:                                               *
+      ****************************************************************
+      *  RDFORMAT is a part of Silverlake System (R)                 *
+      *  (C) Copyright 1993, 2008                                    *
+      *                 By:  Silverlake System Sdn. Bhd.             *
+      *                      Level 2A,KPMG TOWER,                    *
+      *                      First Avenue, Bandar Utama,             *
+      *                      47800 Petaling Jaya,                    *
+      *                      Selangor, Malaysia                      *
+      *                      TEL: +603-77216000                      *
+      ****************************************************************
+      *  MODIFICATION LOGS                                           *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  wll   R101   25/05/11  - add 'Segment'/rdseg at pos=61/69   *
+      *  wll   R102   15/06/11  - skip calling RDRTTL                *
+      *  wll   R103   29/06/11  - re-struc                           *
+      *  wll   R105   12/08/11  - use wrong fld name                 *
+      *  SP    K1001  15/02/18  *INZSR                               *
+      ****************************************************************
+     fSSPAR1    IF   E             DISK    prefix('P.')
+     fSSDATA    IF   E           K DISK    prefix('D.')
+R102 FRDREPTLR  IF   E           K DISK
+
+     d P               ds                  likeRec(rsspar1) Inz
+     d D               ds                  likeRec(rssdata) Inz
+
+     D/copy QSRCREFRLE,RDFORMATD
+
+      *===========================================
+      * def main proc
+      *===========================================
+     d rdformat        pr
+     d  RcvVar                             likeds(rdformatds)
+     d  RcvVarLen                    10i 0 Const
+     d  FmtNam                        8a   Const
+     d  RcvInpt                            likeds(rdinputds)
+R103 D  RCVOUTPUT                          LIKEDS(RDOUTPUTDS)
+
+      *===========================================
+      * def center proc
+      *===========================================
+     d center          pr           198a
+     d  petext                      198a   varying const options(*varsize)
+     d  peSize                       10i 0 value
+
+      *===========================================
+      * def proc
+      *===========================================
+     D rdformat        pi
+     D  RcvVar                             likeds(rdformatds)
+     D  RcvVarLen                    10i 0 Const
+     D  FmtNam                        8a   Const
+     D  RcvInpt                            likeds(rdinputds)
+R103 D  RCVOUTPUT                          LIKEDS(RDOUTPUTDS)
+     **
+     d Bankno          s                   like(rdbnk)
+     d Branchno        s                   like(rdbrn)
+     d wlen            s              4  0
+     d Wsysdate        s             10
+     d wsystime        s              8
+     d wrdprocd8       s             10
+     d wrdpthru8       s             10
+R101 D wrdnxtdat8      S             10
+     **
+     d wbrnchar        s              5
+     d wbnkchar        s              2
+     d CJDBANK         s                   LIKE(wbnkchar )
+     d CJDBR           s                   LIKE(wbrnchar )
+     **
+     ** date format-from
+     d wdtf            ds
+     d  wdtfyy                 1      4  0
+     d  wdtfmm                 5      6  0
+     d  wdtfdd                 7      8  0
+     **
+     ** date format-to
+     d wdtt            ds
+     d  wdttdd                 1      2
+     d  wdttf1                 3      3    inz('/')
+     d  wdttmm                 4      5
+     d  wdttf2                 6      6    inz('/')
+     d  wdttyy                 7     10
+
+R102 D WK              S              1    DIM(100)
+     D DS              S              1    DIM(100)
+     D KW              S              1    DIM(10)
+     D
+     D LC              C                   CONST('abcdefghijklmnopqrstu-
+     D                                     vwxyz')
+     D UC              C                   CONST('ABCDEFGHIJKLMNOPQRSTU-
+     D                                     VWXYZ')
+     **
+     **===========================================
+     ** define
+     **===========================================
+     C     Kyssdata      Klist
+     C                   Kfld                    Bankno
+     C                   Kfld                    Branchno
+     **===========================================
+     ** main
+     **===========================================
+r101 c*R105              IF        rdreq       = '*CLOSE'
+K1001C                   EXSR      SRINZSR
+R105 c                   IF        rcvinpt.rdreq = '*CLOSE'
+r101 c                   exsr      srclose
+r101 c                   endif
+     **
+     **
+R101 C                   EXSR      SRSTD
+      /free
+       //===========================================
+       // Report Format for Correspondence 80/60
+       //===========================================
+       if (FmtNam = 'RDCOR80');
+
+           clear RcvVar;
+
+       //===========================================
+
+       //** line 2
+       //  %subst(line80_2 : 40 : 12)  =  'Branch:' + %editc(rcvinpt.rdbrn:'4');
+           %subst(line80_2 : 40 : 12)  =  'Branch:' + wbrnchar;
+           %subst(line80_2 : 53 : 02)  = wbnkchar;
+
+           %subst(line80_2 :067 : 11)  = 'Page : ' +
+                               %editc(rcvinpt.rdpagno:'4');
+
+       //** line 5
+           line80_5  = RPTTTL;
+
+       //no record found
+           %subst(line80_6:30:21)  = '** No Record Found **';
+
+       //end of report
+           %subst(line80_7:30:19)  = '** End Of Report **';
+
+           RcvVar     = Rdline80;
+       endif;
+
+       //===========================================
+       // Report Format for 80/60
+       //===========================================
+       if (FmtNam = 'RDJOB80');
+
+           clear RcvVar;
+
+       //===========================================
+       //** line 1
+           line80_1  = 'Date Printed : ' +
+                        Wsysdate + ' ' + wsystime;
+
+       //** line 2
+           %subst(line80_2 : 01 : 39)  = rcvinpt.rdbnknam;
+           %subst(line80_2 : 40 : 12)  =  'Branch:' + wbrnchar;
+           %subst(line80_2 : 53 : 02)  = wbnkchar;
+
+           %subst(line80_2 :056 : 10)  = rcvinpt.rdrptnam;
+           %subst(line80_2 :067 : 11)  = 'Page : ' +
+                               %editc(rcvinpt.rdpagno:'4');
+
+       //** line 3
+           %subst(line80_3 : 01 : 07) = 'Branch:';
+           %subst(line80_3 : 08 : 05)  = wbrnchar;
+           %subst(line80_3 : 14 : 40) = rcvinpt.rdbrnnam;
+
+           %subst(line80_3 : 55 : 25) = 'Process Date : ' +
+                                          wrdprocd8;
+
+       //** line 4
+           %subst(line80_4 : 55 : 25) = 'Process Thru : ' +
+                                          wrdpthru8;
+
+       //** line 5
+           line80_5  = RPTTTL;
+
+       //no record found
+           %subst(line80_6:30:21)  = '** No Record Found **';
+
+       //end of report
+           %subst(line80_7:30:19)  = '** End Of Report **';
+
+           RcvVar     = Rdline80;
+       endif;
+
+       //===========================================
+       // Report Format for 132/60
+       //===========================================
+       //
+       if (FmtNam = 'RDJOB132');
+       //** line 1
+           line132_1  = 'Date Printed : ' +
+                        Wsysdate + ' ' + wsystime;
+
+       //** line 2
+           %subst(line132_2 : 01 : 39)  = rcvinpt.rdbnknam;
+       //  %subst(line132_2 : 40 : 12)  =  'Branch:' + %char(rcvinpt.rdbrn);
+       //  %subst(line132_2 : 53 : 02)  = %char(rcvinpt.rdbnk);
+           %subst(line132_2 : 40 : 12)  =  'Branch:' + wbrnchar;
+           %subst(line132_2 : 53 : 02)  = wbnkchar;
+
+       // R101 - print segment
+           if rcvinpt.rdseg <> *blanks;
+              %subst(line132_2 : 61 : 12)  = 'Segment:' + rcvinpt.rdseg;
+           endif;
+
+           %subst(line132_2 :104 : 10)  = rcvinpt.rdrptnam;
+           %subst(line132_2 :115 : 11)  = 'Page : ' +
+                               %editc(rcvinpt.rdpagno:'4');
+       //                                 %char(rcvinpt.rdpagno);
+
+       //** line 3
+           %subst(line132_3 : 01 : 07) = 'Branch:';
+           %subst(line132_3 : 08 : 05)  = wbrnchar;
+           %subst(line132_3 : 14 : 40) = rcvinpt.rdbrnnam;
+
+           %subst(line132_3 :107 : 26) = 'Process Date : ' +
+                                          wrdprocd8;
+
+       //** line 4
+           %subst(line132_4 :107 : 26) = 'Process Thru : ' +
+                                          wrdpthru8;
+
+       //** line 5
+           line132_5  = RPTTTL;
+
+       //no record found
+           %subst(line132_6:56:21)  = '** No Record Found **';
+
+       //end of report
+           %subst(line132_7:56:19)  = '** End Of Report **';
+
+           RcvVar     = Rdline132;
+       endif;
+
+       //
+       //===========================================
+       // Report Format for 198/60
+       //===========================================
+       //
+       if (FmtNam = 'RDJOB198');
+       //** line 1
+           line198_1  = 'Date Printed : ' +
+                        Wsysdate + ' ' + wsystime;
+
+       //** line 2
+           %subst(line198_2 : 01 : 39)  = rcvinpt.rdbnknam;
+       //  %subst(line198_2 : 40 : 12)  =  'Branch:' + %char(rcvinpt.rdbrn);
+       //  %subst(line198_2 : 53 : 02)  = %char(rcvinpt.rdbnk);
+           %subst(line198_2 : 40 : 12)  =  'Branch:' + wbrnchar;
+           %subst(line198_2 : 53 : 02)  = wbnkchar;
+
+       // R101 - print segment
+           if rcvinpt.rdseg <> *blanks;
+              %subst(line198_2 : 61 : 12)  = 'Segment:' + rcvinpt.rdseg;
+           endif;
+
+           %subst(line198_2 :170 : 10)  = rcvinpt.rdrptnam;
+           %subst(line198_2 :181 : 11)  = 'Page : ' +
+                               %editc(rcvinpt.rdpagno:'4');
+       //                                 %char(rcvinpt.rdpagno);
+
+       //** line 3
+           %subst(line198_3 : 01 : 07) = 'Branch:';
+           %subst(line198_3 : 08 : 05)  = wbrnchar;
+           %subst(line198_3 : 14 : 40) = rcvinpt.rdbrnnam;
+
+           %subst(line198_3 :173 : 26) = 'Process Date : ' +
+                                          wrdprocd8;
+
+       //** line 4
+           %subst(line198_4 :173 : 26) = 'Process Thru : ' +
+                                          wrdpthru8;
+
+       //** line 5
+           line198_5  = RPTTTL;
+
+       //no record found
+           %subst(line198_6:89:21)  = '** No Record Found **';
+
+       //end of report
+           %subst(line198_7:89:19)  = '** End Of Report **';
+
+           RcvVar     = Rdline198;
+       endif;
+       //===========================================
+
+       if (FmtNam = 'RDJOB080');
+           RcvVar     = Rdname;
+       endif;
+
+       EXSR SRRETURN;
+
+       // only return
+       return;
+      /end-free
+     **===========================================
+     **
+     **===========================================
+     C     SRRETURN      BEGSR
+     C                   EVAL      RCVOUTPUT   = RDOUTPUTDS
+     C     ERRETURN      ENDSR
+     **===========================================
+     **
+     **===========================================
+     C     SRSTD         BEGSR
+     **
+     ** get bank and branch number if not pass in.
+     C                   if        rcvinpt.rdbnk    = *zeros
+     C                   Eval      rcvinpt.rdbnk    = SSBNKN
+     C                   endif
+???  c                   movel     rcvinpt.rdbnk wbnkchar
+     **
+     C                   if        rcvinpt.rdbrn    = *zeros
+     C                   Eval      rcvinpt.rdbrn    = SSBRNN
+     C                   endif
+???  c                   movel     rcvinpt.rdbrn wbrnchar
+     **
+     ** get bank and branch name is not pass in.
+     C                   if        rcvinpt.rdbnknam = *blanks and
+     C                             rcvinpt.rdbrnnam = *blanks
+     **
+     ** bank name
+     C                   Eval      rcvinpt.rdbnknam = SSBNAM
+     **
+     ** branch name
+     C                   Eval      Bankno           = rcvinpt.rdbnk
+     C                   Eval      Branchno         = rcvinpt.rdbrn
+     C     Kyssdata      chain     rssdata       D
+     C                   if        %found(ssdata)
+     C                   Eval      rcvinpt.rdbrnnam = D.jdname
+R103 C                   EXSR      SRHLOOK
+     C                   endif
+     **
+     C                   endif
+     **
+     C                   EVAL      RDOUTPUTDS.RDARR    = WARDS
+     **
+     C     ERSTD         ENDSR
+     **===========================================
+R103 **
+     **===========================================
+     C     SRHLOOK       BEGSR
+     **
+     C                   EVAL      WX            = 1
+     C**                 EVAL      WLBB          = %EDITC(D.JDBANK:'4') +
+     C**                                           %EDITC(D.JDBR:'4')
+     C                   MOVEL     D.JDBANK      CJDBANK
+     C                   MOVEL     D.JDBR        CJDBR
+     C                   EVAL      WLBB          = CJDBANK +
+     C                                             CJDBR
+     C     WLBB          LOOKUP    WARBB(WX)                              88
+     C                   IF        *IN88         = '1'
+     C                   EVAL      WARSTS(WX)     = 'Y'
+     C                   ENDIF
+     **
+     C     ERHLOOK       ENDSR
+     **===========================================
+R103 **
+     **===========================================
+     C     SRHINIT       BEGSR
+     **
+     C                   CLEAR                   WARDS
+     C                   EVAL      RDOUTPUTDS.RDLOOP   = 0
+     **
+     C                   IF        REPTYP      = 'H'  OR
+     C                             REPTYP      = 'B'
+     **
+     C                   EVAL      WX             = 0
+     C     *LOVAL        SETLL     RSSDATA
+     C                   READ      RSSDATA       D                        90
+     C                   DOW       *IN90       = '0'
+     **
+     C                   IF        REPTYP      = 'B'
+     C                   IF        D.JDBANK   <> rcvinpt.rdbnk
+     C                   GOTO      READNEXT
+     C                   ENDIF
+     C                   ENDIF
+     **
+     C                   EVAL      WX             = WX + 1
+     C                   EVAL      WARSTS(WX)     = 'N'
+     **
+     C                   MOVEL     D.JDBANK      WBNK              2
+     C                   MOVEL     D.JDBR        WBRN              5
+     C                   EVAL      WARBB(WX)     =  WBNK + WBRN
+     **
+     C     READNEXT      TAG
+     C                   READ      RSSDATA       D                        90
+     C                   ENDDO
+     **
+     C                   EVAL      RDOUTPUTDS.RDLOOP   = WX
+     C                   ENDIF
+     **
+     C     ERHINIT       ENDSR
+     **===========================================
+     **
+     **===========================================
+     C     SRCLOSE       BEGSR
+     C                   EVAL      *INLR       = '1'
+     C                   RETURN
+     C     ERCLOSE       ENDSR
+     **===========================================
+     **
+     **===========================================
+K1001C     SRINZSR       BEGSR
+     C*    *INZSR        BEGSR
+     **
+R103 C                   CLEAR                   RDOUTPUTDS
+     ** rtv sspar1
+     C                   Read      RSSPAR1       P
+      ** get system time.
+     C                   TIME                    SYSTIME
+     c                   eval      wdttyy =
+     c                             %subst(%char(SYSTIME):01:04)
+     c                   eval      wdttmm =
+     c                             %subst(%char(SYSTIME):06:07)
+     c                   eval      wdttdd =
+     c                             %subst(%char(SYSTIME):09:10)
+     c                   eval      Wsysdate = wdtt
+     **
+     ** get proccessing date if not pass in.
+     C                   if        rcvinpt.rdprocd8 = *zeros
+     C                   Eval      rcvinpt.rdprocd8 = P.SP1PD8
+     C                   endif
+     C                   if        rcvinpt.rdpthru8 = *zeros
+     C                   Eval      rcvinpt.rdpthru8 = P.SP1TR8
+     C                   endif
+     ** SP1TR8
+     ** cvt process thru date into dsp format
+     c                   eval      wdttyy = %subst(
+     c                             %char(rcvinpt.rdpthru8) :01:04)
+     c                   eval      wdttmm = %subst(
+     c                             %char(rcvinpt.rdpthru8) :05:02)
+     c                   eval      wdttdd = %subst(
+     c                             %char(rcvinpt.rdpthru8) :07:02)
+     c                   eval      wrdpthru8   = wdtt
+     ** SP1PD8/WPOSDAT
+     ** cvt processing date into dsp format
+     c                   eval      wdttyy = %subst(
+     c                             %char(rcvinpt.rdprocd8) :01:04)
+     c                   eval      wdttmm = %subst(
+     c                             %char(rcvinpt.rdprocd8) :05:02)
+     c                   eval      wdttdd = %subst(
+     c                             %char(rcvinpt.rdprocd8) :07:02)
+     c                   eval      wrdprocd8   = wdtt
+     ** SP1NB8/WNXTDAT
+R101 c                   eval      wdttyy =
+R101 c                             %subst(%char(p.SP1NB8 ):01:04)
+R101 c                   eval      wdttmm =
+R101 c                             %subst(%char(p.SP1NB8 ):05:02)
+R101 c                   eval      wdttdd =
+R101 c                             %subst(%char(p.SP1NB8 ):07:02)
+R101 c                   eval      wrdnxtdat8  = wdtt
+     **
+R106 C                   IF        SSBTMO     <> 'B'
+R106 C                   EVAL      wrdprocd8   = wrdnxtdat8
+R106 C                   EVAL      wrdpthru8   = wrdnxtdat8
+R106 C                   ENDIF
+     ** SYSTIME
+     c                   eval      wsystime    =
+     c                             %subst(%char(SYSTIME):12:8)
+     **================================================
+     **
+     **get report title
+     C                   EVAL       REPORT     = rcvinpt.rdrptnam
+     **
+R102 C                   EXSR      SRRDRTTL
+     **
+     C                   If        TITLE     = *BLANKS
+     C*****              If        RPTTTL    = *BLANKS
+     C                   Eval      RPTTTL = 'Report Title Not Define'
+     C                   ELSE
+     C                   Eval      RPTTTL = TITLE
+     C                   Endif
+     ** need to performa once
+     ** get bank and branch number if not pass in.
+     C                   if        rcvinpt.rdbnk    = *zeros
+     C                   Eval      rcvinpt.rdbnk    = SSBNKN
+     C                   endif
+???  c                   movel     rcvinpt.rdbnk wbnkchar
+     ** load array
+R103 C                   EXSR      SRHINIT
+     **
+     C                   ENDSR
+     **===========================================
+     **
+     **===========================================
+     C     SRRDRTTL      BEGSR
+     **
+     C     RPTKEY        KLIST
+     C                   KFLD                    REPORT
+     **
+     C                   EVAL      TITLE       = *BLANKS
+     C                   EVAL      RDOUTPUTDS.RDREPTX1 = *BLANKS
+     C                   EVAL      RDOUTPUTDS.RDREPTX2 = *BLANKS
+     C                   EVAL      RDOUTPUTDS.RDREPTX3 = *BLANKS
+     C                   EVAL      RDOUTPUTDS.RDREPTYP = *BLANKS
+     **
+     C     RPTKEY        CHAIN     RRDREPT                            33
+     C     *IN33         IFEQ      '0'
+     C* Format the Report Title
+     C                   EXSR      $FMRTTL
+     C                   EVAL      RDOUTPUTDS.RDREPTX1 = REPTX1
+     C                   EVAL      RDOUTPUTDS.RDREPTX2 = REPTX2
+     C                   EVAL      RDOUTPUTDS.RDREPTX3 = REPTX3
+     C                   EVAL      RDOUTPUTDS.RDREPTYP = REPTYP
+     C                   ENDIF
+     **
+     C                   ENDSR
+     C**************************************************************
+     C* $FMRTTL - Format the Report Title
+     C**************************************************************
+     C     $FMRTTL       BEGSR
+     C
+     C                   MOVEA     REPTTL        WK(1)
+     C                   MOVE      *BLANKS       DS
+     C
+     C                   Z-ADD     1             X                 3 0
+     C                   Z-ADD     1             Y                 3 0
+     C
+     C     X             DOWLT     100
+     C* REPLACEMENT KWD
+     C     WK(X)         IFEQ      '*'
+     C                   EXSR      RPLKWD
+     C                   ENDIF
+     C
+     C     Y             IFGE      100
+     C                   LEAVE
+     C                   ENDIF
+     C
+     C                   MOVE      WK(X)         DS(Y)
+     C
+     C                   ADD       1             X
+     C                   ADD       1             Y
+     C
+     C     Y             IFGT      98
+     C                   Z-ADD     100           X
+     C                   ENDIF
+     C
+     C                   ENDDO
+     C
+     C                   MOVEA     DS(1)         TITLE
+     C
+     C                   ENDSR
+     C
+     C****************************************************************
+     C* RPLKWD - REPLACE RESERVED KEYWORDS
+     C****************************************************************
+     C     RPLKWD        BEGSR
+     C
+     C                   Z-ADD     1             W                 3 0
+     C                   MOVEA     WK(X)         KW(1)
+     C
+     C     KW(W)         DOWNE     *BLANK
+     C     W             ANDLT     10
+     C                   ADD       1             W
+     C                   ENDDO
+     C
+     C                   MOVEA     *BLANKS       KW(W)
+     C                   MOVEA     KW(1)         KWD              10
+     C
+     C     *LIKE         DEFINE    KWD           UKWD
+     C     LC:UC         XLATE     KWD           UKWD
+     C
+     C** *RUNDATE  - Current Processing Date
+     C** *NEXTDATE - Next Processing Date
+     C
+     C** Get Current Processing Date as Report Date
+     C                   SELECT
+     C                   WHEN      UKWD = '*RUNDATE'
+     C*R101              MOVEA     POSDAT        DS(Y)
+R101 C                   MOVEA     wrdprocd8     DS(Y)
+     C
+     C** Get Next Processing Date as Report Date
+     C                   WHEN      UKWD = '*NEXTDATE'
+R101 C                   MOVEA     wrdnxtdat8    DS(Y)
+     C                   ENDSL
+     C
+R1SW C                   ADD       10            Y
+     C                   ADD       W             X
+     C
+     C                   ENDSR
+     **===========================================
+     ** proc - center
+     **===========================================
+     P center          b                   export
+     d center          pi           198a
+     d  petext                      198a   varying const options(*varsize)
+     d  peSize                       10i 0 value
+
+     d wwPos           s             10i 0
+     d wwRet           s            198a
+
+      /free
+       wwRet = *blanks;
+       wwPos = ((peSize/2) - (%len(%trim(petext))/2)) + 1;
+       %subst(wwRet:wwPos:%len(%trim(peText))) = peText;
+       return wwRet;
+      /end-free
+
+     P                 E
+     **===========================================
+

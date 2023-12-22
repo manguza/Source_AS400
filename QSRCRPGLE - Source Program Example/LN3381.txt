@@ -1,0 +1,259 @@
+     F*-------------------------------------------------------------------------
+     F* Program Name..: LN3381
+     F* Description...: Distributor Financing Program Summary Report
+     F* Ref no........: CR#866
+     F* Date Created..: 25/03/2013
+     F* Author........: Sartra T.
+     F*--------------------------------------------------------------- ---------
+     F* LN3381   Is part of Silverlake Integrated Banking System
+     F* Copyright 1996 by Silverlake System Sdn Bhd Kuala Lumpur,
+     F* Malaysia.
+     F*-------------------------------------------------------------------------
+     F*  MODIFICATION LOGS:
+     F*  REF.#  NAME     DATE      DESCRIPTION
+     F*  -----  ----  ----------   ----------------------------------
+     F*
+     F*-------------------------------------------------------------------------
+     FLN3381WK  IF   E           K DISK
+     FLN3381P   O    E             PRINTER INFDS(PRTFDS)
+     D*
+     D*-------------------------------------------------------------------------
+     D*
+     D                 DS
+     D BREAKKEY1               1     99
+     D  X1BKN                  1      2  0
+     D  X1RBRN                 3      7  0
+     D  X1CFCIFN               8     26  0
+     D  X1CURTYP              27     30
+     D                 DS
+     D BREAKKEY2               1     99
+     D  X2BKN                  1      2  0
+     D  X2RBRN                 3      7  0
+     D  X2CFCIFN               8     26  0
+     D  X2CURTYP              27     30
+     D*
+     D/COPY QSRCREFRLE,RDFORMATD
+     D/COPY QSRCREFRLE,SSQPRTFD
+     C*-------------------------------------------------------------------------
+     C* main logic
+     C*-------------------------------------------------------------------------
+     C     *LOVAL        SETLL     LN3381WK
+     C                   DOU       WKEOFILE      = *ON
+     C*
+     C                   READ      LN3381WK
+     C                   IF        %EOF(LN3381WK)
+     C                   LEAVE
+     C                   ENDIF
+     C*
+     C                   Z-ADD     BKN           X1BKN
+     C                   Z-ADD     RBRN          X1RBRN
+     C                   Z-ADD     CFCIFN        X1CFCIFN
+     C                   MOVEL(P)  CURTYP        X1CURTYP
+     C*
+     C                   IF        WKFIRSTR      = *OFF
+     C                   MOVEL(P)  *ON           WKFIRSTR
+     C                   EXSR      PRTHDG
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   ENDIF
+     C*
+     C                   IF        BREAKKEY1     <> BREAKKEY2
+     C*
+     C                   SELECT
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN
+     C                   EXSR      SRTOTAL1
+     C                   Z-ADD     0             RDPAGNO
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1CFCIFN      <> X2CFCIFN
+     C                   EXSR      SRTOTAL1
+     C                   Z-ADD     0             RDPAGNO
+     C                   EXSR      PRTHDG
+     C*
+     C                   WHEN      X1BKN         <> X2BKN       OR
+     C                             X1RBRN        <> X2RBRN      OR
+     C                             X1CFCIFN      <> X2CFCIFN    OR
+     C                             X1CURTYP      <> X2CURTYP
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRSPACELN
+     C*
+     C                   ENDSL
+     C*
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   ENDIF
+     C*
+     C                   EXSR      SRDETAIL
+     C*
+     C                   ENDDO
+     C*end of report
+     C                   IF        WKFIRSTR      = *OFF
+     C                   EXSR      SRNOREC
+     C                   ELSE
+     C                   EXSR      SRTOTAL1
+     C                   EXSR      SRENDLR
+     C                   ENDIF
+     C*
+     C                   MOVE      *ON           *INLR
+     C*-------------------------------------------------------------------------
+     C     SRDETAIL      BEGSR
+     C*Write Detail
+     C*
+     C                   Z-ADD     CFRCIF        OCFRCIF
+     C                   MOVEL(P)  CFRCIFD       OCFRCIFD
+     C                   MOVEL(P)  CURTYP        OCURTYP
+     C                   MOVEL(P)  JFXLSC        OJFXLSC
+     C                   Z-ADD     DRLIMT        ODRLIMT
+     C                   Z-ADD     CBAL          OCBAL
+     C                   Z-ADD     FUTDIS        OFUTDIS
+     C                   Z-ADD     AVLAMT        OAVLAMT
+     C*
+     C                   Z-ADD     2             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     DETAIL1
+     C*
+     C                   ADD       DRLIMT        T1DRLIMT
+     C                   ADD       CBAL          T1CBAL
+     C                   ADD       FUTDIS        T1FUTDIS
+     C                   ADD       AVLAMT        T1AVLAMT
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRTOTAL1      BEGSR
+     C*Total
+     C*
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     OTOTAL1
+     C*
+     C                   CLEAR                   T1DRLIMT
+     C                   CLEAR                   T1CBAL
+     C                   CLEAR                   T1FUTDIS
+     C                   CLEAR                   T1AVLAMT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSPACELN     BEGSR
+     C*space line
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN3
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     PRTHDG        BEGSR
+     C*print new header
+     C                   ADD       1             RDPAGNO
+     C                   Z-ADD     X1BKN         RDBNK
+     C                   Z-ADD     X1RBRN        RDBRN
+     C                   EXSR      SrRptfmt
+     C                   EXSR      SRSTRLVL1
+     C                   EXSR      SRSTRLVL2
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSTRLVL1     BEGSR
+     C*
+     C                   WRITE     HEADNG
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRSTRLVL2     BEGSR
+     C*
+     C                   Z-ADD     CFCIFN        OCFCIFN
+     C                   MOVEL(P)  CFCIFND       OCFCIFND
+     C*
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNG1
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNGT
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN1
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - end report
+     C*-------------------------------------------------------------------------
+     C     SRENDLR       BEGSR
+     C*
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     ENDRPT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - no record
+     C*-------------------------------------------------------------------------
+     C     SRNOREC       BEGSR
+     C*
+     C                   Z-ADD     0             RDBNK
+     C                   Z-ADD     0             RDBRN
+     C                   Z-ADD     1             RDPAGNO
+     C                   EXSR      SRRPTFMT
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG1
+     C                   WRITE     HEADNGT
+     C                   WRITE     SPACELN1
+     C                   WRITE     NOREC
+     C                   WRITE     ENDRPT
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* sr - overflow
+     C*-------------------------------------------------------------------------
+     C     SROVRFLW      BEGSR
+     C*
+     C                   IF        (P_OVERFLOW - P_CUR_LINE) <= P_LINENO
+     C                   ADD       1             RDPAGNO
+     C                   EXSR      SrRptfmt
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG1
+     C                   WRITE     HEADNGT
+     C                   WRITE     SPACELN1
+     C                   ENDIF
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* Report Format
+     C*-------------------------------------------------------------------------
+     C     SrRptfmt      BEGSR
+     C
+     C                   callp     rdreport( rdline198        :
+     C                                       %size(rdline198) :
+     C                                       'RDJOB198'       :
+     C                                       rdinputds        :
+     C                                       RDOUTPUTDS
+     C                                     )
+     C                   Eval      Rdline1 = line198_1
+     C                   Eval      Rdline2 = line198_2
+     C                   Eval      Rdline3 = line198_3
+     C                   Eval      Rdline4 = line198_4
+     C                   Eval      Rdline5 = line198_5
+     C                   Eval      Rdnorec = line198_6
+     C                   Eval      Rdeorpt = line198_7
+     C
+     C                   ENDSR
+     C*
+     C*-------------------------------------------------------------------------
+     C* Initialisation
+     C*-------------------------------------------------------------------------
+     C     *INZSR        BEGSR
+     C*
+     C********************
+     C* GET REPORT TITLE *
+     C********************
+     C                   MOVEL     'LN3381P'     Rdrptnam
+     C*
+     C                   MOVEL(P)  *OFF          WKEOFILE          1
+     C                   MOVEL(P)  *OFF          WKFIRSTR          1
+     C*
+     C                   CLEAR                   T1DRLIMT
+     C                   CLEAR                   T1CBAL
+     C                   CLEAR                   T1AVLAMT
+     C*
+     C                   MOVEL(P)  '*CLOSE'      rdreq
+     C                   EXSR      SrRptfmt
+     C                   MOVEL(P)  *blank        rdreq
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+

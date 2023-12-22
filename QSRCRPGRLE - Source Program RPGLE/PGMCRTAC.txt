@@ -1,0 +1,137 @@
+     H/COPY QSRCREFRLE,COPYRIGHTH
+     H DEBUG(*YES)
+    Š *************************************************************************
+     FXLNMAST   IF A E           K DISK    INFDS(INFDS)
+    Š *
+     D/COPY QSRCREFRLE,CPBGETUSRD
+    Š *šVariable declaration
+     D DIMACC          S                   DIM(9999) LIKE(ACCTNO)
+     D DIMCIF          S                   DIM(9999) LIKE(CIFNO)
+     D WCBAL           S                   LIKE(CBAL) INZ(0)
+     D WACCTNO         S              5
+     D RUNN            S              2  0 INZ(0)
+     D IA              S              2  0 INZ(0)
+     D IC              S              2  0 INZ(0)
+     D X               S              2  0 INZ(0)
+     D Y               S              2  0 INZ(0)
+
+    Š *šData Sturcture
+     D INFDS           DS
+     D  INFILE                83     92
+     D  LENXLNMAST           125    126B 0
+     D  DB_RRN               397    400I 0
+
+    Š *šKey List
+
+    Š *šParm Entry List
+     C     *ENTRY        PLIST
+     C                   PARM                    inRUNN            2 0
+     C                   PARM                    inBKN             2 0
+     C                   PARM                    inBRN             5 0
+     C                   PARM                    inRBRN            5 0
+     C                   PARM                    inFSNAME         20
+     C                   PARM                    inMCLNID          1
+     C                   PARM                    inTYPE           10
+     C                   PARM                    inCURTYP          4
+     C                   PARM                    inCBAL           17
+    Š *
+    Š *************************************************************************
+    Š *˜Main Program                                                         Š*
+    Š *************************************************************************
+    š * Get User Name
+     C                   EXSR      SRGETUSER
+    š * Get Account Number
+     C                   EXSR      SRGETACC
+    š * Write data to file XLNMAST
+     C                   EXSR      SRADDACC
+    Š *
+     C                   MOVE      *ON           *INLR
+    Š *************************************************************************
+    Š *˜SR - SRGETACC                                                        Š*
+    Š *************************************************************************
+     C     SRGETACC      BEGSR
+    Š *
+     C                   MOVEL(P)  *OFF          WKEOLOOP          1
+     C                   EVAL      WCBAL = %DEC(%SUBST(inCBAL:1:17):17:2)
+    Š *
+     C     *START        SETLL     XLNMAST
+     C                   DOU       WKEOLOOP      = *ON
+     C                   READ      XLNMAST
+     C                   IF        %EOF(XLNMAST)
+     C                   LEAVE
+     C                   ENDIF
+    Š *
+     C                   ADD       1             IA
+     C                   ADD       1             IC
+     C                   ADD       1             X
+     C                   ADD       1             Y
+     C                   Z-ADD     ACCTNO        DIMACC(IA)
+     C                   Z-ADD     CIFNO         DIMCIF(IC)
+    Š *
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRADDACC                                                        Š*
+    Š *************************************************************************
+     C     SRADDACC      BEGSR
+    Š *
+     C                   DOW       RUNN          <= inRUNN
+    Š *
+     C                   ADD       1             IA
+     C                   ADD       1             IC
+     C                   EVAL      DIMACC(IA)    = DIMACC(X)+1
+     C                   EVAL      DIMCIF(IC)    = DIMCIF(Y)+1
+    Š *
+    š * Move Value to Field file XLNMAST
+     C                   Z-ADD     inBKN         BKN
+     C                   Z-ADD     inBRN         BRN
+     C                   Z-ADD     inRBRN        RBRN
+     C                   Z-ADD     DIMACC(IA)    ACCTNO
+     C                   MOVE      ACCTNO        WACCTNO
+     C                   MOVEL(P)  'L'           ACTYPE
+     C**                 EVAL      FSNAME        = inFSNAME
+     C                   EVAL      FSNAME        = %TRIM(WACCTNO) +
+     C                                             %TRIM(inFSNAME)
+     C                   Z-ADD     DIMCIF(IC)    CIFNO
+     C                   MOVEL(P)  inMCLNID      MCLNID
+     C                   MOVEL(P)  inTYPE        TYPE
+     C                   MOVEL(P)  inCURTYP      CURTYP
+     C                   Z-ADD     4             STATUS
+     C                   Z-ADD     WCBAL         CBAL
+     C                   EVAL      ORGDT8        = %DEC(%DATE())
+     C                   EVAL      STSDT8        = %DEC(%DATE())
+    ˜ * Data Maintenanace Log
+    š * Last Maintenance log
+     C                   MOVEL(P)  *BLANK        MNLUID
+     C                   MOVEL(P)  *BLANK        MNLWID
+     C                   Z-ADD     *ZERO         MNLDT8
+     C                   CLEAR                   MNLTIM
+    š * Create Maintenance log
+     C                   MOVEL(P)  QUSUN07       MNCUID
+     C                   MOVEL(P)  'PGMCRTAC'    MNCWID
+     C                   EVAL      MNCDT8        = %DEC(%DATE())
+     C                   TIME                    MNCTIM
+    š * Write Data to file XLNMAST
+     C                   WRITE     RXLNMAST
+    Š *
+     C                   ADD       1             X
+     C                   ADD       1             Y
+     C                   ADD       1             RUNN
+    Š *
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - *INZSR                                                          Š*
+    Š *************************************************************************
+     C     *INZSR        BEGSR
+    Š *
+     C                   Z-ADD     1             RUNN
+     C                   CLEAR                   DIMACC
+     C                   CLEAR                   DIMCIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+     C/COPY QSRCREFRLE,CPBGETUSRC
+

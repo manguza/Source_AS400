@@ -1,0 +1,57 @@
+      ****************************************************************
+      *  FILE NAME...: MBQRLS            REF.NO:                     *
+      *  DESCRIPTION.: Record lock Control - release record          *
+      *  DATE CREATED: 23.06.2003                                    *
+      *  AUTHOR......:                                               *
+      ****************************************************************
+      * MBQRCRLS   IS A PART OF SILVERLAKE SYSTEM (R)                *
+      *    (C) COPYRIGHT 2000, 2003                                  *
+      *    BY: SILVERLAKE SYSTEM SDN. BHD.                           *
+      *        FLOOR 12A, PLAZA IBM,                                 *
+      *        NO.1, JALAN TUN MOHD FUAD                             *
+      *        TAMAN TUN DR. ISMAIL,                                 *
+      *        60000 KUALA LUMPUR, MALAYSIA                          *
+      ****************************************************************
+      *  MODIFICATION LOGS                                           *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  LWL   OS01       If the Soft Lock Key is not sent in, not   *
+      *                   to call program for release lock.          *
+      *  JAYS  OS02       Release record lock                        *
+     **==============================================================*
+     **===============================================================
+     ** sr - release lock
+     **===============================================================
+     C     SRRELLOCK     BEGSR
+     **
+     C     PLMBLCK02     PLIST
+     C                   PARM                    HDUSID
+     C                   PARM                    INFILE
+     C                   PARM                    PRRN
+     C                   PARM                    PRCUSRID         10
+     C                   PARM                    PMETHOD           1
+     C                   PARM                    PERROR            1
+     **
+     C                   IF        M3LOCK      = ' ' OR
+     C                             M3LOCK      = 'Y'
+     **
+OS01 C*OS02              IF        HDSLKY     <> *BLANKS
+     C                   Z-ADD     DB_RRN        PRRN              8 0
+     C                   EVAL      PMETHOD     = 'S'
+     C                   EVAL      PRCUSRID    = HDUSID
+     C                   CALL      'MBLCK02'     PLMBLCK02
+     C*OS02              IF        PERROR      = 'E'
+     C*OS02              EVAL      ERCODE      = 'MBL1404'
+     C*OS02              EVAL      P8MDTA      = *BLANKS
+     C*OS02              EVAL      ERFLDN      = 'ZZZZZZ'
+     C*OS02              EXSR      SRSENDERR
+     C*OS02              EVAL      WERROR      = 'Y'
+     C*OS02              ENDIF
+     C*OS02              ELSE
+     C                   EVAL      PERROR      = *BLANKS
+OS01 C*OS02              ENDIF
+     **
+     C                   ENDIF
+     **
+     C     ERRELLOCK     ENDSR
+

@@ -1,0 +1,51 @@
+      ****************************************************************
+      *  CPYBOOK ....: LNQTXHD                                       *
+      *  DESCRIPTION.: CPYBOOK-MBASE TRXN HANDLER D SPEC             *
+      *  DATE CREATED: 06.11.2007 18:47:37                           *
+      *  CREATED BY..:                                               *
+      *  PROGRAMMER..:                                               *
+      ****************************************************************
+      * LNQTXHD    IS A PART OF SILVERLAKE SYSTEM (R)                *
+      *    (C) COPYRIGHT 2000, 2002                                  *
+      *    BY: SILVERLAKE SYSTEM SDN. BHD.                           *
+      *        FLOOR 12A, PLAZA IBM,                                 *
+      *        NO.1, JALAN TUN MOHD FUAD,                            *
+      *        TAMAN TUN DR. ISMAIL,                                 *
+      *        60000 KUALA LUMPUR, MALAYSIA                          *
+      ****************************************************************
+      *  MODIFICATION LOGS : CIMB HUBBING                            *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  NLS   SS01   19/12/08  Field length changed                 *
+      *  NLH   SS02   18/02/09  Field length changed                 *
+      *  TYK   SS03   19/07/10  Remove nested /COPY because not      *
+      *                         supported by SQLRPGLE                *
+      *  LKK   R101   14/04/11  Add LNPARZ                           *
+      ****************************************************************
+     ** define variable
+     ** fld defined as packed decimal..use for all parameter list
+OS01 D  P8LNNUM        S             19  0
+OS01 D  P8ACCTNO       S             19  0
+OS01 D*SS02 P8AMT          S             15  2
+SS02 D  P8AMT          S             17  2
+OS01 D  P8AMT175       S             17  5
+OS01 D  P8RATE         S             11  9
+OS01 D*SS01  P8BKN          S              6  0
+SS01 D  P8BKN          S              2  0
+OS01 D  P8BRN          S              5  0
+OS01 D  P8TERM         S              5  0
+OS01 D  P8AFAPNO       S             19  0
+OS01 D  P8ACTLLL       S              3  0
+OS01 D  P8DATE8        S              8  0
+OS01 D  P8SEQ          S              9  0
+OS01 D  P8BAT          S              5  0
+     **
+SS03 D NUM             S              1  0
+SS03 D REC             S              1  0
+SS03 D KYTYPE          S              1    DIM(2)
+     **
+SS03 D DSLNPAR1      E DS                  EXTNAME(LNPAR1)
+R101 D DSLNPARZ      E DS                  EXTNAME(LNPARZ)
+     ** D-Spec to Retrieve SS Parameter
+SSZZ D*SS03/COPY QLNSREFRLE,LNQRTVPD
+

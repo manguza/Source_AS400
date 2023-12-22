@@ -1,0 +1,115 @@
+     F*****************************************************************
+     F* Program Name..: SSDATV                                        *
+     F* Description...: Date conversion routine (8/7 -> 8)            *
+     F*                 From Data Base to Screen                      *
+     F* Date Created..: 07/11/2005                                    *
+     F* Author........: wll                                           *
+     F* Ref no........:                                               *
+     F*****************************************************************
+     F* SSDATV is part of Silverlake Integrated Banking System        *
+     F* Copyright 2005 by Silverlake System Sdn Bhd Kuala Lumpur,     *
+     F* Malaysia.                                                     *
+     F*****************************************************************
+     F* Modification Logs:                                            *
+     F* Init  Ref#     Date     Description                           *
+     F* ----  ----  ----------  -----------                           *
+     F*****************************************************************
+     **
+     **================================================================
+     D ISODAT8         S               D   DATFMT(*ISO)
+     **
+     ** *DMY
+     D                 DS
+     D  DSDMY                  1      8  0
+     D  DSDMYDD                1      2  0
+     D  DSDMYMM                3      4  0
+     D  DSDMYYY                5      8  0
+     **
+     ** *YMD
+     D                 DS
+     D  DSYMD                  1      8  0
+     D  DSYMDYY                1      4  0
+     D  DSYMDMM                5      6  0
+     D  DSYMDDD                7      8  0
+     **
+     ** *MDY
+     D                 DS
+     D  DSMDY                  1      8  0
+     D  DSMDYMM                1      2  0
+     D  DSMDYDD                3      4  0
+     D  DSMDYYY                5      8  0
+     **
+     ** *ISO
+     D                 DS
+     D  DSISO                  1      8  0
+     D  DSISOYY                1      4  0
+     D  DSISOMM                5      6  0
+     D  DSISODD                7      8  0
+     **
+     D  PIDAT8         S              8  0
+     D  PODAT8         S              8  0
+     D  PIERROR        S              1
+     **
+     ** in *lda
+     D               EUDS                  EXTNAME(SSAPAR)
+     **===========================================
+     ** KEY LIST
+     **===========================================
+     **
+     C     *ENTRY        PLIST
+     C                   PARM                    PIDAT8
+     C                   PARM                    PODAT8
+     C                   PARM                    PIERROR
+     **
+     **===========================================
+     ** MAIN LOGIC
+     **===========================================
+     **
+     C                   IF        PIDAT8>0
+     C                   MONITOR
+     **
+     C                   EXSR      SRPROCESS
+     **
+     C                   ON-ERROR
+     C                   EVAL      PODAT8      = 0
+     C                   EVAL      PIERROR     = '1'
+     C                   ENDMON
+     C                   ELSE
+     C                   EVAL      PODAT8=0
+     C                   ENDIF
+     **
+     C                   RETURN
+     **===========================================
+     **
+     **===========================================
+     C     SRPROCESS     BEGSR
+     **
+     C                   EVAL      PIERROR     = '1'
+     C                   EVAL      PODAT8      = 0
+     **
+     C     *ISO          MOVE      PIDAT8        ISODAT8
+     **
+     C                   MOVE      ISODAT8       DSISO
+     **
+     C                   SELECT
+     C                   WHEN      SSIDFM = 'DMY'
+     C                   MOVE      DSISOYY       DSDMYYY
+     C                   MOVE      DSISOMM       DSDMYMM
+     C                   MOVE      DSISODD       DSDMYDD
+     C                   MOVE      DSDMY         PODAT8
+     C                   WHEN      SSIDFM = 'YMD'
+     C                   MOVE      DSISOYY       DSYMDYY
+     C                   MOVE      DSISOMM       DSYMDMM
+     C                   MOVE      DSISODD       DSYMDDD
+     C                   MOVE      DSYMD         PODAT8
+     C                   WHEN      SSIDFM = 'MDY'
+     C                   MOVE      DSISOYY       DSMDYYY
+     C                   MOVE      DSISOMM       DSMDYMM
+     C                   MOVE      DSISODD       DSMDYDD
+     C                   MOVE      DSMDY         PODAT8
+     C                   ENDSL
+     **
+     C                   EVAL      PIERROR     = *BLANKS
+     **
+     C     ERPROCESS     ENDSR
+

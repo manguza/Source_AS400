@@ -1,0 +1,169 @@
+      ****************************************************************
+      *  CPYBOOK ....: RDFORMATD                                     *
+      *  DESCRIPTION.:                                               *
+      *  DATE CREATED:                                               *
+      *  CREATED BY..:                                               *
+      *  PROGRAMMER..:                                               *
+      ****************************************************************
+      *  RDFORMATD is a part of Silverlake System (R)                *
+      *  (C) Copyright 1993, 2008                                    *
+      *                 By:  Silverlake System Sdn. Bhd.             *
+      *                      Level 2A,KPMG TOWER,                    *
+      *                      First Avenue, Bandar Utama,             *
+      *                      47800 Petaling Jaya,                    *
+      *                      Selangor, Malaysia                      *
+      *                      TEL: +603-77216000                      *
+      ****************************************************************
+      *  MODIFICATION LOGS                                           *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      ****************************************************************
+
+     d               EUDS                  EXTNAME(SSAPAR)
+
+      **==========================================
+      ** Data Structure
+      **==========================================
+      **-- Report Standard
+     d rdlinn80        Ds
+     d  linn80_1                     80a
+     d  linn80_2                     80a
+     d  linn80_3                     80a
+     d  linn80_4                     80a
+     d  linn80_5                     80a
+     d  linn80_6                     80a
+     d  linn80_7                     80a
+     d  linn80_8                     80a
+     d  linn80_9                     80a
+     d  linn80_10                    80a
+
+
+     d rdformatds      Ds
+     d  data1                       198a
+     d  data2                       198a
+     d  data3                       198a
+     d  data4                       198a
+     d  data5                       198a
+     d  data6                       198a
+     d  data7                       198a
+     d  data8                       198a
+     d  data9                       198a
+     d  data10                      198a
+      **-- Report Standard 198:
+     d rdline198       Ds
+     d  line198_1                   198a
+     d  line198_2                   198a
+     d  line198_3                   198a
+     d  line198_4                   198a
+     d  line198_5                   198a
+     d  line198_6                   198a
+     d  line198_7                   198a
+     d  line198_8                   198a
+     d  line198_9                   198a
+     d  line198_10                  198a
+
+      **-- Report Standard 132:
+     d rdline132       Ds
+     d  line132_1                   132a
+     d  line132_2                   132a
+     d  line132_3                   132a
+     d  line132_4                   132a
+     d  line132_5                   132a
+     d  line132_6                   132a
+     d  line132_7                   132a
+     d  line132_8                   132a
+     d  line132_9                   132a
+     d  line132_10                  132a
+      **-- Report Standard  80:
+     d rdline80        Ds
+     d  line80_1                     80a
+     d  line80_2                     80a
+     d  line80_3                     80a
+     d  line80_4                     80a
+     d  line80_5                     80a
+     d  line80_6                     80a
+     d  line80_7                     80a
+     d  line80_8                     80a
+     d  line80_9                     80a
+     d  line80_10                    80a
+
+      **-- Report Standard 40:
+     d rdname          Ds
+     d  Name_1                       40a
+     d  Name_2                       40a
+     d  Name_3                       40a
+     d  Name_4                       40a
+     d  Name_5                       40a
+     d  Name_6                       40a
+     d  Name_7                       40a
+     d  Name_8                       40a
+     d  Name_9                       40a
+     d  Name_10                      40a
+
+      **-- Report Input:
+     d rdinputds       Ds
+     d  rdprocd8                      8S 0 inz(*zeros)
+     d  rdpthru8                      8S 0 inz(*zeros)
+     d  rdbnk                         2S 0 inz(*zeros)
+     d  rdbrn                         5S 0 inz(*zeros)
+     d  rdbnknam                     40A
+     d  rdbrnnam                     40A
+     d  rdpagno                       4S 0 inz(*zeros)
+     d  rdrptnam                     10A
+R101 d  rdseg                         4A
+R101 d  rdreq                        10A
+     **
+     ** Report Output
+     D RDOUTPUTDS      DS                  QUALIFIED
+R102 d  RDREPTX1                     50A
+R102 d  RDREPTX2                     50A
+R102 d  RDREPTX3                     50A
+R103 d  RDREPTYP                      1A
+R103 d  RDLOOP                        4  0
+R103 d  RDARR                              LIKEDS(WARDS)
+      *===========================================
+      * Prototype
+      *===========================================
+
+     d rdreport        pr                  extpgm('RDFORMAT')
+     d  RcvVar                     2000a          Options( *VarSize )
+     d  RcvVarLen                    10i 0 Const
+     d  FmtNam                        8a   Const
+     d  Rdinput                     500a   Const
+R103 D  RDOUTPUT                           LIKEDS(RDOUTPUTDS)
+
+      **==========================================
+      ** V A R I A B L E S
+      **==========================================
+
+     D SYSTIME         S               Z
+     D TITLE           S            100A
+     D REPORT          S             10A
+     D RPLDTA          S             20A
+     D RPTTTL          S            100A
+     D HDG1            S            132A
+     D HDG2            S            132A
+     D HDG3            S            132A
+     D RTVREQ          S              8A
+     D RTVERR          S              1A
+     **
+     D WX              S              4  0
+     D WLBB            S              7
+     **
+     D*WZRDS           DS
+     D* WZRX                          8    DIM(999)
+     D* WZRSTS                        1    OVERLAY(WZRX:001)
+     D* WZRBB                         7    OVERLAY(WZRX:002)
+     **
+R103 D WARDS           DS
+R103 D  WARX                          8    DIM(999) DESCEND
+R103 D  WARSTS                        1    OVERLAY(WARX:001)
+R103 D  WARBB                         7    OVERLAY(WARX:002)
+     **
+     **
+     D WZRDS           DS
+     D  WZRX                          8    DIM(999)
+     D  WZRSTS                        1    OVERLAY(WZRX:001)
+     D  WZRBNK                        2  0 OVERLAY(WZRX:002)
+     D  WZRBRN                        5  0 OVERLAY(WZRX:004)
+

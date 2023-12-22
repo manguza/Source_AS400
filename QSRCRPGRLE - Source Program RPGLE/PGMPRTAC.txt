@@ -1,0 +1,297 @@
+     H/COPY QSRCREFRLE,COPYRIGHTH
+     H DEBUG(*YES)
+    Š *************************************************************************
+     FXLNPAR1   IF   E             DISK
+     FXLNPAR2   IF   E           K DISK
+     FXLNMAST   IF   E           K DISK
+     FXSSDATA   IF   E           K DISK
+     FPGMPRTP   O    E             PRINTER INFDS(PRTFDS)
+    Š *
+     D/COPY QSRCREFRLE,RDFORMATD
+     D/COPY QSRCREFRLE,SSQPRTFD
+
+     D                 DS
+     D BREAKKEY1               1     20
+     D  X1BKN                  1      2  0
+     D  X1BRN                  3      7  0
+     D  X1TYPE                 7     16
+     D  X1CURTYP              17     20
+     D                 DS
+     D BREAKKEY2               1     20
+     D  X2BKN                  1      2  0
+     D  X2BRN                  3      7  0
+     D  X2TYPE                 7     16
+     D  X2CURTYP              17     20
+
+     d WDTT            DS
+     d  WDTTDD                 1      2
+     d  WDTTF1                 3      3    inz('/')
+     d  WDTTMM                 4      5
+     d  WDTTF2                 6      6    inz('/')
+     d  WDTTYY                 7     10
+
+     IRXSSDATA
+     I              MNLDT8                      JMNLDT8
+     I              MNLUID                      JMNLUID
+     I              MNLWID                      JMNLWID
+     I              MNLTIM                      JMNLTIM
+     I              MNCUID                      JMNCUID
+     I              MNCDT8                      JMNCDT8
+     I              MNCTIM                      JMNCTIM
+     I              MNCWID                      JMNCWID
+
+    š * -- KEY LIST -- *
+     C     KYXSSDATA     KLIST
+     C                   KFLD                    BKN
+     C                   KFLD                    BRN
+    Š *
+     C     KYXPAR2       KLIST
+     C                   KFLD                    TYPE
+     C                   KFLD                    CURTYP
+    Š *************************************************************************
+    Š *˜Main Program                                                         Š*
+    Š *************************************************************************
+    š *
+     C     *START        SETLL     XLNMAST
+     C                   DOU       WKEOFILE      = *ON
+     C                   READ      XLNMAST
+     C                   IF        %EOF(XLNMAST)
+     C                   LEAVE
+     C                   ENDIF
+    Š *
+     C                   Z-ADD     BKN           X1BKN
+     C                   Z-ADD     BRN           X1BRN
+     C                   MOVEL(P)  TYPE          X1TYPE
+     C                   MOVEL(P)  CURTYP        X1CURTYP
+    Š *
+     C                   IF        WKFIRSTR      = *OFF
+     C                   MOVEL(P)  *ON           WKFIRSTR
+     C                   EXSR      PRTHDG
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   ENDIF
+    Š *
+     C                   IF        BREAKKEY1     <> BREAKKEY2
+    Š *
+     C                   SELECT
+     C                   WHEN      X1BKN         <> X2BKN    OR
+     C                             X1BRN         <> X2BRN
+     C                   EXSR      SRTOTAL
+     C                   EXSR      PRTHDG
+    Š *
+     C                   WHEN      X1BKN         <> X2BKN    OR
+     C                             X1BRN         <> X2BRN    OR
+     C                             X1TYPE        <> X2TYPE   OR
+     C                             X1CURTYP      <> X2CURTYP
+     C                   EXSR      SRTOTAL
+     C                   EXSR      PRTHDG
+    Š *
+     C                   ENDSL
+    Š *
+     C                   MOVEL(P)  BREAKKEY1     BREAKKEY2
+     C                   ENDIF
+    Š *
+     C                   EXSR      SRDETAIL
+    Š *
+     C                   ENDDO
+    Š *
+     C                   IF        WKFIRSTR      = *OFF
+     C                   EXSR      SRNOREC
+     C                   ELSE
+     C                   EXSR      SRENDLR
+     C                   ENDIF
+    Š *
+     C                   MOVE      *ON           *INLR
+    Š *************************************************************************
+    Š *˜Print new header                                                     Š*
+    Š *************************************************************************
+     C     PRTHDG        BEGSR
+    Š *
+     C                   ADD       1             PAGNUM
+    Š *
+     C                   TIME                    SYSTIME
+    š * SYSTEM DATE
+     C                   EVAL      WDTTYY        =
+     C                             %SUBST(%CHAR(SYSTIME):01:04)
+     C                   EVAL      WDTTMM        =
+     C                             %SUBST(%CHAR(SYSTIME):06:07)
+     C                   EVAL      WDTTDD        =
+     C                             %SUBST(%CHAR(SYSTIME):09:10)
+     C                   EVAL      SYSDAT        = WDTT
+    š * SYSTEM TIME
+     c                   EVAL      SYSTIM        =
+     c                             %SUBST(%CHAR(SYSTIME):12:8)
+    Š *
+     C                   Z-ADD     BKN           OJDBANK
+     C                   Z-ADD     RBRN          OJDBR1
+     C                   Z-ADD     BRN           OJDBR2
+    Š *
+     C                   EVAL      OJDNAME1      = 'Kiatnakin Phatra Bank'
+     C
+     C     KYXSSDATA     CHAIN     XSSDATA                            90
+     C  N90              MOVEL(P)  JDNAME        OJDNAME2
+    Š *
+     C                   EXSR      SRSTRLVL1
+     C                   EXSR      SRSTRLVL2
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜Write Detail                                                         Š*
+    Š *************************************************************************
+     C     SRDETAIL      BEGSR
+    Š *
+    š * Account Number *
+     C                   Z-ADD     ACCTNO        OACCTNO
+    š * Account Type *
+     C                   MOVEL(P)  ACTYPE        OACTYPE
+    š * Formatted short name *
+     C                   MOVEL(P)  FSNAME        OFSNAME
+    š * CIF Number *
+     C                   Z-ADD     CIFNO         OCIFNO
+    š * Multi CCY Loan Code *
+     C                   MOVEL(P)  MCLNID        OMCLNID
+    š * Loan Type *
+     C                   MOVEL(P)  TYPE          OTYPE
+    š * Currency Type *
+     C                   MOVEL(P)  CURTYP        OCURTYP
+    š * Status *
+     C                   Z-ADD     STATUS        OSTATUS
+    š * Current Balance *
+     C                   Z-ADD     CBAL          OCBAL
+    Š *
+    š * Original Loan Date *
+     C                   Z-ADD     ORGDT8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OORGDT8
+    Š *
+    š * Status Date *
+     C                   Z-ADD     STSDT8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        OSTSDT8
+    Š *
+     C                   Z-ADD     2             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     DETAIL
+    Š *
+     C                   ADD       1             T1REC
+     C                   ADD       CBAL          T1CBAL
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜Write Total                                                          Š*
+    Š *************************************************************************
+     C     SRTOTAL       BEGSR
+    Š *
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN2
+     C                   WRITE     TOTAL
+     C                   WRITE     SPACELN2
+    Š *
+     C                   ADD       1             T1REC
+     C                   ADD       CBAL          T1CBAL
+     C                   CLEAR                   T1REC
+     C                   CLEAR                   T1CBAL
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜Report Format Level 1                                                Š*
+    Š *************************************************************************
+     C     SRSTRLVL1     BEGSR
+    Š *
+     C                   WRITE     HEADNG
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜Report Format Level 2                                                Š*
+    Š *************************************************************************
+     C     SRSTRLVL2     BEGSR
+    Š *
+     C     KYXPAR2       CHAIN     XLNPAR2                            91
+     C  N91              MOVEL(P)  PTYPE         HTYPE
+     C  N91              MOVEL(P)  PLTYDS        HPLTYDS
+    Š *
+     C                   Z-ADD     3             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNG1
+    Š *
+     C                   Z-ADD     3             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     HEADNG2
+    Š *
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN1
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜sr - end report                                                      Š*
+    Š *************************************************************************
+     C     SRENDLR       BEGSR
+    Š *
+     C                   Z-ADD     1             P_LINENO
+     C                   EXSR      SROVRFLW
+     C                   WRITE     SPACELN2
+     C                   WRITE     TOTAL
+     C                   WRITE     SPACELN2
+     C                   WRITE     SPACELN1
+     C                   WRITE     ENDRPT
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜No Record                                                            Š*
+    Š *************************************************************************
+     C     SRNOREC       BEGSR
+    Š *
+     C                   Z-ADD     0             OJDBANK
+     C                   Z-ADD     0             OJDBR1
+     C                   Z-ADD     1             PAGNUM
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG2
+     C                   WRITE     SPACELN1
+     C                   WRITE     NOREC
+     C                   WRITE     ENDRPT
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜Overflow report                                                      Š*
+    Š *************************************************************************
+     C     SROVRFLW      BEGSR
+    Š *
+     C                   IF        (P_OVERFLOW - P_CUR_LINE) <= P_LINENO
+     C                   ADD       1             PAGNUM
+     C                   WRITE     HEADNG
+     C                   WRITE     HEADNG2
+     C                   WRITE     SPACELN1
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜*INZSR                                                               Š*
+    Š *************************************************************************
+     C     *INZSR        BEGSR
+     C*
+     C                   READ      XLNPAR1
+     C********************
+     C* GET REPORT TITLE *
+     C********************
+     C                   MOVEL     'PGMPRTDSP'   PGMNAM
+    Š *
+     C                   MOVEL(P)  *OFF          WKEOFILE          1
+     C                   MOVEL(P)  *OFF          WKFIRSTR          1
+     C                   MOVEL(P)  *OFF          WKDETAIL          1
+    Š *
+     C     PLSSDATV      PLIST
+     C                   PARM                    PIDAT8            8 0
+     C                   PARM                    PODAT8            8 0
+     C                   PARM                    PIERROR           1
+    Š *
+     C                   Z-ADD     LP1PD8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        LP1PD8
+    Š *
+     C                   Z-ADD     LP1TR8        PIDAT8
+     C                   CALL      'SSDATV'      PLSSDATV
+     C                   Z-ADD     PODAT8        LP1TR8
+    Š *
+     C                   ENDSR
+

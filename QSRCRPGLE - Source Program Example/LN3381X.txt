@@ -1,0 +1,213 @@
+     F*-------------------------------------------------------------------------
+     F* Program Name..: LN3381X
+     F* Description...: Distributor Financing Program Summary Report
+     F* Date Created..: 22/03/2013
+     F* Ref no........: CR#866
+     F* Author........: Sartra T.
+     F*-------------------------------------------------------------------------
+     F* LN3381X  Is part of Silverlake Integrated Banking System
+     F* Copyright 1996 by Silverlake System Sdn Bhd Kuala Lumpur,
+     F* Malaysia.
+     F*-------------------------------------------------------------------------
+     F*  MODIFICATION LOGS:
+     F*  REF.#  NAME     DATE      DESCRIPTION
+     F*  -----  ----  ----------   ---------------------------------------------
+     F*
+     F*
+     F*-------------------------------------------------------------------------
+     FCFCREL    IF   E           K DISK    PREFIX(CF_)
+     FLNRPTOL9  IF   E           K DISK
+     FCFMAST    IF   E           K DISK
+     FLNMFTN    IF   E           K DISK
+     FLNPAR1    IF   E             DISK
+     FLN3381WK  O    E           K DISK    PREFIX(X_)
+     D*-------------------------------------------------------------------------
+     D*
+     D SILVERLAKE    E DS                  EXTNAME(SILVERLAKE) PREFIX(SL_)
+     D               EUDS                  EXTNAME(SSAPAR)
+     D*Copybook  - Retrieve SS Parm Data-Structure
+     D/COPY QSRCREFRLE,SSQRTVPD
+     D*Copybook  - Retrieve SS Entry List Parameter
+     D/COPY QSRCREFRLE,SSQRTVPED
+     D*
+     D INACNO          S             19  0
+     D INACTY          S              1
+     D INOSEQ          S             19  0
+     D INTAMT          S             17  2
+     D INNTYP          S              2
+     D INKLVL          S              1
+     D* Define Data Structure for TLLOG
+     D DSTLLOG       E DS                  EXTNAME(TLLOG)
+     C*-------------------------------------------------------------------------
+     C* main logic
+     C*-------------------------------------------------------------------------
+     C     *LOVAL        SETLL     CFCREL
+     C                   DOU       WKEOFILE1     = *ON
+     C                   READ      CFCREL
+     C                   IF        %EOF(CFCREL)
+     C                   LEAVE
+     C                   ENDIF
+     C*
+     C                   IF        CF_CFCREL     = 'PP'
+     C                   ELSE
+     C                   ITER
+     C                   ENDIF
+     C*
+     C                   CLEAR                   SMDRLIMT
+     C                   CLEAR                   SMCBAL
+     C                   CLEAR                   SMAVLAMT
+     C                   CLEAR                   SMTLBF02
+     C                   MOVEL(P)  *OFF          WKHAVDATA
+     C*
+     C                   Z-ADD     CF_CFRCIF     WKCIFNO
+     C     LNRPTOKEY     SETLL     LNRPTOL9
+     C                   DOU       WKEOFILE2     = *ON
+     C     LNRPTOKEY     READE     LNRPTOL9
+     C                   IF        %EOF(LNRPTOL9)
+     C                   LEAVE
+     C                   ENDIF
+     C                   IF        TYPE          = 'PNDFPM01'  OR
+     C                             TYPE          = 'PNDFPT01'
+     C                   EXSR      SRPROC1
+     C                   ENDIF
+     C                   ENDDO
+     C                   IF        WKHAVDATA     = *ON
+     C                   EXSR      SRPROC2
+     C                   ENDIF
+     C                   ENDDO
+     C*
+     C                   EVAL      *INLR = *ON
+     C*
+     C*-------------------------------------------------------------------------
+     C     SRPROC1       BEGSR
+     C*
+     C                   ADD       DRLIMT        SMDRLIMT
+     C                   ADD       CBAL          SMCBAL
+     C                   ADD       ZAVLBL        SMAVLAMT
+     C*
+     C                   Z-ADD     ACCTNO        WKLTACCT
+     C                   MOVEL(P)  ACTYPE        WKLTACTY
+     C     LNMFTNKEY     SETLL     LNMFTN
+     C                   DOU       WKEOFILE3     = *ON
+     C     LNMFTNKEY     READE     LNMFTN
+     C                   IF        %EOF(LNMFTN)
+     C                   LEAVE
+     C                   ENDIF
+     C*
+     C                   IF        LTEFD8        >= LP1NB8
+     C                   CLEAR                   DSTLLOG
+     C                   MOVEL     TLLOGL        DSTLLOG
+     C     TLBF02        DIV       100           XXTLBF02         17 2
+     C                   ADD       XXTLBF02      SMTLBF02
+     C                   LEAVE
+     C                   ENDIF
+     C                   ENDDO
+     C*
+     C                   Z-ADD     BKN           SVBKN
+     C                   Z-ADD     RBRN          SVRBRN
+     C                   MOVEL(P)  CURTYP        SVCURTYP
+     C                   MOVEL(P)  TYPE          SVTYPE
+     C*
+     C                   MOVEL(P)  *ON           WKHAVDATA
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRPROC2       BEGSR
+     C*
+     C                   CLEAR                   RLN3381WK
+     C*
+     C*Bank Number
+     C                   Z-ADD     SVBKN         X_BKN
+     C*Reporting Branch
+     C                   Z-ADD     SVRBRN        X_RBRN
+     C*Customer number
+     C                   Z-ADD     CF_CFCIFN     X_CFCIFN
+     C*Customer Number Name
+     C                   Z-ADD     CF_CFCIFN     WKCFCIFN
+     C                   EXSR      SRNAMADD
+     C                   MOVEL(P)  WKCFNA1       X_CFCIFND
+     C*Currency Type
+     C                   MOVEL(P)  SVCURTYP      X_CURTYP
+     C*Description (Local)
+     C                   EVAL      P8FILE        = 'SSFXRP'
+     C                   EVAL      K8JFXCOD1     = SVCURTYP
+     C                   EXSR      SRSSRTVP
+     C                   IF        P8ERROR       = ' '
+     C                   MOVEL     JFSDSC        X_JFXLSC
+     C                   ELSE
+     C                   MOVEL(P)  'Not Found'   X_JFXLSC
+     C                   ENDIF
+     C*Related CIF Number
+     C                   Z-ADD     CF_CFRCIF     X_CFRCIF
+     C*Related CIF Number Name
+     C                   Z-ADD     CF_CFRCIF     WKCFCIFN
+     C                   EXSR      SRNAMADD
+     C                   MOVEL(P)  WKCFNA1       X_CFRCIFD
+     C*Credit Limit
+     C                   Z-ADD     SMDRLIMT      X_DRLIMT
+     C*Outstanding Balance
+     C                   Z-ADD     SMCBAL        X_CBAL
+     C*Future-Dated Disbursement
+     C                   Z-ADD     SMTLBF02      X_FUTDIS
+     C*Available Balance
+     C                   Z-ADD     SMAVLAMT      X_AVLAMT
+     C*
+     C                   WRITE     RLN3381WK
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C     SRNAMADD      BEGSR
+     C*get name
+     C                   CLEAR                   WKCFNA1
+     C     CFMASTKEY     CHAIN     CFMAST
+     C                   IF        %FOUND(CFMAST)
+     C                   MOVEL(P)  CFNA1         WKCFNA1
+     C                   ENDIF
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* Initialisation
+     C*-------------------------------------------------------------------------
+     C     *INZSR        BEGSR
+     C*
+     C     LNRPTOKEY     KLIST
+     C                   KFLD                    WKCIFNO
+     C     *LIKE         DEFINE    CIFNO         WKCIFNO
+     C*
+     C     *LIKE         DEFINE    DRLIMT        SMDRLIMT
+     C     *LIKE         DEFINE    CBAL          SMCBAL
+     C     *LIKE         DEFINE    ZAVLBL        SMAVLAMT
+     C     *LIKE         DEFINE    CBAL          SMTLBF02
+     C*
+     C     CFMASTKEY     KLIST
+     C                   KFLD                    WKCFCIFN
+     C     *LIKE         DEFINE    CFCIFN        WKCFCIFN
+     C     *LIKE         DEFINE    CFNA1         WKCFNA1
+     C*
+     C     LNMFTNKEY     KLIST
+     C                   KFLD                    WKLTACCT
+     C                   KFLD                    WKLTACTY
+     C     *LIKE         DEFINE    LTACCT        WKLTACCT
+     C     *LIKE         DEFINE    LTACTY        WKLTACTY
+     C*
+     C     *LIKE         DEFINE    BKN           SVBKN
+     C     *LIKE         DEFINE    RBRN          SVRBRN
+     C     *LIKE         DEFINE    CURTYP        SVCURTYP
+     C     *LIKE         DEFINE    TYPE          SVTYPE
+     C*
+     C                   MOVEL(P)  *OFF          WKEOFILE1         1
+     C                   MOVEL(P)  *OFF          WKEOFILE2         1
+     C                   MOVEL(P)  *OFF          WKEOFILE3         1
+     C                   MOVEL(P)  *OFF          WKHAVDATA         1
+     C*
+     C                   CLEAR                   SMDRLIMT
+     C                   CLEAR                   SMCBAL
+     C                   CLEAR                   SMAVLAMT
+     C                   CLEAR                   SMTLBF02
+     C*
+     C                   READ      LNPAR1
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C*Copybook  - Call SSRTVP Sub-Routine
+     C/COPY QSRCREFRLE,SSQRTVPC
+     C/COPY QSRCREFRLE,SSQSSRTVX
+

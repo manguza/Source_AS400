@@ -1,0 +1,19 @@
+             PGM        PARM(&RUNN &BKN &BRN &RBRN &FSNAME &MCLNID +
+                          &TYPE &CURTYP &CBAL)
+     /*˜Variable Declarationˆ*/
+             DCL        VAR(&RUNN)   TYPE(*DEC)  LEN(2 0)
+             DCL        VAR(&BKN)    TYPE(*DEC)  LEN(2 0)
+             DCL        VAR(&BRN)    TYPE(*DEC)  LEN(5 0)
+             DCL        VAR(&RBRN)   TYPE(*DEC)  LEN(5 0)
+             DCL        VAR(&FSNAME) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&MCLNID) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&TYPE)   TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CURTYP) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&CBAL)   TYPE(*CHAR) LEN(17)
+
+             CALL       PGM(PGMCRTAC) +
+                        PARM(&RUNN &BKN &BRN &RBRN &FSNAME &MCLNID +
+                          &TYPE &CURTYP &CBAL)
+
+ END:        ENDPGM
+

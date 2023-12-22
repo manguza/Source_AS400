@@ -1,0 +1,61 @@
+      ****************************************************************
+      *  CPYBOOK ....: LNQTXHC                                       *
+      *  DESCRIPTION.: CPYBOOK-MBASE TRXN HANDLER C SPEC             *
+      *  DATE CREATED: 06.11.2007 18:47:37                           *
+      *  CREATED BY..:                                               *
+      *  PROGRAMMER..:                                               *
+      ****************************************************************
+      * LNQTXHC    IS A PART OF SILVERLAKE SYSTEM (R)                *
+      *    (C) COPYRIGHT 2000, 2002                                  *
+      *    BY: SILVERLAKE SYSTEM SDN. BHD.                           *
+      *        FLOOR 12A, PLAZA IBM,                                 *
+      *        NO.1, JALAN TUN MOHD FUAD,                            *
+      *        TAMAN TUN DR. ISMAIL,                                 *
+      *        60000 KUALA LUMPUR, MALAYSIA                          *
+      ****************************************************************
+      *  MODIFICATION LOGS                                           *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  wll   SS02   12/10/09  - application exit program           *
+      *  LKK   R1001  14/04/11  - add LNPARZ                         *
+      ****************************************************************
+     **===========================================
+     **
+     **===========================================
+     C     SRINZSR       BEGSR
+     ** Date conversion routine (Data Base 8 -> Screen 8)
+     C     PLSSDATV      PLIST
+     C                   PARM                    PIDAT8            8 0
+     C                   PARM                    PODAT8            8 0
+     C                   PARM                    ERR               1
+     ** Date conversion routine (Screen 8 -> Data Base 8)
+     C     PLSSDATU      PLIST
+     C                   PARM                    PIDAT8            8 0
+     C                   PARM                    PODAT8            8 0
+     C                   PARM                    ERR               1
+     **
+     C**                 READ      RLNPAR1
+     ** rtv LNPAR1
+     C                   EVAL      P9FILE      = 'LNPAR1'
+     C                   EXSR      SRLNRTVP
+R1001C                   EVAL      P9FILE      = 'LNPARZ'
+R1001C                   EXSR      SRLNRTVP
+     ** issue close
+     C                   IF        P9ERROR     = *BLANKS
+     C                   EVAL      P9OPTION    = '*CLOSE'
+     C                   EXSR      SRLNRTVP
+     C                   ENDIF
+     **
+     C                   EVAL      SSPDT8        = LP1NB8
+     **
+     C     ERINZSR       ENDSR
+     **===========================================
+     ** sr - application exit program
+     **===========================================
+     C     SREXITAPP     BEGSR
+     **
+     C     EREXITAPP     ENDSR
+     **
+     ** C-Spec to retrieve System Parameter
+SSZZ C/COPY QSRCREFRLE,LNQRTVPC
+

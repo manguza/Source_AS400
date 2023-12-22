@@ -1,0 +1,159 @@
+      ****************************************************************
+      *  ADVANCE DATE BY DAYS ROUTINE                                *
+      ****************************************************************
+      *  SSDATB is a part of Silverlake System (R)                   *
+      *  (C) Copyright 1993, 1994                                    *
+      *                 By:  Silverlake System Sdn. Bhd.             *
+      *                      Floor 12A, Plaza IBM,                   *
+      *                      No.1, Jalan Tun Mohd Fuad,              *
+      *                      Taman Tun Dr. Ismail,                   *
+      *                      60000 Kuala Lumpur, Malaysia            *
+      ****************************************************************
+      *  Created By: limel                                           *
+      *  Date      :                                                 *
+      ****************************************************************
+      *  Modification Logs:                                          *
+      *  Name  Init   Date      Remarks                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *                                                              *
+      ****************************************************************
+      **  Pass In  :-
+      **  DATIN8   - ISO Date to be Rolled      or
+      **  ROLTRM   - No of Days To Roll
+      **  ROLDAY   - Default Day of Month if Greater Zero
+      **           - for Bi-Monthly roll only (Optional)
+      **  ROLADV   - Bi Monthly Roll (Optional)
+      **           - ("Y" to roll Bi-Monthly,  " " do not roll Bi-Monthly)
+      **  Pass Out :-
+      **  DATOU8   - ISO Date Result from the Roll
+      **  ROLERR   - Error indicator ("1" - Error, " " - No Error)
+      ****************************************************************
+     D                 DS
+     D ISODAT8                         D   DATFMT(*ISO)
+     D  ISOYY                         4  0 OVERLAY(ISODAT8:1)
+     D  DASH1                         1    OVERLAY(ISODAT8:*NEXT)
+     D  ISOMM                         2  0 OVERLAY(ISODAT8:*NEXT)
+     D  DASH2                         1    OVERLAY(ISODAT8:*NEXT)
+     D  ISODD                         2  0 OVERLAY(ISODAT8:*NEXT)
+     **
+     D ROLDT8          S              8  0
+     D ROLTRM          S              5  0
+     D ROLDAY          S              2  0
+     D ROLADV          S              1
+     D ROLERR          S              1
+     **
+     D RTRM            S                   LIKE(ROLTRM)
+SS01 D RDAY            S                   LIKE(ROLDAY)
+     D WDAY            S                   LIKE(ROLDAY)
+     **
+     C     *ENTRY        PLIST
+     C                   PARM                    DATIN8            8 0
+     C                   PARM                    DATOU8            8 0
+     C                   PARM                    ROLTRM
+     C                   PARM                    ROLDAY
+     C                   PARM                    ROLADV
+     C                   PARM                    ROLERR            1
+     C*
+     C                   MONITOR
+     C*
+     C                   Z-ADD     DATIN8        ROLDT8
+     C                   EXSR      ADVDAY
+     C*
+     C                   ON-ERROR
+     C                   Z-ADD     0             ROLDT8
+     C                   MOVE      '1'           ROLERR
+     C                   ENDMON
+     C*
+     C                   Z-ADD     ROLDT8        DATOU8
+     C*
+     C                   RETURN
+     C********************************************************************
+     C*  ADVDAY SUBR - ADVANCE REVIEW DATE BY # DAYS
+     C********************************************************************
+     C**  Pass In  :-
+     C**  ROLDT8   - ISO to be Rolled
+     C**  ROLTRM   - No of Days To Roll
+     C**  ROLDAY   - Default Day of Month if Greater Zero for Bi-Monthly roll on
+     C**  ROLADV   - Bi Monthly Roll (Optional)
+     C**           - ("Y" to roll Bi-Monthly,  " " do not roll Bi-Monthly)
+     C**  Pass Out :-
+     C**  ROLDT8   - ISO Date Result from the Roll
+     C**  ROLERR   - Error indicator ("1" - Error, " " - No Error)
+     C********************************************************************
+     C**
+     C     ADVDAY        BEGSR
+     C**
+     C                   MOVE      '1'           ROLERR
+     C**
+     C     ROLDT8        IFGT      0
+     C     *ISO          MOVE      ROLDT8        ISODAT8
+     C                   ELSE
+     C                   Z-ADD     0             ROLDT8
+     C                   LEAVESR
+     C                   ENDIF
+     C*
+     C* EXTRACT DAY OF MONTH
+     C                   Z-ADD     ISODD         RDAY
+     C**
+     C* ROLL ISO DATE BY ROLTRM DAYS
+     C                   ADDDUR    ROLTRM:*D     ISODAT8
+     C**
+     C* Handle 14 day freq with day of month defined
+     C     ROLADV        IFEQ      'Y'
+     C                   EXSR      BIMROL
+     C                   ENDIF
+     C                   MOVE      *BLANKS       ROLADV
+     C**
+     C* CONVERT TO JULIAN AND GREGORIAN DATE
+     C                   MOVE      ISODAT8       ROLDT8
+     C**
+     C                   MOVE      *BLANKS       ROLERR
+     C**
+     C                   ENDSR
+     C*
+     C**************************************************************************
+     C**   BIMROL - BUMP NSPDD FOR TUK PRODUCT (Replace TUKNPD)
+     C**************************************************************************
+     C     BIMROL        BEGSR
+     C**
+     ** Bi-Monthly Role
+     C     ROLDAY        IFGE      1
+     C     ROLDAY        ANDLE     14
+     C**
+     C     ROLTRM        IFEQ      14
+     C     ROLTRM        OREQ      -14
+     C     ROLTRM        OREQ      13
+     C     ROLTRM        OREQ      -13
+     C**
+     C     ROLTRM        IFGT      0
+     C**
+     C** From 15th (RDAY) of the month roll to next month 1st (ROLDAY)
+     C     ROLDAY        IFNE      RDAY
+     C     *ISO          MOVE      ROLDT8        ISODAT8
+     C* DEFAULT ISODAT8 TO ROLDAY OF THE MONTH
+     C                   Z-ADD     ISODD         WDAY
+     C     ROLDAY        SUB       WDAY          WDAY
+     C                   ADDDUR    WDAY:*D       ISODAT8
+     C                   ADDDUR    1:*M          ISODAT8
+     C                   ENDIF
+     C**
+     C                   ELSE
+     C**
+     C** From 1st (RDAY) of the month roll backward to 15th of last month (ROLTR
+     C     ROLDAY        IFEQ      RDAY
+     C     *ISO          MOVE      ROLDT8        ISODAT8
+     C* DEFAULT ISODAT8 TO ROLTRM+1 OF THE MONTH
+     C                   Z-ADD     ISODD         WDAY
+     C     1             SUB       WDAY          WDAY
+     C                   SUB       ROLTRM        WDAY
+     C                   ADDDUR    WDAY:*D       ISODAT8
+     C                   SUBDUR    1:*M          ISODAT8
+     C                   ENDIF
+     C**
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+     C**
+     C                   ENDSR
+      *--------------------------------------------- End Of Coding --*
+

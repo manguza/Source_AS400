@@ -1,0 +1,16 @@
+     F* LAST CHANGED
+     F*REF# DATE     IR NO/CHANGE NO. DESCRIPTION OF CHANGE
+     F*---  ----     ---------------- ---------------------
+     F*M001 24/02/05                  RETROFIT
+LKM  F*M002 25/07/05                  ADD NEW FIELD FOR REPORT
+     A*********************************************************************/
+     A*M001                                 REF(LNFREF)
+M001 A                                      REF(LNPREF)
+     A          R RXLNPAR1                  TEXT('Processing Dates Parameter')
+OS01 A            LP1LP8    R
+M002 A            LP1PD8    R
+M002 A            LP1NB8    R
+M002 A            LP1TR8    R
+     A            LP1NUM    R
+     A            LP1EOM    R
+

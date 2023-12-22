@@ -1,0 +1,86 @@
+     **============================================
+     **  MODIFICATION LOGS
+     **  INIT      DATE  REMARKS
+     **  ----- --------  -----------------------------------
+     **  SS03  10/03/11  LKW: Revamp SSRTVX parm entry.
+     **============================================
+SS02 ** SAN 18/01/10 HARD CODE FIELD SSRMIS = '3'
+     **============================================
+     C     SRSSRTVX      BEGSR
+     **
+     C     CCVPAR        PLIST
+     C                   PARM                    FROMBN
+     C                   PARM                    FROMC
+     C                   PARM                    TOC
+     C                   PARM                    BASCUR
+     C                   PARM                    FRAMT
+     C                   PARM      0             TOAMT
+SS03 C                   PARM                    PBSIND
+     C                   PARM                    CCVRAT
+SS03 C                   PARM                    PDRIND
+SS03 C                   PARM                    PPARAM
+SS03 C                   PARM                    PDENOM
+SS03 C                   PARM                    PSPRTY
+     C                   PARM                    FROMBR
+SS03 C                   PARM                    RRATEN
+     C                   PARM                    BNKEQV
+     C                   PARM                    RATFR
+     C                   PARM                    RATTO
+SS03 C                   PARM                    PFRATN
+SS03 C                   PARM                    PTRATN
+     C                   PARM                    CCVERR            1
+      **
+SS03 C**                 PARM                    ALTCUR
+SS03 C**                 PARM                    FRDORC
+SS03 C**                 PARM                    FRPGM
+SS03 C**                 PARM                    TOPGM
+SS03 C**                 PARM                    RTBUY
+SS03 C**                 PARM                    RTSELL
+SS03 C**                 PARM                    CCVREQ            8
+     **
+     C     *LIKE         DEFINE    SL_SSBANK     FROMBN
+     C     *LIKE         DEFINE    SL_SSCURC     FROMC
+     C     *LIKE         DEFINE    SL_SSCURC     TOC
+     C     *LIKE         DEFINE    SL_SSCURC     BASCUR
+     C     *LIKE         DEFINE    SL_SSAMT5     FRAMT
+     C     *LIKE         DEFINE    SL_SSAMT5     TOAMT
+     C     *LIKE         DEFINE    SL_SSAMT5     BNKEQV
+     C     *LIKE         DEFINE    SL_SSFEXRT    CCVRAT
+     C     *LIKE         DEFINE    SL_SSFEXRT    CCVRAT
+     C     *LIKE         DEFINE    SL_SSFEXRT    RATFR
+     C     *LIKE         DEFINE    SL_SSFEXRT    RATTO
+     C     *LIKE         DEFINE    SL_SSCURC     ALTCUR
+     C     *LIKE         DEFINE    SL_SSCOD1     FRDORC
+     C     *LIKE         DEFINE    SL_SSCODA     FRPGM
+     C     *LIKE         DEFINE    SL_SSCODA     TOPGM
+     C     *LIKE         DEFINE    SL_SSBRAN     FROMBR
+     C     *LIKE         DEFINE    SL_SSCOD1     RTBUY
+     C     *LIKE         DEFINE    SL_SSCOD1     RTSELL
+SS02 C     *LIKE         DEFINE    SL_SSCOD1     SSRMID
+     ** No used
+     C     *LIKE         DEFINE    SL_SSBANK     TOBN
+     C     *LIKE         DEFINE    SL_SSBRAN     TOBR
+     **
+SS03 C     *LIKE         DEFINE    SL_SSCOD1     PBSIND
+SS03 C     *LIKE         DEFINE    SL_SSCOD1     PDRIND
+SS03 C     *LIKE         DEFINE    SL_SSCODA     PPARAM
+SS03 C     *LIKE         DEFINE    SL_SSCOU4     PDENOM
+SS03 C     *LIKE         DEFINE    SL_SSCODA     PSPRTY
+SS03 C     *LIKE         DEFINE    SL_SSCOD1     RRATEN
+SS03 C     *LIKE         DEFINE    SL_SSCOD1     PFRATN
+SS03 C     *LIKE         DEFINE    SL_SSCOD1     PTRATN
+     **
+SS02 C                   MOVE      '3'           SSRMID
+     C                   Z-ADD     0             TOAMT
+     C                   Z-ADD     0             CCVRAT
+     C                   Z-ADD     0             RATFR
+     C                   Z-ADD     0             RATTO
+     C                   MOVE      SSRMID        RTBUY
+     C                   MOVE      SSRMID        RTSELL
+     **
+SS01 C     FRAMT         IFNE      0
+     C                   CALL      'SSRTVX'      CCVPAR
+SS01 C                   ENDIF
+     **
+     C     ERSSRTVX      ENDSR
+

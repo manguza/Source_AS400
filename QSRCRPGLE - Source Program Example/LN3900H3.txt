@@ -1,0 +1,145 @@
+     /***************************************************************/
+     /*  LN3900H3  is a part of Silverlake System (R)               */
+     /*  (C) Copyright 1993, 2010                                   */
+     /*                 By:  Silverlake System Sdn. Bhd.            */
+     /*                      Level 2A,KPMG TOWER,                   */
+     /*                      First Avenue, Bandar Utama,            */
+     /*                      47800 Petaling Jaya,                   */
+     /*                      Selangor, Malaysia                     */
+     /*                      TEL: +603-77216000                     */
+     /***************************************************************/
+     /*  Created By:  Sartra T.                                     */
+     /*  Date      :  22/12/2014                                    */
+     /***************************************************************/
+     /*  Modification Logs:                                         */
+     /*  Name  Init   Date      Remarks                             */
+     /*  ----  -----  --------  ----------------------------------  */
+     /*  TOR   K0001  14/02/19  running > 99 to 01                  */
+     /*  TOR   K0002  17/02/2022 add parameter del last xxx days mbr*/
+     /***************************************************************/
+             PGM        PARM(&FILEMB &DAYST3)
+
+             DCLF       FILE(LNPAR1)  OPNID(LNPAR1)
+             DCLF       FILE(QAFDMBR)
+
+             DCL        VAR(&FILEMB)  TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DAYST3)  TYPE(*CHAR) LEN( 3)
+             DCL        VAR(&DAYST4)  TYPE(*CHAR) LEN( 4)
+             DCL        VAR(&MBRNAME) TYPE(*CHAR) LEN(10)
+
+             DCL        VAR(&LP1PD8)  TYPE(*DEC)  LEN(8 0)
+             DCL        VAR(&LP1PDT8) TYPE(*CHAR) LEN(8)
+             DCL        VAR(&LP1PDT6) TYPE(*CHAR) LEN(6)
+             DCL        VAR(&LASTPD8) TYPE(*CHAR) LEN(8)
+             DCL        VAR(&LASTPD6) TYPE(*CHAR) LEN(6)
+             DCL        VAR(&DAYS)    TYPE(*DEC)  LEN(5 0)
+             DCL        VAR(&COUNT)   TYPE(*DEC)  LEN(5 0) VALUE(0)
+             DCL        VAR(&RUN99N)  TYPE(*DEC)  LEN(2 0) VALUE(0)
+             DCL        VAR(&RUN99T)  TYPE(*CHAR) LEN(2)
+
+             DCL        VAR(&DATIN8)  TYPE(*DEC)  LEN(8 0)
+             DCL        VAR(&DATOU8)  TYPE(*DEC)  LEN(8 0)
+             DCL        VAR(&ROLTRM)  TYPE(*DEC)  LEN(5 0)
+             DCL        VAR(&ROLDAY)  TYPE(*DEC)  LEN(2 0)
+             DCL        VAR(&ROLADV)  TYPE(*CHAR) LEN(1)
+             DCL        VAR(&ROLERR)  TYPE(*CHAR) LEN(1)
+
+             DCL        VAR(&X2NAME)  TYPE(*CHAR) LEN(1)
+
+             RCVF       RCDFMT(RLNPAR1) OPNID(LNPAR1)
+
+             CHGVAR     VAR(&LP1PD8)  VALUE(&LNPAR1_LP1PD8)
+             CHGVAR     VAR(&LP1PDT8) VALUE(&LP1PD8)
+             CHGVAR     VAR(&LP1PDT6) VALUE(%SST(&LP1PDT8 3 6))
+
+/*add member : R+yymmdd                                           */
+
+             CHGVAR     VAR(&MBRNAME) VALUE('R' *CAT &LP1PDT6)
+
+             CHGVAR     VAR(&RUN99N) VALUE(0)
+
+LOOP1:
+/*not found member                                                */
+             CHKOBJ     OBJ(&FILEMB) OBJTYPE(*FILE) MBR(&MBRNAME)
+             MONMSG     MSGID(CPF9815 CPF2817) EXEC(DO)
+                  ADDPFM     FILE(&FILEMB) MBR(&MBRNAME)
+                  GOTO       CMDLBL(CONT1)
+             ENDDO
+
+/*add member : R+yymmdd+99 if duplicate                           */
+/**K0001                                                       \/ */
+             IF         COND(&RUN99N *GE 99) THEN(DO)
+               CHGVAR     VAR(&RUN99N)  VALUE(1)
+               CHGVAR     VAR(&RUN99T)  VALUE(&RUN99N)
+               CHGVAR     VAR(&MBRNAME) +
+                          VALUE('R' *CAT &LP1PDT6 *CAT &RUN99T)
+               GOTO       CMDLBL(CONT1)
+             ENDDO
+/**K0001                                                       /\ */
+
+             CHGVAR     VAR(&RUN99N)  VALUE(&RUN99N+1)
+             CHGVAR     VAR(&RUN99T)  VALUE(&RUN99N)
+             CHGVAR     VAR(&MBRNAME) +
+                        VALUE('R' *CAT &LP1PDT6 *CAT &RUN99T)
+
+             GOTO       CMDLBL(LOOP1)
+
+/*copy data to member                                             */
+CONT1:
+             CPYF       FROMFILE(&FILEMB) TOFILE(&FILEMB) +
+                          FROMMBR(*FIRST) TOMBR(&MBRNAME) +
+                          MBROPT(*REPLACE) FMTOPT(*MAP *DROP)
+             MONMSG     MSGID(CPF2817)
+
+/*delete member : last xxx days                                   */
+             IF         COND( &DAYST3 *EQ '   ' ) THEN(DO)
+               CHGVAR     VAR(&DAYS)   VALUE(-62)
+             ENDDO
+             ELSE       CMD(DO)
+               CHGVAR     VAR(&DAYST4) VALUE('-' *CAT &DAYST3)
+               CHGVAR     VAR(&DAYS)   VALUE(&DAYST4)
+             ENDDO
+             CHGVAR     VAR(&DATIN8) VALUE(&LP1PD8)
+             CHGVAR     VAR(&ROLTRM) VALUE(&DAYS)
+
+             CALL       PGM(SSDATB) +
+                        PARM(&DATIN8 +
+                             &DATOU8 +
+                             &ROLTRM +
+                             &ROLDAY +
+                             &ROLADV +
+                             &ROLERR)
+
+             CHGVAR     VAR(&LASTPD8) VALUE(&DATOU8)
+             CHGVAR     VAR(&LASTPD6) VALUE(%SST(&LASTPD8 3 6))
+             CHGVAR     VAR(&MBRNAME) VALUE('R' *CAT &LASTPD6)
+
+             DSPFD      FILE(*LIBL/&FILEMB) TYPE(*MBR) +
+                          OUTPUT(*OUTFILE) FILEATR(*PF) +
+                          OUTFILE(QTEMP/AFDMBRXX)
+             OVRDBF     FILE(QAFDMBR) TOFILE(QTEMP/AFDMBRXX) +
+                          SHARE(*YES)
+LOOP2:
+
+             RCVF       RCDFMT(QWHFDMBR)
+             MONMSG     MSGID(CPF0864) EXEC(GOTO CMDLBL(ENDPGM))
+
+             CHGVAR     VAR(&X2NAME) VALUE(&MBNAME)
+
+             IF         COND(&X2NAME = 'R' *AND +
+                             &MBNAME <= &MBRNAME) THEN(DO)
+
+             CHKOBJ     OBJ(&FILEMB) OBJTYPE(*FILE) MBR(&MBNAME)
+             MONMSG     MSGID(CPF9815 CPF2817) EXEC(DO)
+               GOTO     CONT2
+             ENDDO
+
+             RMVM       FILE(&FILEMB) MBR(&MBNAME)
+             ENDDO
+ CONT2:
+
+             GOTO       LOOP2
+ ENDPGM:
+             DLTOVR     FILE(QAFDMBR)
+             ENDPGM
+

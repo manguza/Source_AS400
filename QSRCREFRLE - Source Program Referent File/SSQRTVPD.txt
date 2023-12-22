@@ -1,0 +1,495 @@
+     **/COPY QRPGLEREF,SSQRTVPD
+      ****************************************************************
+      *                                                              *
+      *  FILE NAME...: SSQRTVPD          REF.NO:                     *
+      *                                                              *
+      *  DESCRIPTION.: D-SPEC FOR SSRTVP CALLER                      *
+      *                                                              *
+      *  DATE CREATED: 17/01/2008                                    *
+      *                                                              *
+      *  AUTHOR......: LIMEL                                         *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      * SSQRTVPD IS A PART OF CIF/38 BANK ACCOUNTING SYSTEM          *
+      *    COPYRIGHT 1999 BY SILVERLAKE SYSTEM SDN BHD               *
+      *    KUALA LUMPUR, MALAYSIA.                                   *
+      *                                                              *
+      ****************************************************************
+      * PASS IN PARAMETER:                                           *
+      *   P8FILE   - NAME OF SS PARAMETER FILE TO RETRIEVE           *
+      *   P8KEY    - KEY VALUE OF THE FILE                           *
+      *   P8KEYNUM - NO OF KEY USED TO CHAIN FILE                    *
+      *   P8OPTION - POGRAM OPTION (E.G. '*CLOSE' TO CLOSE FILE)     *
+      *   P8ERROR  - ERROR INDICATOR DEFAULT BLANK.                  *
+      *                                                              *
+      * PASS OUT PARAMETER:                                          *
+      *   P8DATA   - DATA RETRIEVED FROM SS PARM FILE                *
+      *   P8ERROR  - ERROR SET ON '1' IF RECORD NOT FOUND            *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      *  MODIFICATION LOGS:                                          *
+      *                                                              *
+      *  INIT  REF.#     DATE    DESCRIPTION                         *
+      *  ----  -----  --------  ------------------------------------ *
+      *  JAYS  SS01   27/07/09  Add new file of SSFXRP for Currecy   *
+      *                         code                                 *
+      *  JAYS  SS02   18/08/09  Add new key to SSFXRT                *
+      *  JAYS  SS03   05/02/10  Add SSPAR7 and SSPAR9                *
+      *  CHL   SS04   11/02/10  Add SSPARG                           *
+      *  wll   SS05   15/03/10  Add SSSPAR,SSJOBR                    *
+      *  ALEX  SS06   16/03/10  Add SSCOUNL1 and SSFXRPL1            *
+      *  EWP   SS07   08/04/10  Add SSPARTL1                         *
+      *  IVAN  SS08   08/04/10  Add SSPARH                           *
+      *  NWL   R1001  21/02/11  Change SSFXRT key                    *
+      *  DOL   T1001  21/08/12  Add SSFXAR                           *
+      ****************************************************************
+     ** -------------- PASS IN KEY FIELD ---------------
+     D DSKYAPPL        DS
+     D   K8SSACD2                          LIKE(SSACD2)
+     **
+     D DSKYCFUN        DS
+     D   K8JCBANK                          LIKE(JCBANK)
+     D   K8JCBRN                           LIKE(JCBRN )
+     **
+     D DSKYCHOL        DS
+     D***K8SSCCOU                          LIKE(SSCCOU)
+     D   K8SSCCUR                          LIKE(SSCCUR)
+     D   K8SSCHL8                          LIKE(SSCHL8)
+     **
+     D*SS01 DSKYCLAS        DS
+     D*SS01   K8SSCCOD                          LIKE(SSCCOD)
+     **
+     D DSKYCLDR        DS
+     D   K8CBNKNO                          LIKE(CBNKNO)
+     D   K8CBRNBR                          LIKE(CBRNBR)
+     D   K8CDATE8                          LIKE(CDATE8)
+     **
+     D DSKYCLDR2       DS
+     D   K8CDATE82                         LIKE(CDATE8)
+     D   K8CBNKNO2                         LIKE(CBNKNO)
+     D   K8CBRNBR2                         LIKE(CBRNBR)
+     **
+     D DSKYCOUN        DS
+     D   K8SSCCOC                          LIKE(SSCCOC)
+     **
+SS06 D DSKYCOUNL1      DS
+SS06 D   K8SSCNCN                          LIKE(SSCNCN)
+     **
+     D DSKYDATA        DS
+     D   K8JDBANK                          LIKE(JDBANK)
+     D   K8JDBR                            LIKE(JDBR  )
+     **
+     D DSKYFXRT        DS
+     D   K8JFXBNK                          LIKE(JFXBNK)
+SS02 D*R1001   K8JFXBRN                          LIKE(JFXBRN)
+     D   K8JFXCOD                          LIKE(JFXCOD)
+     D   K8JFXBKC                          LIKE(JFXBKC)
+R1001D   K8JFDENO                          LIKE(JFDENO)
+     **
+T1001D DSKYFXAR        DS
+T1001D   K9JFXBNK                          LIKE(JFXBNK)
+T1001D   K9JFGPRT                          LIKE(JAGPRT)
+T1001D   K9JFXCOD                          LIKE(JFXCOD)
+T1001D   K9JFXBKC                          LIKE(JFXBKC)
+T1001D   K9JFDENO                          LIKE(JFDENO)
+     **
+     D*SS01 DSKYMAIL        DS
+     D*SS01   K8SSMCOD                          LIKE(SSMCOD)
+     **
+     D DSKYOFFR        DS
+     D   K8SSOBNK                          LIKE(SSOBNK)
+     D   K8SSOOFF                          LIKE(SSOOFF)
+     **
+     D DSKYPARC        DS
+     D   K8SICNAM                          LIKE(SICNAM)
+     D   K8SICAPP                          LIKE(SICAPP)
+     D   K8SICCOD                          LIKE(SICCOD)
+     D   K8SICVAL                          LIKE(SICVAL)
+     **
+     D DSKYPARR        DS
+     D   K8JPBKNN                          LIKE(JPBKNN)
+     D   K8JPBRNN                          LIKE(JPBRNN)
+     D   K8JPAPCD                          LIKE(JPAPCD)
+     D   K8JPTYPE                          LIKE(JPTYPE)
+     D   K8JPRCUR                          LIKE(JPRCUR)
+     **
+     D DSKYPARW        DS
+     D   K8SLBCOD                          LIKE(SLBCOD)
+     **
+     D*SS01 DSKYPRMG        DS
+     D*SS01   K8SMGLOB                          LIKE(SMGLOB)
+     D*SS01   K8SMGDPC                          LIKE(SMGDPC)
+     D*SS01   K8SMGTMC                          LIKE(SMGTMC)
+     D*SS01   K8SMGCOD                          LIKE(SMGCOD)
+     **
+     D*SS01 DSKYPROF        DS
+     D*SS01   K8SOFLOB                          LIKE(SOFLOB)
+     D*SS01   K8SOFDPC                          LIKE(SOFDPC)
+     D*SS01   K8SOFTMC                          LIKE(SOFTMC)
+     D*SS01   K8SOFCOD                          LIKE(SOFCOD)
+     **
+     D*SS01 DSKYPRPC        DS
+     D*SS01   K8SPCAPP                          LIKE(SPCAPP)
+     D*SS01   K8SPCFNC                          LIKE(SPCFNC)
+     D*SS01   K8SPCCNT                          LIKE(SPCCNT)
+     **
+     D*SS01 DSKYPRPI        DS
+     D*SS01   K8SPIAPP                          LIKE(SPIAPP)
+     D*SS01   K8SPIFNC                          LIKE(SPIFNC)
+     D*SS01   K8SPICNT                          LIKE(SPICNT)
+     D*SS01   K8SPILOB                          LIKE(SPILOB)
+     D*SS01   K8SPIDPC                          LIKE(SPIDPC)
+     **
+     D DSKYRATE        DS
+     D   K8JRBANK                          LIKE(JRBANK)
+     D   K8JRBRAN                          LIKE(JRBRAN)
+     D   K8JRRATN                          LIKE(JRRATN)
+     D   K8JRRCUR                          LIKE(JRRCUR)
+     **
+     D DSKYSTAT        DS
+     D   K8SSSCOC                          LIKE(SSSCOC)
+     D   K8SSSTAC                          LIKE(SSSTAC)
+     **
+     D*DSKYARCH        DS
+     D*  K8ARPFIL                          LIKE(ARPFIL)
+     D*  K8ARPKYV                          LIKE(ARPKYV)
+     D*  K8ARPDT7                          LIKE(ARPDT7)
+     D*  K8ARPTIM                          LIKE(ARPTIM)
+     **
+     D*DSKYRATB        DS
+     D*  K8JRBRAN                          LIKE(JRBRAN)
+     D*  K8JRRATN                          LIKE(JRRATN)
+     D*  K8JRRCUR                          LIKE(JRRCUR)
+     **
+     D DSKYMBNK        DS
+     D   K8BNKNBR                          LIKE(BNKNBR)
+     **
+     D DSKYFXRP        DS
+SS01 D   K8JFXCOD1                         LIKE(JFXCOD)
+     **
+SS06 D DSKYFXRPL1      DS
+SS06 D   K8JFXCDN                          LIKE(JFXCDN)
+     **
+     D DSKYPARA        DS
+SS01 D   K8SICNAMA                         LIKE(SICNAM)
+     **
+     D DSKYPARB        DS
+SS01 D   K8SICNAMB                         LIKE(SICNAM)
+SS01 D   K8SICAPPB                         LIKE(SICAPP)
+SS01 D   K8SICCODB                         LIKE(SICCOD)
+     **
+SS04 D DSKYPARG        DS
+SS04 D   K8CPFLCD                          LIKE(CPFLCD)
+     **
+SS03 D DSKYPAR7        DS
+SS03 D   K8G7CNTR                          LIKE(G7CNTR)
+     **
+SS03 D DSKYPAR8        DS
+SS03 D   K8G8BUSN                          LIKE(G8BUSN)
+     **
+SS03 D*DSKYPAR9        DS
+SS03 D*  K8G9PCNO                          LIKE(G9PCNO)
+     **
+SS05 D DSKYSPAR        DS
+SS05 D   K8SSACD2REN                       LIKE(SSACD2)
+     **
+SS05 D DSKYJOBR        DS
+SS05 D   K8SSACD2JOB                       LIKE(SSACD2)
+     **
+SS07 D DSKYPARTL1      DS
+SS07 D   K8STITYP                          LIKE(STITYP)
+     **
+SS08 D DSKYPARH        DS
+SS08 D   K8CPHCCD                          LIKE(sh_CPHCCD)
+     **
+     ** ----------- PASS OUT DATA STRUCTURE ------------
+     D DSSSAPPL      E DS                  EXTNAME(SSAPPL)
+     **
+     D DSSSCFUN      E DS                  EXTNAME(SSCFUN)
+     **
+     D DSSSCHOL      E DS                  EXTNAME(SSCHOL)
+     **
+     D**SS01 DSSSCLAS      E DS                  EXTNAME(SSCLAS)
+     **
+     D DSSSCLDR      E DS                  EXTNAME(SSCLDR)
+     D   CRRECI      E                     EXTFLD(CBRECI)
+SS01 D   CRLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   CRLUID      E                     EXTFLD(MNLUID)
+SS01 D   CRLWID      E                     EXTFLD(MNLWID)
+SS01 D   CRLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   CRLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   CRCUID      E                     EXTFLD(MNCUID)
+SS01 D   CRCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   CRCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   CRCWID      E                     EXTFLD(MNCWID)
+SS01 D   CRCSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSCOUN      E DS                  EXTNAME(SSCOUN)
+     D   JCRECI      E                     EXTFLD(SSRECI)
+SS01 D   JCLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JCLUID      E                     EXTFLD(MNLUID)
+SS01 D   JCLWID      E                     EXTFLD(MNLWID)
+SS01 D   JCLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JCLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JCCUID      E                     EXTFLD(MNCUID)
+SS01 D   JCCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JCCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JCCWID      E                     EXTFLD(MNCWID)
+SS01 D   JCCSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSDATA      E DS                  EXTNAME(SSDATA)
+SS01 D   JERECI      E                     EXTFLD(JDRECI)
+SS01 D   JELDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JELUID      E                     EXTFLD(MNLUID)
+SS01 D   JELWID      E                     EXTFLD(MNLWID)
+SS01 D   JELTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JELSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JECUID      E                     EXTFLD(MNCUID)
+SS01 D   JECDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JECTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JECWID      E                     EXTFLD(MNCWID)
+SS01 D   JECSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSFXRT      E DS                  EXTNAME(SSFXRT)
+SS01 D   JTRECI      E                     EXTFLD(JFRECI)
+SS01 D   JTLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JTLUID      E                     EXTFLD(MNLUID)
+SS01 D   JTLWID      E                     EXTFLD(MNLWID)
+SS01 D   JTLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JTLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JTCUID      E                     EXTFLD(MNCUID)
+SS01 D   JTCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JTCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JTCWID      E                     EXTFLD(MNCWID)
+SS01 D   JTCSRC      E                     EXTFLD(MNCSRC)
+      **
+     D DSSSFXAR      E DS                  EXTNAME(SSFXAR)
+T1001D   JARECI      E                     EXTFLD(JFRECI)
+T1001D   JAXBNK      E                     EXTFLD(JFXBNK)
+T1001D   JAXCOD      E                     EXTFLD(JFXCOD)
+T1001D   JAXBKC      E                     EXTFLD(JFXBKC)
+T1001D   JAXBRT      E                     EXTFLD(JFXBRT)
+T1001D   JAXSRT      E                     EXTFLD(JFXSRT)
+T1001D   JAXMRT      E                     EXTFLD(JFXMRT)
+T1001D   JAXART      E                     EXTFLD(JFXART)
+T1001D   JAXORT      E                     EXTFLD(JFXORT)
+T1001D   JAXRT6      E                     EXTFLD(JFXRT6)
+T1001D   JAXRT7      E                     EXTFLD(JFXRT7)
+T1001D   JAXRT8      E                     EXTFLD(JFXRT8)
+T1001D   JAXRT9      E                     EXTFLD(JFXRT9)
+T1001D   JAXRTA      E                     EXTFLD(JFXRTA)
+T1001D   JAXRTB      E                     EXTFLD(JFXRTB)
+T1001D   JAXRTC      E                     EXTFLD(JFXRTC)
+T1001D   JAXRTD      E                     EXTFLD(JFXRTD)
+T1001D   JAXRTE      E                     EXTFLD(JFXRTE)
+T1001D   JAXRTF      E                     EXTFLD(JFXRTF)
+T1001D   JADENO      E                     EXTFLD(JFDENO)
+T1001D   JAXCUN      E                     EXTFLD(JFXCUN)
+T1001D   JAXMJR      E                     EXTFLD(JFXMJR)
+T1001D   JAXSUP      E                     EXTFLD(JFXSUP)
+T1001D   JAXTTY      E                     EXTFLD(JFXTTY)
+T1001D   JAXBDL      E                     EXTFLD(JFXBDL)
+T1001D   JAXBDU      E                     EXTFLD(JFXBDU)
+T1001D   JAXOFL      E                     EXTFLD(JFXOFL)
+T1001D   JAXOFU      E                     EXTFLD(JFXOFU)
+T1001D   JAXSRV      E                     EXTFLD(JFXSRV)
+T1001D   JAPIPF      E                     EXTFLD(JFPIPF)
+T1001D   JAXBRN      E                     EXTFLD(JFXBRN)
+T1001D   JAXREF      E                     EXTFLD(JFXREF)
+T1001D   JAGPRT      E                     EXTFLD(JFGPRT)
+T1001D   JALDT8      E                     EXTFLD(MNLDT8)
+T1001D   JALUID      E                     EXTFLD(MNLUID)
+T1001D   JALWID      E                     EXTFLD(MNLWID)
+T1001D   JALTIM      E                     EXTFLD(MNLTIM)
+T1001D   JALSRC      E                     EXTFLD(MNLSRC)
+T1001D   JACUID      E                     EXTFLD(MNCUID)
+T1001D   JACDT8      E                     EXTFLD(MNCDT8)
+T1001D   JACTIM      E                     EXTFLD(MNCTIM)
+T1001D   JACWID      E                     EXTFLD(MNCWID)
+T1001D   JACSRC      E                     EXTFLD(MNCSRC)
+      **
+     D DSSSFXIN      E DS                  EXTNAME(SSFXIN)
+SS01 D   JIRECI      E                     EXTFLD(JFRECI)
+SS01 D   JIXBNK      E                     EXTFLD(JFXBNK)
+SS01 D   JIXCOD      E                     EXTFLD(JFXCOD)
+SS01 D   JIXBKC      E                     EXTFLD(JFXBKC)
+SS01 D   JIDENO      E                     EXTFLD(JFDENO)
+SS01 D   JILDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JILUID      E                     EXTFLD(MNLUID)
+SS01 D   JILWID      E                     EXTFLD(MNLWID)
+SS01 D   JILTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JILSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JICUID      E                     EXTFLD(MNCUID)
+SS01 D   JICDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JICTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JICWID      E                     EXTFLD(MNCWID)
+SS01 D   JICSRC      E                     EXTFLD(MNCSRC)
+     **
+     D*SS01 DSSSMAIL      E DS                  EXTNAME(SSMAIL)
+     **
+     D DSSSOFFR      E DS                  EXTNAME(SSOFFR)
+SS01 D   JRRECI      E                     EXTFLD(SSRECI)
+SS01 D   JRLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JRLUID      E                     EXTFLD(MNLUID)
+SS01 D   JRLWID      E                     EXTFLD(MNLWID)
+SS01 D   JRLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JRLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JRCUID      E                     EXTFLD(MNCUID)
+SS01 D   JRCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JRCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JRCWID      E                     EXTFLD(MNCWID)
+SS01 D   JRCSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSPARC      E DS                  EXTNAME(SSPARC)
+     **
+     D DSSSPARR      E DS                  EXTNAME(SSPARR)
+     **
+     D DSSSPARW      E DS                  EXTNAME(SSPARW)
+     **
+     D*SS01 DSSSPRMG      E DS                  EXTNAME(SSPRMG)
+     **
+     D*SS01 DSSSPROF      E DS                  EXTNAME(SSPROF)
+     **
+     D*SS01 DSSSPRPC      E DS                  EXTNAME(SSPRPC)
+     **
+     D*SS01 DSSSPRPI      E DS                  EXTNAME(SSPRPI)
+     **
+SSZZ D DSSSPAR1      E DS                  EXTNAME(SSPAR1)
+     **
+     D DSSSRATE      E DS                  EXTNAME(SSRATE)
+     D   JMRECI      E                     EXTFLD(JRRECI)
+     D   JMSAUT      E                     EXTFLD(JRAUTO)
+     D   JMSRTB      E                     EXTFLD(JRRTBK)
+     D   JMSRRT      E                     EXTFLD(JRRRTN)
+     D*  JRSAUT      E                     EXTFLD(JRAUTO)
+     D*  JRSRTB      E                     EXTFLD(JRRTBK)
+     D*  JRSRRT      E                     EXTFLD(JRRRTN)
+SS01 D   JMLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JMLUID      E                     EXTFLD(MNLUID)
+SS01 D   JMLWID      E                     EXTFLD(MNLWID)
+SS01 D   JMLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JMLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JMCUID      E                     EXTFLD(MNCUID)
+SS01 D   JMCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JMCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JMCWID      E                     EXTFLD(MNCWID)
+SS01 D   JMCSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSSTAT      E DS                  EXTNAME(SSSTAT)
+     D   JBRECI      E                     EXTFLD(SSRECI)
+SS01 D   JBLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JBLUID      E                     EXTFLD(MNLUID)
+SS01 D   JBLWID      E                     EXTFLD(MNLWID)
+SS01 D   JBLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JBLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JBCUID      E                     EXTFLD(MNCUID)
+SS01 D   JBCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JBCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JBCWID      E                     EXTFLD(MNCWID)
+SS01 D   JBCSRC      E                     EXTFLD(MNCSRC)
+     **
+     ** not SS file
+     D*DSSSARCH      E DS                  EXTNAME(SSARCH)
+     **
+     ** SSRATB no longer used. Pls contact IT if u need. LEL
+     D*** DSSSRATB      E DS                  EXTNAME(SSRATB)
+     **
+     **
+     D DSMNUBNK      E DS                  EXTNAME(MNUBNK)
+SS01 D   MKLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   MKLUID      E                     EXTFLD(MNLUID)
+SS01 D   MKLWID      E                     EXTFLD(MNLWID)
+SS01 D   MKLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   MKLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   MKCUID      E                     EXTFLD(MNCUID)
+SS01 D   MKCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   MKCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   MKCWID      E                     EXTFLD(MNCWID)
+SS01 D   MKCSRC      E                     EXTFLD(MNCSRC)
+     **
+SS01 D DSSSFXRP      E DS                  EXTNAME(SSFXRP)
+SS01 D   JSRECI      E                     EXTFLD(JFRECI)
+SS01 D   JFSCOD      E                     EXTFLD(JFXCOD)
+SS01 D   JFSDEC      E                     EXTFLD(JFXDEC)
+SS01 D   JFSPRI      E                     EXTFLD(JFXPRI)
+SS01 D   JFSLCD      E                     EXTFLD(JFXLCD)
+SS01 D   JFSRND      E                     EXTFLD(JFXRND)
+SS01 D   JFSCUN      E                     EXTFLD(JFXCUN)
+SS01 D   JFSDSC      E                     EXTFLD(JFXDSC)
+SS01 D   JFSUND      E                     EXTFLD(JFXUND)
+SS01 D   JFSFRD      E                     EXTFLD(JFXFRD)
+SS01 D   JFSCNC      E                     EXTFLD(JFXCNC)
+SS01 D   JFSITC      E                     EXTFLD(JFXITC)
+SS01 D   JFSSUP      E                     EXTFLD(JFXSUP)
+SS01 D   JSLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JSLUID      E                     EXTFLD(MNLUID)
+SS01 D   JSLWID      E                     EXTFLD(MNLWID)
+SS01 D   JSLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JSLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JSCUID      E                     EXTFLD(MNCUID)
+SS01 D   JSCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JSCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JSCWID      E                     EXTFLD(MNCWID)
+SS01 D   JSCSRC      E                     EXTFLD(MNCSRC)
+     **
+     D DSSSPARA      E DS                  EXTNAME(SSPARA)
+SS01 D   SICNAMA     E                     EXTFLD(SICNAM)
+     **
+     D DSSSPARB      E DS                  EXTNAME(SSPARB)
+SS01 D   SICNAMB     E                     EXTFLD(SICNAM)
+SS01 D   SICAPPB     E                     EXTFLD(SICAPP)
+SS01 D   SICCODB     E                     EXTFLD(SICCOD)
+     **
+SS04 D DSSSPARG      E DS                  EXTNAME(SSPARG)
+SS01 D   JGLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JGLUID      E                     EXTFLD(MNLUID)
+SS01 D   JGLWID      E                     EXTFLD(MNLWID)
+SS01 D   JGLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JGLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JGCUID      E                     EXTFLD(MNCUID)
+SS01 D   JGCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JGCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JGCWID      E                     EXTFLD(MNCWID)
+SS01 D   JGCSRC      E                     EXTFLD(MNCSRC)
+     **
+SS03 D DSSSPAR7      E DS                  EXTNAME(SSPAR7)
+     **
+SS03 D DSSSPAR8      E DS                  EXTNAME(SSPAR8)
+     **
+SS03 D*DSSSPAR9      E DS                  EXTNAME(SSPAR9)
+     D*  JYRECI      E                     EXTFLD(G9RECI)
+SS01 D*  JYLDT8      E                     EXTFLD(MNLDT8)
+SS01 D*  JYLUID      E                     EXTFLD(MNLUID)
+SS01 D*  JYLWID      E                     EXTFLD(MNLWID)
+SS01 D*  JYLTIM      E                     EXTFLD(MNLTIM)
+SS01 D*  JYLSRC      E                     EXTFLD(MNLSRC)
+SS01 D*  JYCUID      E                     EXTFLD(MNCUID)
+SS01 D*  JYCDT8      E                     EXTFLD(MNCDT8)
+SS01 D*  JYCTIM      E                     EXTFLD(MNCTIM)
+SS01 D*  JYCWID      E                     EXTFLD(MNCWID)
+SS01 D*  JYCSRC      E                     EXTFLD(MNCSRC)
+     **
+SS05 D DSSSSPAR      E DS                  EXTNAME(SSSPAR)
+SS05 D   SSACD2REN   E                     EXTFLD(SSACD2)
+     **
+SS05 D DSSSJOBR      E DS                  EXTNAME(SSJOBR)
+SS05 D   SSACD2JOB   E                     EXTFLD(SSACD2)
+     **
+SS07 D DSSSPART      E DS                  EXTNAME(SSPART)
+     D   JXRECI      E                     EXTFLD(STRECI)
+SS01 D   JXLDT8      E                     EXTFLD(MNLDT8)
+SS01 D   JXLUID      E                     EXTFLD(MNLUID)
+SS01 D   JXLWID      E                     EXTFLD(MNLWID)
+SS01 D   JXLTIM      E                     EXTFLD(MNLTIM)
+SS01 D   JXLSRC      E                     EXTFLD(MNLSRC)
+SS01 D   JXCUID      E                     EXTFLD(MNCUID)
+SS01 D   JXCDT8      E                     EXTFLD(MNCDT8)
+SS01 D   JXCTIM      E                     EXTFLD(MNCTIM)
+SS01 D   JXCWID      E                     EXTFLD(MNCWID)
+SS01 D   JXCSRC      E                     EXTFLD(MNCSRC)
+     **
+SS08 D DSSSPARH      E DS                  EXTNAME(SSPARH) PREFIX(sh_)
+     **============================================
+

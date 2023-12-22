@@ -1,0 +1,112 @@
+     A* LAST CHANGED
+     A*REF#  DATE       DESCRIPTION OF CHANGE     IR NO/CHANGE NO.
+     A*---   ----       ---------------------     ----------------
+     A*********************************************************************/
+     A                                      REF(LNPREF)
+     A                                      UNIQUE
+     A          R RXLNPAR2EX                TEXT('LOAN PRODUCT EXTENSION FILE')
+     A            PTYPE     R               REFFLD(TYPE LNMAST)
+     A            PCURTY    R
+     A            LPPRAT    R               REFFLD(PRATE)
+     A                                      COLHDG('MINIMUM PAYMENT' +
+     A                                             'RATIO X %')
+     A            LPPIND    R               REFFLD(SSCOD1 SILVERLAKE)
+     A                                      COLHDG('BASE INDICATOR ' +
+     A                                             'OF MINIMUM')
+     A            LPPMIN    R               REFFLD(PLIMIT)
+     A                                      COLHDG('MINIMUM PAYMENT ' +
+     A                                             'AMOUNT OF X %')
+     A            PPINTB    R               REFFLD(SSCOU5 SILVERLAKE)
+     A                                      COLHDG('INTEREST PAYMENT ' +
+     A                                             'BEFORE DAY')
+     A            LPPTEM    R               REFFLD(SSCOU3 SILVERLAKE)
+     A                                      COLHDG('TEMPORARY SUSPENSE ' +
+     A                                             'CARD (DAYS)')
+     A            LPPPCC    R               REFFLD(SSCOU3 SILVERLAKE)
+     A                                      COLHDG('PERMANENT CANCEL ' +
+     A                                             'CARD DUE DATE (DAYS)')
+     A            LPGRPP    R               REFFLD(SSCOD1 SILVERLAKE)
+     A                                      COLHDG('GROUP PAYMENT')
+     A            LPCTPD    R               REFFLD(SSCOU5 SILVERLAKE)
+     A                                      COLHDG('CONTROL TRANSACTION ' +
+     A                                             'PER DAY')
+     A            LPTAPD    R               REFFLD(SSAMT4 SILVERLAKE)
+     A                                      COLHDG('TRANSACTION AMOUNT ' +
+     A                                             'TOTAL PER DAY')
+     A            LPPCUT1   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '1ST CYCLE (DAY)')
+     A            LPPCUT2   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '2ND CYCLE (DAY)')
+     A            LPPCUT3   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '3RD CYCLE (DAY)')
+     A            LPPCUT4   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '4TH CYCLE (DAY)')
+     A            LPPCUT5   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '5TH CYCLE (DAY)')
+     A            LPPCUT6   R               REFFLD(PNDNPL)
+     A                                      COLHDG('CUTOFF DATE' +
+     A                                             '6TH CYCLE (DAY)')
+     A            NSAMT1    R               REFFLD(SSAMT4 SILVERLAKE)
+     A                                      COLHDG('OUTSTANDING' 'TOLERANCE')
+     A                                      TEXT('OUTSTANDING TOLERANCE')
+     A            NSAMT2    R               REFFLD(SSAMT4 SILVERLAKE)
+     A            LPNDFPC   R               REFFLD(SSCOU3 SILVERLAKE)
+     A                                      TEXT('FIRST PAY DUE ATLEAST X DAY')
+     A                                      COLHDG('FIRST PAY DUE' ' ATLEAST X -
+     A                                      DAY')
+     A            REVTYP    R               REFFLD(SSTTYP SILVERLAKE)
+     A                                      COLHDG('TRANCE REVOLVING' +
+     A                                      'TYPE')
+     A            REVSBTYP       5A         COLHDG('TRANCE REVOLVING' +
+     A                                      'SUB TYPE')
+     A                                      TEXT('TRANCE REVOLVING SUB TYPE')
+NEW  A************
+NEW  A**NEW FIELD*
+NEW  A************
+NEW  A            TFBTRV         5  0       COLHDG('Transfer back to Rev')
+NEW  A            TFBTRVC        1          COLHDG('Transfer back M/D')
+NEW  A**
+K6401A            NSAMT3    R               REFFLD(SSAMT4 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Amount 3')
+K6401A            NSAMT4    R               REFFLD(SSAMT4 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Amount 4')
+K6401A            NSAMT5    R               REFFLD(SSAMT4 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Amount 5')
+K6401A            NCODE1    R               REFFLD(SSCOD1 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 1')
+K6401A            NCODE2    R               REFFLD(SSCOD1 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 2')
+K6401A            NCODE3    R               REFFLD(SSCOD1 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 3')
+K6401A            NCODE4    R               REFFLD(SSCOD1 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 4')
+K6401A            NCODE5    R               REFFLD(SSCOD1 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 5')
+K6401A            LPRAT1    R               REFFLD(SSPERP SILVERLAKE)
+K6401A                                      COLHDG('Reserve Rate 1')
+K6401A            LPRAT2    R               REFFLD(SSPERP SILVERLAKE)
+K6401A                                      COLHDG('Reserve Rate 2')
+K6401A            LPRAT3    R               REFFLD(SSPERP SILVERLAKE)
+K6401A                                      COLHDG('Reserve Rate 3')
+K6401A            LPRAT4    R               REFFLD(SSPERP SILVERLAKE)
+K6401A                                      COLHDG('Reserve Rate 4')
+K6401A            LPRAT5    R               REFFLD(SSPERP SILVERLAKE)
+K6401A                                      COLHDG('Reserve Rate 5')
+K6401A            NCOD21    R               REFFLD(SSCOD2 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 2')
+K6401A            NCOD22    R               REFFLD(SSCOD2 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 2')
+K6401A            NCOD51    R               REFFLD(SSCOD5 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 5')
+K6401A            NCOD52    R               REFFLD(SSCOD5 SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 5')
+K6401A            NCOD10    R               REFFLD(SSCODA SILVERLAKE)
+K6401A                                      COLHDG('Reserve Code 10')
+     A          K PTYPE
+     A          K PCURTY
+

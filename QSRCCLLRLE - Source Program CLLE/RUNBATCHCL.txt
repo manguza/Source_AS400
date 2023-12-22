@@ -1,0 +1,9 @@
+             PGM        PARM(&RUNN)
+     /*˜Variable Declarationˆ*/
+             DCL        VAR(&RUNN)   TYPE(*DEC)  LEN(2 0)
+
+             CALL       PGM(PGMRUNB) PARM(&RUNN)
+             CALL       PGM(PGMPRTAC)
+
+ END:        ENDPGM
+

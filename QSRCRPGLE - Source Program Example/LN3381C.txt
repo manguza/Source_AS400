@@ -1,0 +1,33 @@
+ /*****************************************************************************+
+  * Program Name : LN3381C           REF.NO: CR#866                            +
+  * Description  : Distributor Financing Program Summary Report                +
+  * Date Changed : 19/03/2013                                                  +
+  * Author       : Sartra T.                                                   +
+  * Frequency    : Daily                                                       +
+  *****************************************************************************+
+  * Modification Logs:                                                         +
+  *                                                                            +
+  * Init  Ref#     Date    Description                                         +
+  * ----  ----     ----    -----------                                         +
+  *                                                                            +
+  *****************************************************************************/
+
+             PGM
+
+             OVRDBF     FILE(CFCREL) SHARE(*YES)
+
+             OPNQRYF    FILE((CFCREL *FIRST *ONLY)) +
+                        QRYSLT('(CFCREL *EQ %VALUES("PP")) ') +
+                        KEYFLD(*FILE)
+
+             CLRPFM     FILE(LN3381WK)
+
+             CALL       PGM(LN3381X)
+
+             CLOF       OPNID(CFCREL)
+             DLTOVR     FILE(*ALL)
+
+             CALL       PGM(LN3381)
+
+             ENDPGM
+

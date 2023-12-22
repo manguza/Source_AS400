@@ -1,0 +1,7 @@
+             CMD        PROMPT('Run Batch For Update Data')
+    /*˜Define Parameterˆ*/
+             PARM       KWD(RUNN) TYPE(*DEC) LEN(2 0) RSTD(*NO) +
+                          DFT(1) CHOICE('Select Only 1 day run +
+                          Program') PROMPT('Running for Batch')
+
+

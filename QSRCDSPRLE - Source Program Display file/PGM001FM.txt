@@ -1,0 +1,596 @@
+     A*%%TS  SD  20231006  153755  SSPRUK      REL-V7R4M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03 'Exit')
+     A                                      CA05(05 'Refresh')
+     A                                      CA12(12 'Previous')
+    ŠA************************************************************************
+    ŠA*˜SUBFILE RECORD FORMAT
+     A          R SDATA                     SFL
+     A*%%TS  SD  20231006  153331  SSPRUK      REL-V7R4M0  5770-WDS
+     A            OPT            1A  I 11  3
+     A            ACCTNO    R        O 11  6REFFLD(RLNMAST/ACCTNO SSPRUK/LNMAST)
+     A            CIFNO     R        O 11 26REFFLD(RLNMAST/CIFNO SSPRUK/LNMAST)
+     A            ACTMNO    R        O 11 46REFFLD(RLNMAST/ACTMNO SSPRUK/LNMAST)
+     A            MCLNID    R        O 11 60REFFLD(RLNMAST/MCLNID SSPRUK/LNMAST)
+     A            TYPE      R        O 11 63REFFLD(RLNMAST/TYPE SSPRUK/LNMAST)
+     A            CURTYP    R        O 11 74REFFLD(RLNMAST/CURTYP SSPRUK/LNMAST)
+     A            STATUS    R        O 11 79REFFLD(RLNMAST/STATUS SSPRUK/LNMAST)
+    ŠA************************************************************************
+    ŠA*˜SUBFILE CONTROL RECORD FORMAT
+     A          R SCTL                      SFLCTL(SDATA)
+     A*%%TS  SD  20231006  153331  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      OVERLAY
+     A  31                                  SFLDSP
+     A  32                                  SFLDSPCTL
+     A  30                                  SFLCLR
+     A  33                                  SFLEND(*MORE)
+     A                                      SFLSIZ(9999)
+     A                                      SFLPAG(0010)
+     A            RCDNBR         4S 0H      SFLRCDNBR(CURSOR)
+     A            MSGERR        50A  O  4 19COLOR(RED)
+     A            ACSRC     R        B  5 19REFFLD(RLNMAST/ACCTNO SSPRUK/LNMAST)
+     A  60                                  DSPATR(RI)
+     A                                 10  2'Otp'
+     A                                      COLOR(BLU)
+     A                                  9  6'Account'
+     A                                      COLOR(BLU)
+     A                                 10  6'Number'
+     A                                      COLOR(BLU)
+     A                                  9 26'CIF'
+     A                                      COLOR(BLU)
+     A                                 10 26'Number'
+     A                                      COLOR(BLU)
+     A                                  8 46'Main'
+     A                                      COLOR(BLU)
+     A                                 10 46'Number'
+     A                                      COLOR(BLU)
+     A                                  7 59'Multi'
+     A                                      COLOR(BLU)
+     A                                  9 59'Loan'
+     A                                      COLOR(BLU)
+     A                                  9 68'Loan'
+     A                                      COLOR(BLU)
+     A                                 10 68'Type'
+     A                                      COLOR(BLU)
+     A                                  9 73'Curr'
+     A                                      COLOR(BLU)
+     A                                 10 73'Type'
+     A                                      COLOR(BLU)
+     A                                  9 78'Sta'
+     A                                      COLOR(BLU)
+     A                                 10 78'tus'
+     A                                      COLOR(BLU)
+     A                                 10 59'Code'
+     A                                      COLOR(BLU)
+     A                                  8 59'CCY'
+     A                                      COLOR(BLU)
+     A                                  9 46'Account'
+     A                                      COLOR(BLU)
+     A                                  4  3'Account Number'
+     A                                  5  3'Position to ...'
+     A                                  6  3'Option...'
+     A                                  6 14'2=Change'
+     A                                  6 24'4=Delete'
+     A                                  6 34'5=Display'
+     A                                  1 26'Maintenace Loan Master File'
+     A                                      COLOR(BLU)
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1  2USER
+    ŠA************************************************************************
+    ŠA*˜SUBFILE CHANGE RECORD FORMAT
+     A          R SCHG
+     A*%%TS  SD  20230626  144321  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1 25'Maintenace Loan Master File'
+     A                                      COLOR(BLU)
+     A                                  2 36'CHANGE'
+     A                                      COLOR(WHT)
+     A                                 24  2'F3=Exit  F5=Refresh'
+     A                                 24 68'F12=Previous'
+     A                                  3  2'Account No.'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            ACCTNO    R        O  3 14REFFLD(RLNMAST/ACCTNO SSPRUK/LNMAST)
+     A                                  3 35'Bank Number'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            BKN       R        O  3 47REFFLD(RLNMAST/BKN SSPRUK/LNMAST)
+     A                                  3 51'Branch Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            BRN       R        O  3 65REFFLD(RLNMAST/BRN SSPRUK/LNMAST)
+     A                                  4 18'Reporting Branch'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            RBRN      R        O  4 35REFFLD(RLNMAST/RBRN SSPRUK/LNMAST)
+     A                                  4  2'Account Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTYPE    R        O  4 15REFFLD(RLNMAST/ACTYPE SSPRUK/LNMAST)
+     A                                  4 42'CIF Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CIFNO     R        O  4 53REFFLD(RLNMAST/CIFNO SSPRUK/LNMAST)
+     A                                  5  2'Formatted short name'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            FSNAME    R        O  5 23REFFLD(RLNMAST/FSNAME SSPRUK/LNMAST)
+     A                                  5 45'Main Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTMNO    R        O  5 65REFFLD(RLNMAST/ACTMNO SSPRUK/LNMAST)
+     A                                  6  2'Drawdown Sequence Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTDDD    R        O  6 27REFFLD(RLNMAST/ACTDDD SSPRUK/LNMAST)
+     A                                  6 34'Lender In Syndication LN'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTLLL    R        O  6 59REFFLD(RLNMAST/ACTLLL SSPRUK/LNMAST)
+     A                                  7  2'Multi CCY Loan Code'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            MCLNID    R        O  7 22REFFLD(RLNMAST/MCLNID SSPRUK/LNMAST)
+     A                                  7 25'Account Group Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            LNNUM     R        O  7 46REFFLD(RLNMAST/LNNUM SSPRUK/LNMAST)
+     A                                  8  2'Facility ID'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            AANO      R        O  8 14REFFLD(RLNMAST/AANO SSPRUK/LNMAST)
+     A                                  8 35'Application Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APTYPE    R        O  8 52REFFLD(RLNMAST/APTYPE SSPRUK/LNMAST)
+     A                                  9  2'Related Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APRELN    R        O  9 25REFFLD(RLNMAST/APRELN SSPRUK/LNMAST)
+     A                                  8 55'Syndication Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            SYNLN     R        O  8 72REFFLD(RLNMAST/SYNLN SSPRUK/LNMAST)
+     A                                  9 46'Club Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CLUBL     R        O  9 56REFFLD(RLNMAST/CLUBL SSPRUK/LNMAST)
+     A                                 10  2'Loan Type'
+     A            CTYPE     R        B 10 12REFFLD(RLNMAST/TYPE SSPRUK/LNMAST)
+     A                                 10 24'Currency Type'
+     A            CCURTYP   R        B 10 38REFFLD(RLNMAST/CURTYP SSPRUK/LNMAST)
+     A                                 10 44'Currency Decimals'
+     A            CCURDEC   R        B 10 62REFFLD(RLNMAST/CURDEC SSPRUK/LNMAST)
+     A                                 11  2'Short description'
+     A            CSHDSC    R        B 11 20REFFLD(RLNMAST/SHDSC SSPRUK/LNMAST)
+     A                                 11 32'Campaign Code'
+     A            CRATPC    R        B 11 46REFFLD(RLNMAST/RATPC SSPRUK/LNMAST)
+     A                                 12  2'Campaign Effective Date'
+     A            CRTPED8   R        B 12 26REFFLD(RLNMAST/RTPED8 SSPRUK/LNMAST)
+     A                                      EDTCDE(Y)
+     A                                 12 38'Price Campaign Indicator'
+     A            CPRCPKI   R        B 12 63REFFLD(RLNMAST/PRCPKI SSPRUK/LNMAST)
+     A                                 13  2'Multi Tier Rate'
+     A            CMULTIR   R        B 13 18REFFLD(RLNMAST/MULTIR SSPRUK/LNMAST)
+     A                                 13 21'Bundle Code'
+     A            CBUNDLE   R        B 13 33REFFLD(RLNMAST/BUNDLE SSPRUK/LNMAST)
+     A                                 13 45'Group Code'
+     A            CGROUP    R        B 13 56REFFLD(RLNMAST/GROUP SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 13 64'Loan Group'
+     A            CLONGRP   R        B 13 75REFFLD(RLNMAST/LONGRP SSPRUK/LNMAST)
+     A                                 14  2'Cost center'
+     A            CLMCOST   R        B 14 14REFFLD(RLNMAST/LMCOST SSPRUK/LNMAST)
+     A                                 14 21'Category Code'
+     A            CLMPRDC   R        B 14 35REFFLD(RLNMAST/LMPRDC SSPRUK/LNMAST)
+     A                                 14 42'GL Book'
+     A            CGLBOOK   R        B 14 50REFFLD(RLNMAST/GLBOOK SSPRUK/LNMAST)
+     A                                 14 53'Resident Indicator'
+     A            CRESIND   R        B 14 72REFFLD(RLNMAST/RESIND SSPRUK/LNMAST)
+     A                                 15  2'Customer Category'
+     A            CCUSCAT   R        B 15 20REFFLD(RLNMAST/CUSCAT SSPRUK/LNMAST)
+     A                                 15 24'GL Account Status'
+     A            CGLACST   R        B 15 42REFFLD(RLNMAST/GLACST SSPRUK/LNMAST)
+     A                                 15 46'Sub Ledger Code'
+     A            CSUBLDG   R        B 15 62REFFLD(RLNMAST/SUBLDG SSPRUK/LNMAST)
+     A                                 15 69'Status'
+     A            CSTATUS   R        B 15 76REFFLD(RLNMAST/STATUS SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 16  2'SPTF loan type'
+     A            CLNSPTF   R        B 16 17REFFLD(RLNMAST/LNSPTF SSPRUK/LNMAST)
+     A                                 16 20'Split/Merge Status'
+     A            CSPMGST   R        B 16 39REFFLD(RLNMAST/SPMGST SSPRUK/LNMAST)
+     A                                 16 42'Interest Base'
+     A            CIBASE    R        B 16 56REFFLD(RLNMAST/IBASE SSPRUK/LNMAST)
+     A                                 16 59'Interest Freq'
+     A            CIFREQ    R        B 16 73REFFLD(RLNMAST/IFREQ SSPRUK/LNMAST)
+     A                                 17  2'Year Base'
+     A            CYBASE    R        B 17 12REFFLD(RLNMAST/YBASE SSPRUK/LNMAST)
+     A                                 17 15'Original Balance'
+     A            CORGAMT   R        B 17 32REFFLD(RLNMAST/ORGAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 18  2'Tranche Amount'
+     A            CTCHAMT   R        B 18 17REFFLD(RLNMAST/TCHAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 18 37'Drawing Limit'
+     A            CDRLIMT   R        B 18 51REFFLD(RLNMAST/DRLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 19  2'Intra-day Limit'
+     A            CIDLIMT   R        B 19 18REFFLD(RLNMAST/IDLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 19 38'Current Balance'
+     A            CCBAL     R        B 19 54REFFLD(RLNMAST/CBAL SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 20  2'Accrued Interest'
+     A            CACCINT   R        B 20 19REFFLD(RLNMAST/ACCINT SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 21  2'Secondary Accrued Int'
+     A            CACCIN2   R        B 21 24REFFLD(RLNMAST/ACCIN2 SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 22  2'Dealer Accrued Int'
+     A            CDLRACC   R        B 22 21REFFLD(RLNMAST/DLRACC SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 23  2'Commitment fee Accr Int'
+     A            CCOMACC   R        B 23 26REFFLD(RLNMAST/COMACC SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A            MSGUPD        30A  O 23 48
+    ŠA************************************************************************
+    ŠA*˜SUBFILE DELETE RECORD FORMAT
+     A          R SDTL
+     A*%%TS  SD  20230626  151349  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1 25'Maintenace Loan Master File'
+     A                                      COLOR(BLU)
+     A                                  2 36'DELETE'
+     A                                      COLOR(WHT)
+     A                                 24  2'F3=Exit  F5=Refresh'
+     A                                 24 68'F12=Previous'
+     A                                  3  2'Account No.'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            ACCTNO    R        O  3 14REFFLD(RLNMAST/ACCTNO SSPRUK/LNMAST)
+     A                                  3 35'Bank Number'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            BKN       R        O  3 47REFFLD(RLNMAST/BKN SSPRUK/LNMAST)
+     A                                  3 51'Branch Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            BRN       R        O  3 65REFFLD(RLNMAST/BRN SSPRUK/LNMAST)
+     A                                  4 18'Reporting Branch'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            RBRN      R        O  4 35REFFLD(RLNMAST/RBRN SSPRUK/LNMAST)
+     A                                  4  2'Account Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTYPE    R        O  4 15REFFLD(RLNMAST/ACTYPE SSPRUK/LNMAST)
+     A                                  4 42'CIF Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CIFNO     R        O  4 53REFFLD(RLNMAST/CIFNO SSPRUK/LNMAST)
+     A                                  5  2'Formatted short name'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            FSNAME    R        O  5 23REFFLD(RLNMAST/FSNAME SSPRUK/LNMAST)
+     A                                  5 45'Main Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTMNO    R        O  5 65REFFLD(RLNMAST/ACTMNO SSPRUK/LNMAST)
+     A                                  6  2'Drawdown Sequence Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTDDD    R        O  6 27REFFLD(RLNMAST/ACTDDD SSPRUK/LNMAST)
+     A                                  6 34'Lender In Syndication LN'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTLLL    R        O  6 59REFFLD(RLNMAST/ACTLLL SSPRUK/LNMAST)
+     A                                  7  2'Multi CCY Loan Code'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            MCLNID    R        O  7 22REFFLD(RLNMAST/MCLNID SSPRUK/LNMAST)
+     A                                  7 25'Account Group Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            LNNUM     R        O  7 46REFFLD(RLNMAST/LNNUM SSPRUK/LNMAST)
+     A                                  8  2'Facility ID'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            AANO      R        O  8 14REFFLD(RLNMAST/AANO SSPRUK/LNMAST)
+     A                                  8 35'Application Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APTYPE    R        O  8 52REFFLD(RLNMAST/APTYPE SSPRUK/LNMAST)
+     A                                  9  2'Related Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APRELN    R        O  9 25REFFLD(RLNMAST/APRELN SSPRUK/LNMAST)
+     A                                  8 55'Syndication Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            SYNLN     R        O  8 72REFFLD(RLNMAST/SYNLN SSPRUK/LNMAST)
+     A                                  9 46'Club Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CLUBL     R        O  9 56REFFLD(RLNMAST/CLUBL SSPRUK/LNMAST)
+     A                                 10  2'Loan Type'
+     A            TYPE      R        O 10 12REFFLD(RLNMAST/TYPE SSPRUK/LNMAST)
+     A                                 10 24'Currency Type'
+     A            CURTYP    R        O 10 38REFFLD(RLNMAST/CURTYP SSPRUK/LNMAST)
+     A                                 10 44'Currency Decimals'
+     A            CURDEC    R        O 10 62REFFLD(RLNMAST/CURDEC SSPRUK/LNMAST)
+     A                                 11  2'Short description'
+     A            SHDSC     R        O 11 20REFFLD(RLNMAST/SHDSC SSPRUK/LNMAST)
+     A                                 11 32'Campaign Code'
+     A            RATPC     R        O 11 46REFFLD(RLNMAST/RATPC SSPRUK/LNMAST)
+     A                                 12  2'Campaign Effective Date'
+     A            RTPED8    R        O 12 26REFFLD(RLNMAST/RTPED8 SSPRUK/LNMAST)
+     A                                      EDTCDE(Y)
+     A                                 12 38'Price Campaign Indicator'
+     A            PRCPKI    R        O 12 63REFFLD(RLNMAST/PRCPKI SSPRUK/LNMAST)
+     A                                 13  2'Multi Tier Rate'
+     A            MULTIR    R        O 13 18REFFLD(RLNMAST/MULTIR SSPRUK/LNMAST)
+     A                                 13 21'Bundle Code'
+     A            BUNDLE    R        O 13 33REFFLD(RLNMAST/BUNDLE SSPRUK/LNMAST)
+     A                                 13 45'Group Code'
+     A            GROUP     R        O 13 56REFFLD(RLNMAST/GROUP SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 13 64'Loan Group'
+     A            LONGRP    R        O 13 75REFFLD(RLNMAST/LONGRP SSPRUK/LNMAST)
+     A                                 14  2'Cost center'
+     A            LMCOST    R        O 14 14REFFLD(RLNMAST/LMCOST SSPRUK/LNMAST)
+     A                                 14 21'Category Code'
+     A            LMPRDC    R        O 14 35REFFLD(RLNMAST/LMPRDC SSPRUK/LNMAST)
+     A                                 14 42'GL Book'
+     A            GLBOOK    R        O 14 50REFFLD(RLNMAST/GLBOOK SSPRUK/LNMAST)
+     A                                 14 53'Resident Indicator'
+     A            RESIND    R        O 14 72REFFLD(RLNMAST/RESIND SSPRUK/LNMAST)
+     A                                 15  2'Customer Category'
+     A            CUSCAT    R        O 15 20REFFLD(RLNMAST/CUSCAT SSPRUK/LNMAST)
+     A                                 15 24'GL Account Status'
+     A            GLACST    R        O 15 42REFFLD(RLNMAST/GLACST SSPRUK/LNMAST)
+     A                                 15 46'Sub Ledger Code'
+     A            SUBLDG    R        O 15 62REFFLD(RLNMAST/SUBLDG SSPRUK/LNMAST)
+     A                                 15 69'Status'
+     A            STATUS    R        O 15 76REFFLD(RLNMAST/STATUS SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 16  2'SPTF loan type'
+     A            LNSPTF    R        O 16 17REFFLD(RLNMAST/LNSPTF SSPRUK/LNMAST)
+     A                                 16 20'Split/Merge Status'
+     A            SPMGST    R        O 16 39REFFLD(RLNMAST/SPMGST SSPRUK/LNMAST)
+     A                                 16 42'Interest Base'
+     A            IBASE     R        O 16 56REFFLD(RLNMAST/IBASE SSPRUK/LNMAST)
+     A                                 16 59'Interest Freq'
+     A            IFREQ     R        O 16 73REFFLD(RLNMAST/IFREQ SSPRUK/LNMAST)
+     A                                 17  2'Year Base'
+     A            YBASE     R        O 17 12REFFLD(RLNMAST/YBASE SSPRUK/LNMAST)
+     A                                 17 15'Original Balance'
+     A            ORGAMT    R        O 17 32REFFLD(RLNMAST/ORGAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 18  2'Tranche Amount'
+     A            TCHAMT    R        O 18 17REFFLD(RLNMAST/TCHAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 18 37'Drawing Limit'
+     A            DRLIMT    R        O 18 51REFFLD(RLNMAST/DRLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 19  2'Intra-day Limit'
+     A            IDLIMT    R        O 19 18REFFLD(RLNMAST/IDLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 19 38'Current Balance'
+     A            CBAL      R        O 19 54REFFLD(RLNMAST/CBAL SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 20  2'Accrued Interest'
+     A            ACCINT    R        O 20 19REFFLD(RLNMAST/ACCINT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 21  2'Secondary Accrued Int'
+     A            ACCIN2    R        O 21 24REFFLD(RLNMAST/ACCIN2 SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 22  2'Dealer Accrued Int'
+     A            DLRACC    R        O 22 21REFFLD(RLNMAST/DLRACC SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 23  2'Commitment fee Accr Int'
+     A            COMACC    R        O 23 26REFFLD(RLNMAST/COMACC SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A            MSGDTL        30A  O 23 48
+    ŠA************************************************************************
+     A*˜SUBFILE DISPLAY RECORD FORMAT
+     A          R SDSP
+     A*%%TS  SD  20230626  151349  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1 25'Maintenace Loan Master File'
+     A                                      COLOR(BLU)
+     A                                  2 35'DISPLAY'
+     A                                      COLOR(WHT)
+     A                                 24  2'F3=Exit  F5=Refresh'
+     A                                 24 68'F12=Previous'
+     A                                  3  2'Account No.'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            ACCTNO    R        O  3 14REFFLD(RLNMAST/ACCTNO SSPRUK/LNMAST)
+     A                                  3 35'Bank Number'
+     A                                      COLOR(BLU)
+     A                                      DSPATR(UL)
+     A            BKN       R        O  3 47REFFLD(RLNMAST/BKN SSPRUK/LNMAST)
+     A                                  3 51'Branch Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            BRN       R        O  3 65REFFLD(RLNMAST/BRN SSPRUK/LNMAST)
+     A                                  4 18'Reporting Branch'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            RBRN      R        O  4 35REFFLD(RLNMAST/RBRN SSPRUK/LNMAST)
+     A                                  4  2'Account Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTYPE    R        O  4 15REFFLD(RLNMAST/ACTYPE SSPRUK/LNMAST)
+     A                                  4 42'CIF Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CIFNO     R        O  4 53REFFLD(RLNMAST/CIFNO SSPRUK/LNMAST)
+     A                                  5  2'Formatted short name'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            FSNAME    R        O  5 23REFFLD(RLNMAST/FSNAME SSPRUK/LNMAST)
+     A                                  5 45'Main Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTMNO    R        O  5 65REFFLD(RLNMAST/ACTMNO SSPRUK/LNMAST)
+     A                                  6  2'Drawdown Sequence Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTDDD    R        O  6 27REFFLD(RLNMAST/ACTDDD SSPRUK/LNMAST)
+     A                                  6 34'Lender In Syndication LN'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            ACTLLL    R        O  6 59REFFLD(RLNMAST/ACTLLL SSPRUK/LNMAST)
+     A                                  7  2'Multi CCY Loan Code'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            MCLNID    R        O  7 22REFFLD(RLNMAST/MCLNID SSPRUK/LNMAST)
+     A                                  7 25'Account Group Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            LNNUM     R        O  7 46REFFLD(RLNMAST/LNNUM SSPRUK/LNMAST)
+     A                                  8  2'Facility ID'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            AANO      R        O  8 14REFFLD(RLNMAST/AANO SSPRUK/LNMAST)
+     A                                  8 35'Application Type'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APTYPE    R        O  8 52REFFLD(RLNMAST/APTYPE SSPRUK/LNMAST)
+     A                                  9  2'Related Account Number'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            APRELN    R        O  9 25REFFLD(RLNMAST/APRELN SSPRUK/LNMAST)
+     A                                  8 55'Syndication Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            SYNLN     R        O  8 72REFFLD(RLNMAST/SYNLN SSPRUK/LNMAST)
+     A                                  9 46'Club Loan'
+     A                                      DSPATR(UL)
+     A                                      COLOR(BLU)
+     A            CLUBL     R        O  9 56REFFLD(RLNMAST/CLUBL SSPRUK/LNMAST)
+     A                                 10  2'Loan Type'
+     A            TYPE      R        O 10 12REFFLD(RLNMAST/TYPE SSPRUK/LNMAST)
+     A                                 10 24'Currency Type'
+     A            CURTYP    R        O 10 38REFFLD(RLNMAST/CURTYP SSPRUK/LNMAST)
+     A                                 10 44'Currency Decimals'
+     A            CURDEC    R        O 10 62REFFLD(RLNMAST/CURDEC SSPRUK/LNMAST)
+     A                                 11  2'Short description'
+     A            SHDSC     R        O 11 20REFFLD(RLNMAST/SHDSC SSPRUK/LNMAST)
+     A                                 11 32'Campaign Code'
+     A            RATPC     R        O 11 46REFFLD(RLNMAST/RATPC SSPRUK/LNMAST)
+     A                                 12  2'Campaign Effective Date'
+     A            RTPED8    R        O 12 26REFFLD(RLNMAST/RTPED8 SSPRUK/LNMAST)
+     A                                      EDTCDE(Y)
+     A                                 12 38'Price Campaign Indicator'
+     A            PRCPKI    R        O 12 63REFFLD(RLNMAST/PRCPKI SSPRUK/LNMAST)
+     A                                 13  2'Multi Tier Rate'
+     A            MULTIR    R        O 13 18REFFLD(RLNMAST/MULTIR SSPRUK/LNMAST)
+     A                                 13 21'Bundle Code'
+     A            BUNDLE    R        O 13 33REFFLD(RLNMAST/BUNDLE SSPRUK/LNMAST)
+     A                                 13 45'Group Code'
+     A            GROUP     R        O 13 56REFFLD(RLNMAST/GROUP SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 13 64'Loan Group'
+     A            LONGRP    R        O 13 75REFFLD(RLNMAST/LONGRP SSPRUK/LNMAST)
+     A                                 14  2'Cost center'
+     A            LMCOST    R        O 14 14REFFLD(RLNMAST/LMCOST SSPRUK/LNMAST)
+     A                                 14 21'Category Code'
+     A            LMPRDC    R        O 14 35REFFLD(RLNMAST/LMPRDC SSPRUK/LNMAST)
+     A                                 14 42'GL Book'
+     A            GLBOOK    R        O 14 50REFFLD(RLNMAST/GLBOOK SSPRUK/LNMAST)
+     A                                 14 53'Resident Indicator'
+     A            RESIND    R        O 14 72REFFLD(RLNMAST/RESIND SSPRUK/LNMAST)
+     A                                 15  2'Customer Category'
+     A            CUSCAT    R        O 15 20REFFLD(RLNMAST/CUSCAT SSPRUK/LNMAST)
+     A                                 15 24'GL Account Status'
+     A            GLACST    R        O 15 42REFFLD(RLNMAST/GLACST SSPRUK/LNMAST)
+     A                                 15 46'Sub Ledger Code'
+     A            SUBLDG    R        O 15 62REFFLD(RLNMAST/SUBLDG SSPRUK/LNMAST)
+     A                                 15 69'Status'
+     A            STATUS    R        O 15 76REFFLD(RLNMAST/STATUS SSPRUK/LNMAST)
+     A                                      EDTCDE(Z)
+     A                                 16  2'SPTF loan type'
+     A            LNSPTF    R        O 16 17REFFLD(RLNMAST/LNSPTF SSPRUK/LNMAST)
+     A                                 16 20'Split/Merge Status'
+     A            SPMGST    R        O 16 39REFFLD(RLNMAST/SPMGST SSPRUK/LNMAST)
+     A                                 16 42'Interest Base'
+     A            IBASE     R        O 16 56REFFLD(RLNMAST/IBASE SSPRUK/LNMAST)
+     A                                 16 59'Interest Freq'
+     A            IFREQ     R        O 16 73REFFLD(RLNMAST/IFREQ SSPRUK/LNMAST)
+     A                                 17  2'Year Base'
+     A            YBASE     R        O 17 12REFFLD(RLNMAST/YBASE SSPRUK/LNMAST)
+     A                                 17 15'Original Balance'
+     A            ORGAMT    R        O 17 32REFFLD(RLNMAST/ORGAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 18  2'Tranche Amount'
+     A            TCHAMT    R        O 18 17REFFLD(RLNMAST/TCHAMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 18 37'Drawing Limit'
+     A            DRLIMT    R        O 18 51REFFLD(RLNMAST/DRLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 19  2'Intra-day Limit'
+     A            IDLIMT    R        O 19 18REFFLD(RLNMAST/IDLIMT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 19 38'Current Balance'
+     A            CBAL      R        O 19 54REFFLD(RLNMAST/CBAL SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 20  2'Accrued Interest'
+     A            ACCINT    R        O 20 19REFFLD(RLNMAST/ACCINT SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 21  2'Secondary Accrued Int'
+     A            ACCIN2    R        O 21 24REFFLD(RLNMAST/ACCIN2 SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 22  2'Dealer Accrued Int'
+     A            DLRACC    R        O 22 21REFFLD(RLNMAST/DLRACC SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A                                 23  2'Commitment fee Accr Int'
+     A            COMACC    R        O 23 26REFFLD(RLNMAST/COMACC SSPRUK/LNMAST)
+     A                                      EDTCDE(A)
+     A            MSGDSP        30A  O 23 48
+    ŠA************************************************************************
+     A*˜WINDOW MASSAGE CHANGE
+     A          R WINCHG
+     A*%%TS  SD  20231006  153331  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      WINDOW(10 17 3 40)
+     A                                      WDWBORDER((*CHAR '===||==='))
+     A                                      RMVWDW
+     A                                      USRRSTDSP
+     A            MSGWIN        30A  O  2  6
+    ŠA************************************************************************
+     A*˜WINDOW MASSAGE DELETE
+     A          R WINDTL
+     A*%%TS  SD  20230626  163411  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                      WINDOW(8 17 8 40)
+     A                                      WDWBORDER((*CHAR '===||==='))
+     A                                      RMVWDW
+     A                                      USRRSTDSP
+     A            MSGWIN1       35A  O  3  3DSPATR(UL)
+     A                                      COLOR(RED)
+     A                                  2  3'You Must Sure Delete Account Numbe-
+     A                                      r'
+     A            YESNO          1A  I  5 20
+     A                                  4 13'(Y=Yes / N=No)'
+     A            MSGWIN2       35   O  7  3DSPATR(UL)
+     A                                      COLOR(BLU)
+    ŠA************************************************************************
+     A          R FOOTER
+     A*%%TS  SD  20231006  153755  SSPRUK      REL-V7R4M0  5770-WDS
+     A                                 24  2'F3=Exit'
+     A                                 24 11'F5=Refresh'
+     A                                 24 68'F12=Previous'
+

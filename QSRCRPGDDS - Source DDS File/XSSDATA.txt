@@ -1,0 +1,140 @@
+      ****************************************************************
+      *  BANK/BRANCH INFORMATION FILE                                *
+      ****************************************************************
+      *  SSDATA   is a part of Silverlake System (R)                 *
+      *  (C) Copyright 1993, 1994                                    *
+      *                 By:  Silverlake System Sdn. Bhd.             *
+      *                      Floor 12A, Plaza IBM,                   *
+      *                      No.1, Jalan Tun Mohd Fuad,              *
+      *                      Taman Tun Dr. Ismail,                   *
+      *                      60000 Kuala Lumpur, Malaysia            *
+      ****************************************************************
+      *  Created By:                                                 *
+      *  Date      :                                                 *
+      ****************************************************************
+      *  Modification Logs:                                          *
+      *  Name  Init   Date      Remarks                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  TLC   V501   14/07/01  Add new fields JDIBRN, JDTAX2 &
+      *                         JDLCRG, JDOCRG
+      *  LPF   V502   17/09/01  Add new fields FIS BRANCH (JDFISB)
+      *  SNY   EB001  06/03/03  Add new fields for Chq Clearing centre
+      *                          (ie. SPICKKL, NORTHPNG,...)
+      *  CBS   EB02   24/03/03  Add new field for GL.
+      *  CBS   EB03   17/04/03  Add SWIFT compliance address,rename
+      *                         Address column heading name.
+      *  CBS   EB04   12/12/03  Use JDBMCA(4A) instead of JDIBRN(3A)
+      *                         to cater for Finance 4 digits internal
+      *                         branch code.
+      *  LCF   SS01   18/02/11  Add in new field for branch parameter
+      ****************************************************************
+     A                                      REF(SSFREF)
+     A                                      UNIQUE
+     A          R RXSSDATA                  TEXT('Bank/branch Parameter format')
+      *
+SS01 A            JDRECI    R               REFFLD(JFRECI)
+     A            JDIDST    R
+     A            JDBANK    R
+     A            JDBR      R
+     A            JDBRID    R
+SS01 A            JDBRTP    R
+V501 A            JDIBRN    R
+V502 A            JDFISB    R
+V501 A            JDLCRG    R
+V501 A            JDOCRG    R
+     A            JDNAME    R
+SS01 A            JDLDSC    R
+     A            JDBNAL    R
+     A            JDADDR    R
+EB03 A                                      COLHDG('Address line 2')
+SS01 A            JDADR3    R
+SS01 A            JDADR4    R
+     A            JDCSZ     R
+EB03 A                                      COLHDG('Address line 5')
+     A            JDTAXN    R
+V501 A            JDTAX2    R
+     A            JDTELE    R
+EB03 A                                      COLHDG('Telephone number')
+     A            JDTEL2    R
+     A            JDTEL3    R
+EB03 A                                      COLHDG('Telex number')
+     A            JDBRAT    R
+     A            JDBCAP    R
+     A            JDTREN    R
+     A            JDWKEN    R
+     A            JDWKND    R
+     A            JDBRAN    R
+     A            JDCUTT    R
+     A            JDOPN8    R
+     A            JDLEAD    R
+     A            JDMODD    R
+     A            JDMODS    R
+     A            JDMODX    R
+     A            JDMODT    R
+     A            JDMODL    R
+     A            JDMODG    R
+     A            JDMODC    R
+     A            JDMODO    R
+     A            JDSTAX    R
+     A            JDIDFM    R
+     A            JDBMCA    R
+EB04 A                                      COLHDG('Internal' 'Branch ID')
+     A            JDCURR    R
+     A            JDDECI    R
+     A            JDCOUN    R
+     A            JDSTAT    R
+     A            JDBRMD    R
+     A            JDBRF1    R
+EB03 A                                      COLHDG('Fax number')
+     A            JDBRF2    R
+     A            JDBRF3    R
+     A            JDBRF4    R
+     A            SSMDL8    R
+     A            JDBMGR    R
+     A            JDRMGR    R
+     A            JDREGN    R
+V5017A            JDRBRN    R
+V5017A            JDRSV1    R
+V5017A            JDRSV2    R
+V5017A            JDRSV3    R
+V5017A            JDRSV4    R
+SNY  A            JDCLRG    R
+EB02 A            JDISHQ    R
+EB02 A            JDMASB    R
+EB03 A            JDSAD1    R
+EB03 A            JDSAD2    R
+EB03 A            JDSAD3    R
+v88  A            JDMBR     R
+SS01 A            JDABR     R
+SS01 A            JDHCBR    R
+SS01 A            JDCLBR    R
+SS01 A            JDFLBR    R
+SS01 A            JDXSET    R
+SS01 A            JDDATE    R
+SS01 A            JDEXID    R
+V88  A            JDTDIF    R
+V88  A            JDTZHR    R
+V88  A            JDTZMN    R
+V88  A            JDSPTF    R
+V88  A            JDGBAL    R
+V88  A            JDGBLT    R
+V88  A            JDRSV5         1
+V88  A            JDRSV6         1
+V88  A            JDRSV7         1
+V88  A            JDRSV8         1
+V88  A            JDRSVA        19  2
+SS01 A            MNLDT8    R
+SS01 A            MNLUID    R
+SS01 A            MNLWID    R
+SS01 A            MNLTIM    R
+SS01 A            MNLSRC    R
+SS01 A            MNCUID    R
+SS01 A            MNCDT8    R
+SS01 A            MNCTIM    R
+SS01 A            MNCWID    R
+SS01 A            MNCSRC    R
+      *
+     A          K JDBANK
+     A          K JDBR
+      *--------------------------------------------- End Of Coding --*
+

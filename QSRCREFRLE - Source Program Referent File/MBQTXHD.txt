@@ -1,0 +1,320 @@
+      ****************************************************************
+      *  CPYBOOK ....: MBQTXHD                                       *
+      *  DESCRIPTION.:                                               *
+      *  DATE CREATED: 06.11.2007 18:47:37                           *
+      *  CREATED BY..:                                               *
+      *  PROGRAMMER..:                                               *
+      ****************************************************************
+      * MBQTXHD    IS A PART OF SILVERLAKE SYSTEM (R)                *
+      *    (C) COPYRIGHT 2000, 2002                                  *
+      *    BY: SILVERLAKE SYSTEM SDN. BHD.                           *
+      *        FLOOR 12A, PLAZA IBM,                                 *
+      *        NO.1, JALAN TUN MOHD FUAD,                            *
+      *        TAMAN TUN DR. ISMAIL,                                 *
+      *        60000 KUALA LUMPUR, MALAYSIA                          *
+      ****************************************************************
+      *  MODIFICATION LOGS                                           *
+      *  NAME  INIT   DATE      REMARKS                              *
+      *  ----  -----  --------  -----------------------------------  *
+      *  GSP   SS01   09-09-09  Add language code to handler multi
+      *                         language
+      *  AZR   SSML   05-04-10  Add buffer for multi-files maintenance
+      *  wll   SS03   29-06-10  Add new parameter fld for SSAUTCHK
+      *  wll   SS05   06-07-10  add Req Ref/MBLOG member in DSPARM
+      ****************************************************************
+      *  wll   R101   03-05-11  error pass in mntlog fld
+      *  azr   R102   17-05-11  add three field for maint log
+      *  ckw   R103   20-06-11  add plist for code checking
+      *  wll   R105   24-08-11  sav m3apcd for mntlog
+      *  wll   R106   30-09-11  fixed DSPARM to 100
+      ****************************************************************
+      *  Ake   K1001  05-09-17  Add Total Record into Key Value
+      ****************************************************************
+     **==========================================
+     ** dummy datastruc - for fld reference purpose
+     **==========================================
+     D SILVERLAKE    E DS                  EXTNAME(SILVERLAKE) PREFIX(SL_)
+     D MBFREF        E DS                  EXTNAME(MBFREF) PREFIX(MB_)
+     **==========================================
+     ** P A R A M E T E R S
+     **==========================================
+     D DTEDMY          S               D   DATFMT(*DMY)
+     **==========================================
+     ** C O N S T A N T S
+     **==========================================
+     **==========================================
+     ** V A R I A B L E S
+     **==========================================
+     D*
+     D COUNTR          S                   LIKE(SL_SSCOU5) INZ(0)
+     **==========================================
+     ** MISC
+     **==========================================
+     **
+     D WMAXREC         S                   LIKE(SL_SSCOU5) INZ(0)
+     D WLEN            S                   LIKE(SL_SSCOU5) INZ(0)
+     D WSTRLEN         S                   LIKE(SL_SSCOU5) INZ(0)
+     D WERROR          S              1    INZ(*BLANKS)
+     D STRPOS          C                   CONST(0)
+     ** for override msg
+     D WPOS            S                   LIKE(SL_SSCOU3) INZ(0)
+     D WOVR            S              3
+     D WOVRPOS         S              3
+     D WOVRTEXT        S              3    INZ('OVR')
+     D INTEXT          S            300
+     D OTTEXT          S            300
+     D INCODE          S             50
+     D OERRRE          S              1
+     **
+     ** for security and auth chking
+SS03 D GMNTUSR         S                   LIKE(HDUSID)
+SS03 D GTXCD           S                   LIKE(HDUSID)
+SS03 D GTXTP           S              1
+     D GBKN            S                   LIKE(SL_SSBANK)
+     D GBRN            S                   LIKE(SL_SSBRAN)
+SS03 D GCOST           S                   LIKE(SL_SSBRAN)
+SS03 D GBUNIT          S                   LIKE(SL_SSBRAN)
+SS03 D CALPGM          S                   LIKE(HDUSID)
+     **==========================================
+     **==========================================
+     ** P R O C E D U R E S
+     **==========================================
+     ** D A T A  S T R U C T U R E
+     **==========================================
+     D SDS            SDS
+     D  PSPGM                  1     10
+V001 D  PSPARM                37     39  0
+V001 D  PSMSGD                91    170
+V001 D  PSFILE               201    208
+V001 D  PSCODE               209    213
+V001 D  PSJOBN               244    253
+V001 D  PSUSRN               254    263
+V001 D  PSJBNO               264    269  0
+V001 D  PSJDT6               276    281  0
+V001 D  PSJTIM               282    287  0
+     D*
+     **==========================================
+     **
+     **==========================================
+     D WBAD            S              2    INZ('AB')
+     D WGOOD           S              2    INZ('AA')
+OS01 D WOVRW           S              2    INZ('AC')
+     D WBADTF          S              2    INZ('AV')
+     **==========================================
+     **
+     **==========================================
+     D
+     D*QRECV           DS          4096
+     D* RECVHDR                1    381
+     D* INSTRS               382   4096
+     **
+     D QRECV           DS
+     D  RECVHDR                            LIKE(MB_MBHEAD)
+     D**INSTRS                             LIKE(MB_MBDETL)
+SSVR D  INSTRS                     9619
+     **
+     D QSEND           DS
+     D  SENDHDR                            LIKE(MB_MBHEAD)
+     D**OTSTRS                             LIKE(MB_MBDETL)
+SSVR D  OTSTRS                     9619
+     **
+     **==========================================
+     ** LOAD EXT IMAGE
+     **==========================================
+     D               EUDS                  EXTNAME(SSAPAR)
+     **==========================================
+     **
+     **==========================================
+     D MBHEADR       E DS                  EXTNAME(MBHEADR) INZ
+     D MBERROR       E DS                  EXTNAME(MBERROR) INZ
+     **==========================================
+     **
+     **==========================================
+     ** MESSAGE RETRIEVER PARAMETER
+     D P8MSID          S              7
+     D P8MSGF          S             10    INZ('MBAMSG')
+     D P8MSGL          S             10    INZ('*LIBL')
+     D*SS01 P8MDTA          S            100
+SS01 D P8MDTA          S            256
+     D P8MSVR          S              9B 0
+     D P8ALRI          S              9B 0
+     D P8ALRO          S              9
+     D P8LOGI          S              1
+     D*SS01 P8MSGD          S            132
+SS01 D P8MSGD          S            256
+     D P8MSGT          S            132
+     D P8MSGH          S           3000
+SS01 D WONCE           S              1    INZ('N')
+SS01 D P8LGID          S                   LIKE(HDLGID)
+     **
+OS01 D WKSTR1          S           4096
+OS01 D WKSTR2          S           4096
+OS01 D STBYTE          S                   LIKE(SL_SSCOU5) INZ(0)
+     D WTOTREC         S              9  0
+     D WTOTPG          S              9  0
+     D WMVR            S              9  0
+     **
+     ** for maint log
+     D SSPRD8          S                   LIKE(SL_SSDAT8)
+     D SSPRTM          S                   LIKE(SL_SSTIM6)
+     D SSPDT8          S                   LIKE(SL_SSDAT8)
+     DWSSPDT8          S                   LIKE(SL_SSDAT8)
+     D SSPTIM          S                   LIKE(SL_SSTIM6)
+SS01 D SSABNK          S                   LIKE(SL_SSBANK)
+SS01 D SSABRN          S                   LIKE(SL_SSBRAN)
+SS01 D SSTBNK          S                   LIKE(SL_SSBANK)
+SS01 D SSTBRN          S                   LIKE(SL_SSBRAN)
+SS01 D SSACNO          S                   LIKE(SL_SSACCN)
+SS01 D SSACTY          S                   LIKE(SL_SSACCT)
+SS01 D SSACCY          S                   LIKE(SL_SSCURC)
+SS01 D SSCIFN          S                   LIKE(SL_SSACCN)
+R102 D SSDCID          S                   LIKE(SL_SSACCN)
+R102 D SSAPNO          S                   LIKE(SL_SSACCN)
+R102 D SSAFNO          S                   LIKE(SL_SSACCN)
+R102 D SSRMNO          S                   LIKE(SL_SSDESS)
+     **
+     D WHDVFMT         DS
+     D  WHDVFMT_IND            1      1
+     D  WHDVFMT_KEY            2    100
+     **
+     D SHDVFMT         DS
+     D  SHDVFMT_IND            1      1
+     D  SHDVFMT_CURPG          2     10S 0
+     D  SHDVFMT_PRVPG         11     19S 0
+     D  SHDVFMT_NXTPG         20     28S 0
+     D  SHDVFMT_TOTPG         29     37S 0
+K1001D  SHDVFMT_TOTRC         38     46S 0
+     **
+R101 D WSSPWID         S             20
+R101 D WPSJBNO         S              6
+     **
+     D WHDTMLI         DS
+     D  WHDTMLI_JOB            1     10
+     D  WHDTMLI_JOBN          11     16
+     **
+     D BUFFER          DS
+     D  BUF                    1  20000
+     D                                     DIM(20000)
+SSML **
+SSML D blist           DS                  OCCURS(10)
+SSML D  bfile                  1     10
+SSML D  bmntreq               11     18
+SSML **
+SSML D bpos            S              6S 0
+SSML D boccur          S              2S 0
+     **
+     D DSMBPAR3      E DS                  EXTNAME(MBPAR3)
+     **
+     ** carry the parameter from Main handler
+     D DSPARM          DS           100
+     D  DSOPT                        10
+     D  DSM4CHNL                      1
+     D  DSAPPLCD                      2
+     D  DSHTYPE                       1
+     D  DSAPPLGP                      2
+     D  DSCOUNTA                      2
+     D  DSHIDQNCHNL                  10
+     D  DSHIDQL                       5  0
+     D  DSHRTIM                       5  0
+     D  DSHJOBDN                     10
+     D  DSJOBNAME                    10
+     D  DSHLOGA                       1
+SS05 D  DSHDRREF                     25
+SS05 D  DSMBMBR                      10
+     **
+     **
+     D                 DS
+     D  P8RTN                  1    256
+     D  P8RTNERR             250    256
+     **============================================
+     ** CALLER PARAMETER LIST      (PLSSRTVP      PLIST)
+     D   P8FILE        S             10
+     D   P8KEY         S            100
+     D   P8KEYNUM      S              1  0
+     D   P8DATA        S           1000
+     D   P8OPTION      S              8
+     D   P8ERROR       S              1
+     **
+     ** CALLED PROGRAM ENTRY LIST  (*ENTRY        PLIST)
+     D   E8FILE        S             10
+     D   E8KEY         S            100
+     D   E8KEYNUM      S              1  0
+     D   E8DATA        S           1000
+     D   E8OPTION      S              8
+     D   E8ERROR       S              1
+     **============================================
+     ** CALLER PARAMETER LIST      (PLXXRTVP      PLIST)
+     D   P9FILE        S             10
+     D   P9KEY         S            100
+     D   P9KEYNUM      S              1  0
+     D   P9DATA        S           1000
+     D   P9OPTION      S              8
+     D   P9ERROR       S              1
+     **
+     ** CALLED PROGRAM ENTRY LIST  (*ENTRY        PLIST)
+     D   E9FILE        S             10
+     D   E9KEY         S            100
+     D   E9KEYNUM      S              1  0
+     D   E9DATA        S           1000
+     D   E9OPTION      S              8
+     D   E9ERROR       S              1
+     **============================================
+     **=================================================
+     ** def variable for SQL
+     **=================================================
+     D WSTMT           S           2500
+     D WS3TMT          S            800
+     D WFLDN           S           2500
+     D WHERE           S            800
+     D WFROM           S            800
+     D WORDER          S            800
+     D FILTER1         S            100
+     D FILTER2         S            100
+     D FORNAME         S            202
+     D WCOUNT          S              9  0
+     D WCONDN          S             10
+     D WAPOS           S              1    INZ(X'7D')
+     D WRRN            S              4  0 INZ(0)
+     D WS3OPEN         S              1    INZ('N')
+     D WSAVTOTREC      S              9  0
+R105 D SAVM3APCD       S                   LIKE(M3APCD)
+     **
+     D SqlNormal       c                   const('00000')
+     D SqlEOF          c                   const('02000')
+     **
+     **
+     **=================================================
+     ** def variable for MBRTVTIME
+     **=================================================
+     D P2PGMOPT        S             10    INZ
+     D P2RTVTS         S               Z   INZ
+     D P2RTVBNK        S                   LIKE(SL_SSBANK)
+     D P2RTVBRN        S                   LIKE(SL_SSBRAN)
+     D P2ERROR         S              1    INZ
+     **===========================================
+     ** def main proc
+     **===========================================
+     D MBRTVTIMEPR     PR                  EXTPGM('MBRTVTIME')
+     D  PRPGMOPT                           LIKE(P2PGMOPT)
+     D  PRRTVTS                            LIKE(P2RTVTS )
+     D  PRRTVBNK                           LIKE(P2RTVBNK)
+     D  PRRTVBRN                           LIKE(P2RTVBRN)
+     D  PRERROR                            LIKE(P2ERROR )
+     D SSTSQL          PR                  EXTPGM('SSTSQL')
+     D  INTEXT                             LIKE(INTEXT)
+     D  OTTEXT                             LIKE(OTTEXT)
+R103 D SSCKCD          PR                  EXTPGM('SSCKCD')
+R103 D  INCODE                             LIKE(INCODE)
+R103 D  OERRRE                             LIKE(OERRRE)
+     **=================================================
+     ** def variable for MBSYNC
+     **=================================================
+     D SYNCfile        S             10    INZ
+     D SYNCaction      S              1    INZ
+     D SYNCsql         S            256    INZ
+     D SYNCAPP         S              2    INZ
+     **=================================================
+     ** def variable for MBRTVTIME
+     **=================================================
+     D GSSACHKDS     E DS                  EXTNAME(SSACHKDS)
+

@@ -1,0 +1,473 @@
+     HOPTION(*NODEBUGIO)
+     H DEBUG(*YES)
+    Š *************************************************************************
+     FPGM001FM  CF   E             WORKSTN INFDS(INFDS)
+     F                                     SFILE(SDATA:RRN)
+     FLNMAST    UF   E           K DISK
+    Š *
+    Š * Variable declaration
+     D RRN             S              4S 0
+     D WSAVRRN         S              4S 0
+     D WMAXRRN         S              4S 0
+     D WRCDNBR         S              4S 0
+     D ARRACSRCN1      S             19S 0 DIM(9999) INZ(0)
+     D ARRACSRCN1IDX   S              4S 0
+     D TOTAL           S              4S 0
+     D WRESETS         S              1    INZ('Y')
+
+    Š * Data Sturcture
+     D INFDS           DS
+     D  CURRENTRRN           378    379I 0
+
+    Š * Working Variabletion
+     D PANEL           S              8
+
+    Š * Indicator Usage
+     D INDICATORPRT    S               *   INZ(%ADDR(*IN))
+     D                 DS                  BASED(INDICATORPRT)
+     D EXIT                   03     03
+     D REFRESH                05     05
+     D PERVIOUS               12     12
+     D SFLCLR                 30     30
+     D SFLDSP                 31     31
+     D SFLDSPCTL              32     32
+     D SFLEND                 33     33
+
+    Š *************************************************************************
+    Š *˜Main Program                                                         Š*
+    Š *************************************************************************
+    Š *
+     C                   DOW       PANEL         <> *BLANK
+     C                   EXSR      SRDS01
+     C                   ENDDO
+    Š *
+     C                   MOVE      '1'           *INLR
+    Š *************************************************************************
+    Š *˜SR - SRDS01 Loop Display Subfile                                     Š*
+    Š *************************************************************************
+     C     SRDS01        BEGSR
+    Š * Set Panel
+     C                   EVAL      PANEL         = 'INQ'
+     C                   DOW       PANEL         = 'INQ'
+    Š * Refill sfl
+     C                   IF        WRESETS       = 'Y'
+     C                   EXSR      SRCLRSFL
+     C                   ENDIF
+     C                   WRITE     FOOTER
+     C                   EXSR      SRDSP
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXIT
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C                   CAS                     SRCHKOTP
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDS02 Loop Display Subfile Change                              Š*
+    Š *************************************************************************
+     C     SRDS02        BEGSR
+    Š * Set Panel
+     C                   EVAL      PANEL         = 'CHG'
+     C     ACCTNO        CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+    Š *
+     C                   EXSR      SRMOVEVAL
+    Š *
+     C                   DOW       PANEL         = 'CHG'
+    Š *
+     C                   EXFMT     SCHG
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXIT
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C                   CAS                     SRCHG
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDS03 Loop Display Subfile Change                              Š*
+    Š *************************************************************************
+     C     SRDS03        BEGSR
+    Š * Set Panel
+     C                   EVAL      PANEL         = 'DTL'
+     C     ACCTNO        CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+    Š *
+     C                   DOW       PANEL         = 'DTL'
+    Š *
+     C                   EXFMT     SDTL
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXIT
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C                   CAS                     SRDTL
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDS04 Loop Display Subfile Change                              Š*
+    Š *************************************************************************
+     C     SRDS04        BEGSR
+    Š * Set Panel
+     C                   EVAL      PANEL         = 'DSP'
+     C     ACCTNO        CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+    Š *
+     C                   DOW       PANEL         = 'DSP'
+    Š *
+     C                   EXFMT     SDSP
+    Š * Process cmd key
+     C     EXIT          CASEQ     *ON           SREXIT
+     C     REFRESH       CASEQ     *ON           SRREFESH
+     C     PERVIOUS      CASEQ     *ON           SRPERVIOUS
+     C                   ENDCS
+    Š *
+     C                   ENDDO
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCLRSFL  Clear Subfile                                         Š*
+    Š *************************************************************************
+     C     SRCLRSFL      BEGSR
+    Š * Clear Screen
+     C                   EVAL      SFLCLR        = *ON
+     C                   WRITE     SCTL
+     C                   EVAL      SFLCLR        = *OFF
+    Š * Initial Counter
+     C                   EVAL      RRN           = 0
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      *IN60         = *OFF
+    Š * Load SFL
+     C                   EXSR      SRLOADSFL
+    Š * Setting
+     C                   EVAL      SFLEND        = *ON
+     C                   EVAL      WRESETS       = 'N'
+     C                   EVAL      WSAVRRN       = RRN
+     C                   EVAL      WMAXRRN       = RRN
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRLOADSFL Load Subfile                                          Š*
+    Š *************************************************************************
+     C     SRLOADSFL     BEGSR
+    Š *
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      TOTAL         = 0
+     C                   MOVEL(P)  *OFF          WKEOLOOP          1
+    Š *
+     C     *START        SETLL     LNMAST
+     C                   DOU       WKEOLOOP      = *ON
+     C                   READ      LNMAST
+     C                   IF        %EOF(LNMAST)
+     C                   LEAVE
+     C                   ELSE
+    Š *
+     C                   EVAL      RRN           = RRN + 1
+     C                   EVAL      TOTAL         = TOTAL + 1
+     C                   EVAL      ARRACSRCN1(RRN) = ACCTNO
+    Š *
+     C                   WRITE     SDATA
+    Š *
+     C                   ENDIF
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDSP Display Subfile                                           Š*
+    Š *************************************************************************
+     C     SRDSP         BEGSR
+    Š * No data to Display
+     C                   IF        WSAVRRN       = 0
+     C                   EVAL      SFLCLR        = *ON
+     C                   ELSE
+     C                   EVAL      SFLCLR        = *OFF
+     C                   ENDIF
+    Š * Set Inidicator
+     C                   EVAL      SFLDSP        = *ON
+     C                   EVAL      SFLDSPCTL     = *ON
+    Š * Display Screen
+     C                   EXFMT     SCTL
+    Š * Reset Inidicator
+     C                   EVAL      SFLDSP        = *OFF
+     C                   EVAL      SFLDSPCTL     = *OFF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SPRCSRC                                                         Š*
+    Š *************************************************************************
+     C     SPRCSRC       BEGSR
+    Š *
+     C                   EVAL      RCDNBR        = CURRENTRRN
+     C                   IF        ACSRC         <> 0
+    Š * Validate
+     C                   EXSR      SRVALIDATE
+     C                   EVAL      ARRACSRCN1IDX = %LOOKUP(ACSRC:ARRACSRCN1)
+    Š *
+     C                   SELECT
+     C                   WHEN      ARRACSRCN1IDX > 0
+     C                   EVAL      RCDNBR        = ARRACSRCN1IDX
+     C                   EVAL      WRCDNBR       = ARRACSRCN1IDX
+     C                   CLEAR                   ACSRC
+     C                   CLEAR                   MSGERR
+     C                   ENDSL
+    Š *
+     C                   ELSE
+     C                   EVAL      RCDNBR        = CURRENTRRN
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRVALIDATE Validation Value                                     Š*
+    Š *************************************************************************
+     C     SRVALIDATE    BEGSR
+    Š *
+     C                   IF        ACSRC         <> *ZEROS
+     C     ACSRC         CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+     C                   ELSE
+     C                   EVAL      *IN60         = *ON
+     C                   EVAL      MSGERR        = 'Account Number not ' +
+     C                                             'Found'
+     C                   ENDIF
+    Š *
+     C                   ELSE
+     C                   EVAL      *IN60         = *ON
+     C                   EVAL      MSGERR        = 'Account Number Cannot ' +
+     C                                             'Be Blank'
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCHG     CHANGE DATA                                           Š*
+    Š *************************************************************************
+     C     SRCHG         BEGSR
+    Š *
+     C     ACCTNO        CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+    Š *
+     C                   EVAL      TYPE          = CTYPE
+     C                   EVAL      CURTYP        = CCURTYP
+     C                   EVAL      CURDEC        = CCURDEC
+     C                   EVAL      SHDSC         = CSHDSC
+     C                   EVAL      RATPC         = CRATPC
+     C                   EVAL      RTPED8        = CRTPED8
+     C                   EVAL      PRCPKI        = CPRCPKI
+     C                   EVAL      MULTIR        = CMULTIR
+     C                   EVAL      BUNDLE        = CBUNDLE
+     C                   EVAL      GROUP         = CGROUP
+     C                   EVAL      LONGRP        = CLONGRP
+     C                   EVAL      LMCOST        = CLMCOST
+     C                   EVAL      LMPRDC        = CLMPRDC
+     C                   EVAL      GLBOOK        = CGLBOOK
+     C                   EVAL      RESIND        = CRESIND
+     C                   EVAL      CUSCAT        = CCUSCAT
+     C                   EVAL      GLACST        = CGLACST
+     C                   EVAL      SUBLDG        = CSUBLDG
+     C                   EVAL      STATUS        = CSTATUS
+     C                   EVAL      LNSPTF        = CLNSPTF
+     C                   EVAL      SPMGST        = CSPMGST
+     C                   EVAL      IBASE         = CIBASE
+     C                   EVAL      IFREQ         = CIFREQ
+     C                   EVAL      YBASE         = CYBASE
+     C                   EVAL      ORGAMT        = CORGAMT
+     C                   EVAL      TCHAMT        = CTCHAMT
+     C                   EVAL      DRLIMT        = CDRLIMT
+     C                   EVAL      IDLIMT        = CIDLIMT
+     C                   EVAL      CBAL          = CCBAL
+     C                   EVAL      ACCINT        = CACCINT
+     C                   EVAL      ACCIN2        = CACCIN2
+     C                   EVAL      DLRACC        = CDLRACC
+     C                   EVAL      COMACC        = CCOMACC
+    Š *
+     C                   UPDATE    RLNMAST
+     C                   EVAL      MSGWIN        = 'Update Data Successful'
+     C                   WRITE     WINCHG
+     C                   EXFMT     WINCHG
+    Š *
+     C                   ENDIF
+    Š *
+     C                   EXSR      SRPERVIOUS
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRDTL     DELETE DATA                                           Š*
+    Š *************************************************************************
+     C     SRDTL         BEGSR
+    Š *
+     C                   CLEAR                   MSGWIN1
+     C                   CLEAR                   MSGWIN2
+    Š *
+     C     ACCTNO        CHAIN     LNMAST
+     C                   IF        %FOUND(LNMAST)
+    Š *
+     C                   EVAL      MSGWIN1       = 'If you can sure delete +
+     C                                             Account No.'
+     C                   WRITE     WINDTL
+     C                   EXFMT     WINDTL
+    Š *
+     C                   IF        YESNO         = 'Y'
+     C                   DELETE    RLNMAST
+     C                   EVAL      MSGWIN2       = 'Deleted Successed'
+     C                   WRITE     WINDTL
+     C                   EXFMT     WINDTL
+     C                   ELSE
+     C                   EVAL      MSGWIN2       = 'Cancel Deleted'
+     C                   WRITE     WINDTL
+     C                   EXFMT     WINDTL
+     C                   ENDIF
+    Š *
+     C                   ENDIF
+    Š *
+     C                   EXSR      SRPERVIOUS
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRMOVEVAL Move Value LNMAST to Field Subfile                    Š*
+    Š *************************************************************************
+     C     SRMOVEVAL     BEGSR
+    Š *
+     C                   EVAL      CTYPE         = TYPE
+     C                   EVAL      CCURTYP       = CURTYP
+     C                   EVAL      CCURDEC       = CURDEC
+     C                   EVAL      CSHDSC        = SHDSC
+     C                   EVAL      CRATPC        = RATPC
+     C                   EVAL      CRTPED8       = RTPED8
+     C                   EVAL      CPRCPKI       = PRCPKI
+     C                   EVAL      CMULTIR       = MULTIR
+     C                   EVAL      CBUNDLE       = BUNDLE
+     C                   EVAL      CGROUP        = GROUP
+     C                   EVAL      CLONGRP       = LONGRP
+     C                   EVAL      CLMCOST       = LMCOST
+     C                   EVAL      CLMPRDC       = LMPRDC
+     C                   EVAL      CGLBOOK       = GLBOOK
+     C                   EVAL      CRESIND       = RESIND
+     C                   EVAL      CCUSCAT       = CUSCAT
+     C                   EVAL      CGLACST       = GLACST
+     C                   EVAL      CSUBLDG       = SUBLDG
+     C                   EVAL      CSTATUS       = STATUS
+     C                   EVAL      CLNSPTF       = LNSPTF
+     C                   EVAL      CSPMGST       = SPMGST
+     C                   EVAL      CIBASE        = IBASE
+     C                   EVAL      CIFREQ        = IFREQ
+     C                   EVAL      CYBASE        = YBASE
+     C                   EVAL      CORGAMT       = ORGAMT
+     C                   EVAL      CTCHAMT       = TCHAMT
+     C                   EVAL      CDRLIMT       = DRLIMT
+     C                   EVAL      CIDLIMT       = IDLIMT
+     C                   EVAL      CCBAL         = CBAL
+     C                   EVAL      CACCINT       = ACCINT
+     C                   EVAL      CACCIN2       = ACCIN2
+     C                   EVAL      CDLRACC       = DLRACC
+     C                   EVAL      CCOMACC       = COMACC
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SREXIT                                                          Š*
+    Š *************************************************************************
+     C     SREXIT        BEGSR
+    Š * EXIT
+     C                   EVAL      PANEL         = *BLANK
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRREFESH                                                        Š*
+    Š *************************************************************************
+     C     SRREFESH      BEGSR
+    Š * REFESH
+     C                   CLEAR                   ACSRC
+     C                   CLEAR                   MSGERR
+     C                   CLEAR                   MSGUPD
+     C                   CLEAR                   MSGDTL
+     C                   EVAL      RCDNBR        = 1
+     C                   EVAL      *IN60         = *OFF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRPERVIOUS                                                      Š*
+    Š *************************************************************************
+     C     SRPERVIOUS    BEGSR
+    Š * PERVIOUS
+     C                   EVAL      PANEL         = 'INQ'
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SRCHKOTP                                                        Š*
+    Š *************************************************************************
+     C     SRCHKOTP      BEGSR
+    Š * Check selete option
+     C                   IF        WSAVRRN       > *ZEROS
+     C                   EXSR      SPRCSFOPT
+     C                   ENDIF
+    Š * Process search reqn
+     C                   IF        ACSRC         <> *ZEROS
+     C                   EXSR      SPRCSRC
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - SPRCSFOPT                                                       Š*
+    Š *************************************************************************
+     C     SPRCSFOPT     BEGSR
+    Š * Check selete option
+     C                   READC     SDATA
+     C                   DOW       PANEL         <> *BLANK
+    Š * Change
+     C                   IF        OPT           = '2'
+     C                   EVAL      PANEL         = 'CHG'
+     C                   EVAL      WRESETS       = 'N'
+     C                   EXSR      SRDS02
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+     C                   ENDIF
+    Š * Delete
+     C                   IF        OPT           = '4'
+     C                   EVAL      PANEL         = 'DTL'
+     C                   EVAL      WRESETS       = 'Y'
+     C                   EXSR      SRDS03
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+     C                   ENDIF
+    Š * Display
+     C                   IF        OPT           = '5'
+     C                   EVAL      PANEL         = 'DSP'
+     C                   EVAL      WRESETS       = 'N'
+     C                   EXSR      SRDS04
+     C                   EVAL      OPT           = *BLANK
+     C                   UPDATE    SDATA
+     C                   EVAL      RCDNBR        = RRN
+     C                   ENDIF
+    Š *
+     C                   IF        OPT           = *BLANK
+     C                   LEAVE
+     C                   ENDIF
+    Š *
+     C                   READC     SDATA
+     C                   ENDDO
+    Š *
+     C                   ENDSR
+    Š *************************************************************************
+    Š *˜SR - *INZSR                                                          Š*
+    Š *************************************************************************
+     C     *INZSR        BEGSR
+    Š *
+     C                   EVAL      RRN           = 0
+     C                   EVAL      RCDNBR        = 0
+     C                   EVAL      *IN60         = *OFF
+     C                   EVAL      *IN70         = *OFF
+     C                   CLEAR                   MSGERR
+    Š * Initial Panel
+     C                   EVAL      PANEL         = 'INQ'
+    Š *
+     C                   ENDSR
+

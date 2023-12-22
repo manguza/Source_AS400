@@ -1,0 +1,57 @@
+      *****************************************************************
+      * Program Name..: LNQPRTFD                                      *
+      * Description...: COPYBOOK - PRINTER FILE DATA STRUCTURE        *
+      * Date Created..: 20/10/2005                                    *
+      * Author........: LEONG WOEN JIAN                               *
+      * Ref no........:                                               *
+      *****************************************************************
+      * LNQPRTFD is part of Silverlake Integrated Banking System      *
+      * Copyright 2005 by Silverlake System Sdn Bhd Kuala Lumpur,     *
+      * Malaysia.                                                     *
+      *****************************************************************
+      * Modification Logs:                                            *
+      * Init  Ref#     Date     Description                           *
+      * ----  ----  ----------  -----------                           *
+      *                                                               *
+      *****************************************************************
+     ** PRINTER FILE INFO DATA STRUCTURE
+     **
+     D PRTFDS          DS
+     D  P_ODP_TYPE            81     82
+     D  P_FILE_NAME           83     92
+     D  P_LIBRARY             93    102
+     D  P_SPOOL_FILE         103    112
+     D  P_SPOOL_LIB          113    122
+     D  P_SPOOL_NUM          123    124I 0
+     D  P_RCD_LEN            125    126I 0
+     D  P_KEY_LEN            127    128I 0
+     D  P_MEMBER             129    138
+     D  P_TYPE               147    148I 0
+     D  P_ROWS               152    153I 0
+     D  P_COLUMNS            154    155I 0
+     D  P_NUM_RCDS           156    159I 0
+     D  P_ACC_TYPE           160    161
+     D  P_DUP_KEY            162    162
+     D  P_SRC_FILE           163    163
+     D  P_VOVOL_OFF          184    185I 0
+     D  P_BLK_RCDS           186    187I 0
+     D  P_OVERFLOW           188    189I 0
+     D  P_BLK_INCR           190    191I 0
+     D  P_FLAGS1             196    196
+     D  P_REQUESTER          197    206
+     D  P_OPEN_COUNT         207    208I 0
+     D  P_BASED_MBRS         211    212I 0
+     D  P_FLAGS2             213    213
+     D  P_OPEN_ID            214    215
+     D  P_RCDFMT_LEN         216    217I 0
+     D  P_CCSID              218    219I 0
+     D  P_FLAGS3             220    220
+     D  P_NUM_DEVS           227    228I 0
+     **
+     D  P_CUR_LINE           367    368I 0
+     D  P_CUR_PAGE           369    372I 0
+     D  P_PRT_MAJOR          401    402
+     D  P_PRT_MINOR          403    404
+     **
+     D  P_LINENO       S              2  0
+

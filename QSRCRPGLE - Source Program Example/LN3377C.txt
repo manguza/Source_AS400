@@ -1,0 +1,35 @@
+ /*****************************************************************************+
+  * Program Name : LN3377C           REF.NO: CR#866                            +
+  * Description  : Invoice/Purchase Order Report                               +
+  * Date Changed : 18/02/2013                                                  +
+  * Author       : Sartra T.                                                   +
+  * Frequency    : Monthly                                                     +
+  *****************************************************************************+
+  * Modification Logs:                                                         +
+  *                                                                            +
+  * Init  Ref#     Date    Description                                         +
+  * ----  ----     ----    -----------                                         +
+  *                                                                            +
+  *****************************************************************************/
+
+             PGM
+
+             OVRDBF     FILE(LNRPTO) SHARE(*YES)
+
+             OPNQRYF    FILE((LNRPTO *FIRST *ONLY)) +
+                        QRYSLT('(MCLNID *NE "M") *AND +
+                                (STATUS *NE 2)   *AND +
+                                (PRDGRP *EQ %VALUES("PN" "BE")) ') +
+                        KEYFLD(*FILE)
+
+             CLRPFM     FILE(LN3377WK)
+
+             CALL       PGM(LN3377X)
+
+             CLOF       OPNID(LNRPTO)
+             DLTOVR     FILE(*ALL)
+
+             CALL       PGM(LN3377)
+
+             ENDPGM
+

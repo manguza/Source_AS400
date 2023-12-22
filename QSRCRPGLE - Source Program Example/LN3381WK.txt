@@ -1,0 +1,41 @@
+     A*-------------------------------------------------------------------------
+     A*  File         : LN3381WK
+     A*  Created By   : Sartra T.
+     A*  Ref No.      : CR#866
+     A*  Date         : 22/03/2013
+     A*-------------------------------------------------------------------------
+     A*  MODIFICATION LOGS:
+     A*  REF.#  NAME     DATE      DESCRIPTION
+     A*  -----  ----  ----------   ---------------------------------------------
+     A*
+     A*-------------------------------------------------------------------------
+     A                                      REF(LNFREF)
+     A          R RLN3381WK
+     A            BKN       R
+     A            RBRN      R
+     A            CFCIFN    R
+     A            CFCIFND   R               REFFLD(CFNA1  CFFREF)
+     A                                      TEXT('Customer Number Name')
+     A                                      COLHDG('Customer' 'Number Name')
+     A            CURTYP    R
+     A            JFXLSC    R               REFFLD(JFXLSC SSFXRP)
+     A            CFRCIF    R               REFFLD(CFRCIF CFFREF)
+     A            CFRCIFD   R               REFFLD(CFNA1  CFFREF)
+     A                                      TEXT('Related CIF Number Name')
+     A                                      COLHDG('Related' 'CIF Number Name')
+     A            DRLIMT    R
+     A            CBAL      R
+     A            FUTDIS    R               REFFLD(CBAL)
+     A                                      TEXT('Future-Dated Disbursement')
+     A                                      COLHDG('Future-Dated' +
+     A                                             'Disbursement')
+     A            AVLAMT    R               REFFLD(CBAL)
+     A                                      TEXT('Available Balance')
+     A                                      COLHDG('Available' 'Balance')
+     A*
+     A          K BKN
+     A          K RBRN
+     A          K CFCIFN
+     A          K CURTYP
+     A          K CFRCIF
+

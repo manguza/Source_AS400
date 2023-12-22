@@ -1,0 +1,81 @@
+      ****************************************************************
+      *  FILE NAME...: LNQRTVPC          REF.NO:                     *
+      *  DESCRIPTION.: RETRIEVE SS PARM VALUES                       *
+      *  DATE CREATED: 17/01/2008                                    *
+      *  AUTHOR......: LIMEL                                         *
+      ****************************************************************
+      * LNQRTVPC IS A PART OF CIF/38 BANK ACCOUNTING SYSTEM          *
+      *    COPYRIGHT 1999 BY SILVERLAKE SYSTEM SDN BHD               *
+      *    KUALA LUMPUR, MALAYSIA.                                   *
+      ****************************************************************
+      * PASS IN PARAMETER:                                           *
+      *   P9FILE   - NAME OF SS PARAMETER FILE TO RETRIEVE           *
+      *   P9KEY    - KEY VALUE OF THE FILE                           *
+      *   P9KEYNUM - NO OF KEY USED TO CHAIN FILE                    *
+      *   P9OPTION - POGRAM OPTION (E.G. '*CLOSE' TO CLOSE FILE)     *
+      *   P9ERROR  - ERROR INDICATOR DEFAULT BLANK.                  *
+      *                                                              *
+      * PASS OUT PARAMETER:                                          *
+      *   P9DATA   - DATA RETRIEVED FROM SS PARM FILE                *
+      *   P9ERROR  - ERROR SET ON '1' IF RECORD NOT FOUND            *
+      *                                                              *
+      ****************************************************************
+      *                                                              *
+      *  MODIFICATION LOGS:                                          *
+      *                                                              *
+      *  INIT  REF.#     DATE    DESCRIPTION                         *
+      *  ----  -----  --------  ------------------------------------ *
+      *  LKK   R1001  14/04/11  ADD LNPARZ                           *
+      ****************************************************************
+     **============================================
+     ** SRSSRTVP - SR TO RETRIEVE SS KEY VALUE
+     **============================================
+     **
+     C     SRLNRTVP      BEGSR
+     **
+     C     PLLNRTVP      PLIST
+     C                   PARM                    P9FILE
+     C                   PARM                    P9KEY
+     C                   PARM                    P9KEYNUM
+     C                   PARM                    P9DATA
+     C                   PARM                    P9OPTION
+     C                   PARM                    P9ERROR
+     **
+     **  PASS IN KEY FIELD
+     C                   SELECT
+     C                   WHEN      P9FILE      = 'LNPAR1'
+     C**                 MOVEL     DSKYPAR1      P9KEY
+R1001C                   WHEN      P9FILE      = 'LNPARZ'
+     **
+     C                   OTHER
+     ** FILE NOT SUPPORTED TURN ON ERROR
+     C                   EVAL      P9ERROR     = '1'
+     C                   LEAVESR
+     **
+     C                   ENDSL
+     **
+     C                   CALL      'LNRTVP'      PLLNRTVP
+     **
+     ** IF ERROR?
+     C                   IF        P9ERROR    <> *BLANKS
+     C                   LEAVESR
+     C                   ENDIF
+     **
+     **  RETURN DATA
+     C                   SELECT
+     C                   WHEN      P9FILE      = 'LNPAR1'
+     C                   MOVEL     P9DATA        DSLNPAR1
+R1001C                   WHEN      P9FILE      = 'LNPARZ'
+R1001C                   MOVEL     P9DATA        DSLNPARZ
+     **
+     C                   OTHER
+     **
+     ** FILE NOT SUPPORTED TURN ON ERROR
+     C                   EVAL      P9ERROR     = '1'
+     C                   LEAVESR
+     **
+     C                   ENDSL
+     **
+     C     ERLNRTVP      ENDSR
+     **============================================
+

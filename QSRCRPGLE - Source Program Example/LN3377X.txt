@@ -1,0 +1,267 @@
+     F*-------------------------------------------------------------------------
+     F* Program Name..: LN3377X
+     F* Description...: Invoice/Purchase Order Report
+     F* Date Created..: 18/02/2013
+     F* Ref no........: CR#866
+     F* Author........: Sartra T.
+     F*-------------------------------------------------------------------------
+     F* LN3377X  Is part of Silverlake Integrated Banking System
+     F* Copyright 1996 by Silverlake System Sdn Bhd Kuala Lumpur,
+     F* Malaysia.
+     F*-------------------------------------------------------------------------
+     F*  MODIFICATION LOGS:
+     F*  REF.#  NAME     DATE      DESCRIPTION
+     F*  -----  ----  ----------   ---------------------------------------------
+     F*
+     F*
+     F*-------------------------------------------------------------------------
+     FLNRPTO    IF   E           K DISK
+     FLNPAR2    IF   E           K DISK
+     FLLPARK    IF   E           K DISK
+     FCFPARZ2   IF   E           K DISK
+     FLNPICFL2  IF   E           K DISK
+     FLNIVPO    IF   E           K DISK
+     FLLTPID    IF   E           K DISK
+     FLN3377WK  O    E           K DISK    PREFIX(X_)
+     D*-------------------------------------------------------------------------
+     D*
+     D SILVERLAKE    E DS                  EXTNAME(SILVERLAKE) PREFIX(SL_)
+     D               EUDS                  EXTNAME(SSAPAR)
+     D*Copybook  - Retrieve SS Parm Data-Structure
+     D/COPY QSRCREFRLE,SSQRTVPD
+     D*Copybook  - Retrieve SS Entry List Parameter
+     D/COPY QSRCREFRLE,SSQRTVPED
+     D*
+     C*-------------------------------------------------------------------------
+     C* main logic
+     C*-------------------------------------------------------------------------
+     C     *LOVAL        SETLL     LNRPTO
+     C                   DOU       WKEOFILE      = *ON
+     C                   READ      LNRPTO
+     C                   IF        %EOF(LNRPTO)
+     C                   LEAVE
+     C                   ENDIF
+     C*Exclude main account
+     C                   IF        MCLNID        = 'M'
+     C                   ITER
+     C                   ENDIF
+     C*Exclude closed account
+     C                   IF        STATUS        =  2
+     C                   ITER
+     C                   ENDIF
+     C*
+     C                   MOVEL(P)  TYPE          WKPTYPE
+     C                   MOVEL(P)  CURTYP        WKPCURTY
+     C     LNPAR2KEY     CHAIN     LNPAR2
+     C                   IF        %FOUND(LNPAR2)
+     C*
+     C                   IF        PRDGRP        = 'PN'  OR
+     C                             PRDGRP        = 'BE'
+     C*
+     C                   MOVEL(P)  AFFCDE        WKLKFCOD
+     C     LLPARKKEY     CHAIN     LLPARK
+     C                   IF        %FOUND(LLPARK)
+     C                   IF        LKTPLT        = 'AVAL'
+     C*
+     C                   EXSR      SRPROC
+     C*
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDDO
+     C*
+     C                   EVAL      *INLR = *ON
+     C*
+     C*-------------------------------------------------------------------------
+     C* PROCESS
+     C*-------------------------------------------------------------------------
+     C     SRPROC        BEGSR
+     C*
+     C                   CLEAR                   RLN3377WK
+     C*
+     C*Bank Number
+     C                   Z-ADD     BKN           X_BKN
+     C*Reporting Branch
+     C                   Z-ADD     RBRN          X_RBRN
+     C*SBU Code
+     C                   MOVEL(P)  SBUCOD        X_SBUCOD
+     C*Long Description
+     C                   MOVEL(P)  SBUCOD        WKCFSBUC
+     C     CFPARZ2KEY    CHAIN     CFPARZ2
+     C                   IF        %FOUND(CFPARZ2)
+     C                   MOVEL(P)  CFCCRD        X_CFCCRD
+     C                   ENDIF
+     C*CIF Number
+     C                   Z-ADD     CIFNO         X_CIFNO
+     C*Customer Name
+     C                   MOVEL(P)  CFNA1         X_CFNA1
+     C*Loan Type
+     C                   MOVEL(P)  TYPE          X_TYPE
+     C*Type Description
+     C                   MOVEL(P)  PTYDSC        X_PTYDSC
+     C*Currency Type
+     C                   MOVEL(P)  CURTYP        X_CURTYP
+     C*Description (Local)
+     C                   EVAL      P8FILE        = 'SSFXRP'
+     C                   EVAL      K8JFXCOD1     = CURTYP
+     C                   EXSR      SRSSRTVP
+     C                   IF        P8ERROR       = ' '
+     C                   MOVEL     JFSDSC        X_JFXLSC
+     C                   ELSE
+     C                   MOVEL(P)  'Not Found'   X_JFXLSC
+     C                   ENDIF
+     C*Current Rate
+     C                   Z-ADD     BKN           FROMBN
+     C                   Z-ADD     RBRN          FROMBR
+     C                   Z-ADD     1             FRAMT
+     C                   MOVEL     CURTYP        FROMC
+     C                   MOVE      SSICUR        TOC
+     C*
+     C                   IF        FROMC         <> TOC
+     C                   EXSR      SRSSRTVX
+     C                   EVAL      JFXMRT        = CCVRAT
+     C                   Z-ADD     JFXMRT        X_EXRATE
+     C                   ELSE
+     C                   Z-ADD     1             X_EXRATE
+     C                   ENDIF
+     C*Branch Number
+     C                   Z-ADD     BRN           X_BRN
+     C*Account Number
+     C                   Z-ADD     ACCTNO        X_ACCTNO
+     C*Status
+     C                   Z-ADD     STATUS        X_STATUS
+     C*STATUS DESCRIPTION
+     C                   MOVEL(P)  STATUSD       X_STATUSD
+     C*Original Loan Date
+     C                   Z-ADD     ORGDT8        X_ORGDT8
+     C*Maturity Date
+     C                   Z-ADD     MATDT8        X_MATDT8
+     C*Original Balance
+     C                   Z-ADD     ORGAMT        X_ORGAMT
+     C*Total Outstanding
+     C                   Z-ADD     OSBAL         X_OSBAL
+     C*-----------
+     C*FILE LNPICF
+     C*-----------
+     C                   Z-ADD     ACCTNO        WKLIACCT
+     C                   MOVEL(P)  ACTYPE        WKLIATYP
+     C                   MOVEL(P)  PNICNO        WKLIPICN
+     C     LNPICFKEY     CHAIN     LNPICFL2
+     C                   IF        %FOUND(LNPICFL2)
+     C*BE /Cheque/PN Number
+     C                   MOVEL(P)  LIPICN        X_LIPICN
+     C*BE /Cheque/PN Amount
+     C                   Z-ADD     LIAMT         X_LIAMT
+     C*Issued By
+     C                   MOVEL(P)  LIISBY        X_LIISBY
+     C*Issued By Name
+     C                   MOVEL(P)  LIISBY        WKLLIDID
+     C     LLTPIDKEY     CHAIN     LLTPID
+     C                   IF        %FOUND(LLTPID)
+     C                   MOVEL(P)  LLIDNM        X_LLIDNM1
+     C                   ENDIF
+     C*Acceptance By
+     C                   MOVEL(P)  LIACBY        X_LIACBY
+     C*Acceptance By Name
+     C                   MOVEL(P)  LIACBY        WKLLIDID
+     C     LLTPIDKEY     CHAIN     LLTPID
+     C                   IF        %FOUND(LLTPID)
+     C                   MOVEL(P)  LLIDNM        X_LLIDNM2
+     C                   ENDIF
+     C*AVAL By
+     C                   MOVEL(P)  LIAVBY        X_LIAVBY
+     C*AVAL By Name
+     C                   MOVEL(P)  LIAVBY        WKLLIDID
+     C     LLTPIDKEY     CHAIN     LLTPID
+     C                   IF        %FOUND(LLTPID)
+     C                   MOVEL(P)  LLIDNM        X_LLIDNM3
+     C                   ENDIF
+     C*Issue Date
+     C                   Z-ADD     LIISS8        X_LIISS8
+     C*Value Date
+     C                   Z-ADD     LIIVC8        X_LIIVC8
+     C                   ENDIF
+     C*
+     C*Multi CCY Loan Code
+     C                   MOVEL(P)  MCLNID        X_MCLNID
+     C*Product Group
+     C                   MOVEL(P)  PRDGRP        X_PRDGRP
+     C*3rd Party Limit Type
+     C                   MOVEL(P)  LKTPLT        X_LKTPLT
+     C*-----------
+     C*FILE LNIVPO
+     C*-----------
+     C*
+     C                   Z-ADD     ACCTNO        WKLIPACT
+     C                   MOVEL(P)  ACTYPE        WKLIPATY
+     C     LNIVPOKEY     SETLL     LNIVPO
+     C                   DOU       WKEOLOOP      = *ON
+     C     LNIVPOKEY     READE     LNIVPO
+     C                   IF        %EOF(LNIVPO)
+     C                   LEAVE
+     C                   ENDIF
+     C*INVOICE/PO NUMBER
+     C                   MOVEL(P)  LIPNUM        X_LIPNUM
+     C*ISSUER (3RD PARTY) ID
+     C                   MOVEL(P)  LIPISS        X_LIPISS
+     C*ISSUER (3RD PARTY) ID NAME
+     C                   MOVEL(P)  LIPISS        WKLLIDID
+     C     LLTPIDKEY     CHAIN     LLTPID
+     C                   IF        %FOUND(LLTPID)
+     C                   MOVEL(P)  LLIDNM        X_LLIDNM4
+     C                   ENDIF
+     C*INVOICE/PO DATE
+     C                   Z-ADD     LIPDT8        X_LIPDT8
+     C*INVOICE/PO AMOUNT
+     C                   Z-ADD     LIPAMT        X_LIPAMT
+     C*
+     C                   WRITE     RLN3377WK
+     C                   ENDDO
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C* Initialisation
+     C*-------------------------------------------------------------------------
+     C     *INZSR        BEGSR
+     C*
+     C     LNPAR2KEY     KLIST
+     C                   KFLD                    WKPTYPE
+     C                   KFLD                    WKPCURTY
+     C     *LIKE         DEFINE    PTYPE         WKPTYPE
+     C     *LIKE         DEFINE    PCURTY        WKPCURTY
+     C*
+     C     LLPARKKEY     KLIST
+     C                   KFLD                    WKLKFCOD
+     C     *LIKE         DEFINE    LKFCOD        WKLKFCOD
+     C*
+     C     CFPARZ2KEY    KLIST
+     C                   KFLD                    WKCFSBUC
+     C     *LIKE         DEFINE    CFSBUC        WKCFSBUC
+     C*
+     C     LNPICFKEY     KLIST
+     C                   KFLD                    WKLIACCT
+     C                   KFLD                    WKLIATYP
+     C                   KFLD                    WKLIPICN
+     C     *LIKE         DEFINE    LIACCT        WKLIACCT
+     C     *LIKE         DEFINE    LIATYP        WKLIATYP
+     C     *LIKE         DEFINE    LIPICN        WKLIPICN
+     C*
+     C     LLTPIDKEY     KLIST
+     C                   KFLD                    WKLLIDID
+     C     *LIKE         DEFINE    LLIDID        WKLLIDID
+     C*
+     C     LNIVPOKEY     KLIST
+     C                   KFLD                    WKLIPACT
+     C                   KFLD                    WKLIPATY
+     C     *LIKE         DEFINE    LIPACT        WKLIPACT
+     C     *LIKE         DEFINE    LIPATY        WKLIPATY
+     C*
+     C                   MOVEL(P)  *OFF          WKEOFILE          1
+     C                   MOVEL(P)  *OFF          WKEOLOOP          1
+     C*
+     C                   ENDSR
+     C*-------------------------------------------------------------------------
+     C*Copybook  - Call SSRTVP Sub-Routine
+     C/COPY QSRCREFRLE,SSQRTVPC
+     C/COPY QSRCREFRLE,SSQSSRTVX
+
