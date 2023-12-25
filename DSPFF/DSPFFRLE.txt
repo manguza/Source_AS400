@@ -1,0 +1,605 @@
+     H/COPY QSRCREFRLE,COPYRIGHTH
+    Š ***************************************************
+    Š *šCPP FOR DISPLAY FILE FIELDS COMMAND - DSPFF    Š*
+    Š ***************************************************
+     FQADSPFFD  IF   E             DISK
+     FQAFDACCP  IF   E             DISK    USROPN
+     FQAFDSELO  IF   E             DISK    USROPN
+     FDSPFFP    O    E             PRINTER USROPN
+     FDSPFFFM   CF   E             WORKSTN USROPN
+     F                                     INFDS(INFDS)
+     F                                     SFILE(SFLS:X)
+     F                                     SFILE(SFL:Y)
+     F                                     SFILE(SFLK:Z)
+     D STR1            S              1    DIM(10)
+     D STR2            S              1    DIM(40)
+
+     D UPCS            C                   CONST('ABCDEFGHIJKLMNOPQRST-
+     D                                     UVWXYZ')
+     D LOCS            C                   CONST('abcdefghijklmnopqrst-
+     D                                     uvwxyz')
+
+     D INFDS           DS
+     D* WORKSTATION FILE INFO DATA STRUCTURE
+     D  IFFILO                83     92
+     D  IFFMTN               261    270
+     D  IFCSRL               370    371
+     D  IFSFLD               378    379B 0
+     D SDS            SDS
+     D* PROGRAM STATUS DATA STRUCTURE
+     D  PSPGM                  1     10
+     D  PSPARM                37     39  0
+     D  PSJOBN               244    253
+     D  PSUSRN               254    263
+
+    Š ***************************************************
+    Š *˜Main Logic Program                             Š*
+    Š ***************************************************
+     C     *ENTRY        PLIST
+     C                   PARM                    OUTPUT            8
+     C                   PARM                    OBJATR           10
+     C                   PARM                    KEYINF            1
+     C                   PARM                    SELINF            1
+    Š *
+     C     *LIKE         DEFINE    WHNAME        SAVFMT
+     C     *LIKE         DEFINE    WHCNT         NUMFMT
+    Š *
+     C     OUTPUT        IFEQ      '*'
+    Š *šDISPLAY
+     C                   OPEN      DSPFFFM
+     C                   ELSE
+    Š *šPRINT
+     C                   OPEN      DSPFFP
+     C                   ENDIF
+    Š *
+     C     NUMFMT        DOUEQ     0
+     C     *IN03         OREQ      '1'
+     C                   READ      QWHDRFFD                               33
+    Š *
+     C     NUMFMT        IFEQ      0
+     C                   MOVE      WHCNT         NUMFMT
+     C                   ENDIF
+    Š *
+     C                   SUB       1             NUMFMT
+     C                   MOVE      WHNAME        SAVFMT
+    Š *
+     C     OUTPUT        IFEQ      '*'
+    Š *šDISPLAY
+     C                   MOVE      '1'           *IN75
+     C                   WRITE     SFLC
+     C                   WRITE     SFLKC
+     C                   MOVE      '0'           *IN75
+     C                   Z-ADD     0             Y                 4 0
+     C                   Z-ADD     0             Z                 4 0
+     C                   ELSE
+    Š *šPRINT
+     C                   WRITE     HEADNG
+     C                   ENDIF
+    Š *
+     C     *IN33         DOWEQ     '0'
+     C     WHNAME        ANDEQ     SAVFMT
+    Š *
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   Z-ADD     WHFLDD        WHFLDB
+     C                   ENDIF
+    Š *
+     C     OUTPUT        IFEQ      '*'
+    Š *
+     C                   MOVEL     WHFTXT        TEXT
+    Š *
+     C                   ADD       1             Y
+     C                   WRITE     SFL
+    Š *
+     C                   ELSE
+    Š *šPRINT
+     C                   WRITE     DETAIL                               OF
+     C     *INOF         IFEQ      '1'
+     C                   WRITE     HEADNG
+     C                   ENDIF
+    Š *
+     C                   ENDIF
+    Š *
+     C                   READ      QWHDRFFD                               33
+     C                   ENDDO
+    Š *šKEY INFO
+     C     KEYINF        IFEQ      'Y'
+    Š *
+     C                   OPEN      QAFDACCP
+    Š *
+     C                   READ      QWHFDACP                               33
+     C     *IN33         DOWEQ     '0'
+    Š *
+     C     OUTPUT        IFEQ      '*'
+    Š *šCHECK KEY FIELDS
+     C     APNKYF        IFEQ      0
+     C                   MOVE      '1'           *IN78
+     C                   ENDIF
+    Š *šDISPLAY
+     C                   ADD       1             Z
+     C                   WRITE     SFLK
+    Š *
+     C                   ELSE
+    Š *šPRINT
+     C     PRT           IFNE      '1'
+     C                   WRITE     KEYHDG                               OF
+     C     *INOF         IFEQ      '1'
+     C                   WRITE     HEADNG
+     C                   ENDIF
+     C                   MOVE      '1'           PRT               1
+     C                   ENDIF
+    Š *
+     C                   WRITE     KEY                                  OF
+     C     *INOF         IFEQ      '1'
+     C                   WRITE     HEADNG
+     C                   ENDIF
+     C                   ENDIF
+    Š *
+     C                   READ      QWHFDACP                               33
+     C                   ENDDO
+    Š *
+     C                   CLOSE     QAFDACCP
+     C                   ENDIF
+    Š *šSELECT/OMIT
+     C     APSELO        IFEQ      'Y'
+     C                   EXSR      WRKSEL
+     C                   ENDIF
+    Š *šPRINT DONE
+     C     OUTPUT        IFEQ      '*PRINT'
+     C                   MOVE      '1'           *INLR
+     C                   RETURN
+     C                   ENDIF
+    Š *šMULTIPLE FORMATS
+     C     NUMFMT        IFNE      0
+     C                   READP     QWHDRFFD                               33
+     C                   ENDIF
+    Š *šFIELDS
+     C     Y             IFGT      0
+     C                   MOVE      '0'           *IN76
+     C                   Z-ADD     1             Y
+     C                   ELSE
+     C                   MOVE      '1'           *IN76
+     C                   ENDIF
+    Š *šKEYS
+     C     Z             IFGT      0
+     C                   MOVE      '0'           *IN78
+     C                   ELSE
+     C                   MOVE      '1'           *IN78
+     C                   ENDIF
+    Š *
+     C                   WRITE     SFLOPT
+     C                   EXFMT     SFLC
+    Š *
+     C     *IN03         DOWEQ     '0'
+     C     *IN12         ANDEQ     '0'
+     C     *IN76         ANDEQ     '0'
+    Š *
+     C                   MOVE      '1'           *IN76
+    Š *
+     C     *IN16         IFEQ      '1'
+    Š *šSCAN FOR FIELD
+     C                   MOVE      '0'           *IN76
+    Š *
+     C     FIND          IFEQ      *BLANKS
+     C     FIND1         ANDEQ     *ZEROS
+     C     FIND2         ANDEQ     *ZEROS
+     C     FIND3         ANDEQ     *BLANKS
+     C     FIND4         ANDEQ     *ZEROS
+     C     FIND5         ANDEQ     *BLANKS
+    Š *šNO FIND STRING
+     C                   MOVE      '1'           *IN45
+     C                   ELSE
+    Š *šFIND REQUEST
+     C     FIND          IFNE      *BLANKS
+     C                   EXSR      FNDREQ
+     C                   ELSE
+     C     FIND1         IFNE      *ZEROS
+     C                   EXSR      FNDRQ1
+     C                   ELSE
+     C     FIND4         IFNE      *ZEROS
+     C                   EXSR      FNDRQ4
+     C                   ELSE
+     C                   EXSR      FNDRQ5
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+    Š *
+     C                   ELSE
+    Š *
+     C     *IN11         IFEQ      '1'
+    Š *šDISPLAY KEY INFO
+     C                   MOVE      '0'           *IN76
+     C                   MOVE      *IN76         SAV76             1
+     C                   Z-ADD     IFSFLD        SY                4 0
+    Š *
+     C     Z             IFGT      0
+     C                   MOVE      '0'           *IN76
+     C                   ELSE
+     C                   MOVE      '1'           *IN76
+     C                   ENDIF
+    Š *
+     C                   WRITE     SFLKOP
+     C                   EXFMT     SFLKC
+    Š *
+     C     *IN03         DOWEQ     '0'
+     C     *IN12         ANDEQ     '0'
+     C     APSELO        ANDEQ     'Y'
+    Š *šSELECT/OMIT INFO
+     C                   EXFMT     SFLSC
+    Š *
+     C     *IN03         IFEQ      '0'
+     C     *IN12         ANDEQ     '1'
+     C                   WRITE     SFLKOP
+     C                   EXFMT     SFLKC
+     C                   ELSE
+     C                   MOVE      '1'           *IN12
+     C                   ENDIF
+     C                   ENDDO
+    Š *
+     C                   Z-ADD     SY            Y
+     C                   MOVE      SAV76         *IN76
+    Š *
+     C                   ELSE
+     C     *IN18         IFEQ      '1'
+     C                   EXSR      REFRSH
+     C                   Z-ADD     WHNFLD        Y
+     C                   ELSE
+     C     *IN20         IFEQ      '1'
+     C                   EXSR      REFRSH
+     C                   Z-ADD     1             Y
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+     C                   ENDIF
+    Š *
+     C     *IN03         IFEQ      '0'
+     C     *IN76         ANDEQ     '0'
+     C                   WRITE     SFLOPT
+     C                   EXFMT     SFLC
+     C                   ENDIF
+     C                   ENDDO
+    Š *
+     C                   ENDDO
+    Š *
+     C                   MOVE      '1'           *INLR
+    Š ***************************************************
+    Š *˜FNDREQ - FIND REQUEST                          Š*
+    Š ***************************************************
+     C     FNDREQ        BEGSR
+    Š *
+     C     *LIKE         DEFINE    FIND          CHK1A
+     C     *LIKE         DEFINE    WHFLDI        CHK1B
+    Š *
+     C     FOUND         IFEQ      'Y'
+    Š *šCLEAR LAST FOUND RECORD
+     C     Y             CHAIN     SFL                                34
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+    Š *
+     C                   UPDATE    SFL
+     C                   ADD       1             Y
+     C                   ELSE
+     C                   Z-ADD     IFSFLD        Y
+     C                   ENDIF
+    Š *
+    Š *šSKIP LEADING BLANK
+     C                   Z-ADD     1             N                 3 0
+     C                   MOVEA     FIND          STR1
+     C     STR1(N)       DOWEQ     ' '
+     C                   ADD       1             N
+     C                   ENDDO
+     C                   MOVEA(P)  STR1(N)       FIND
+     C     *IN39         IFEQ      '1'
+     C     LEN           OREQ      0
+     C     ' '           CHECKR    FIND          LEN               3 0
+     C                   ENDIF
+    Š *
+     C     Y             IFLE      WHNFLD
+     C                   Z-ADD     Y             SY
+     C                   ELSE
+     C                   Z-ADD     WHNFLD        SY
+     C                   ENDIF
+     C                   MOVE      'N'           FOUND             1
+    Š *
+     C     Y             DOWLE     WHNFLD
+     C     FOUND         ANDEQ     'N'
+    Š *
+     C     Y             CHAIN     SFL                                34
+    Š *
+     C     LOCS:UPCS     XLATE     FIND          CHK1A
+     C     LOCS:UPCS     XLATE     WHFLDI        CHK1B
+     C     CHK1A:LEN     SCAN      CHK1B         LMP               3 0
+    Š *
+     C     LMP           IFGT      0
+     C                   MOVE      'Y'           FOUND
+     C                   MOVE      '1'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+     C                   UPDATE    SFL
+     C                   ELSE
+     C                   ADD       1             Y
+     C                   ENDIF
+    Š *
+     C                   ENDDO
+    Š *
+     C     FOUND         IFEQ      'N'
+     C                   Z-ADD     SY            Y
+     C                   MOVE      '1'           *IN46
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š ***************************************************
+    Š *˜FNDRQ5 - FIND REQUEST                          Š*
+    Š ***************************************************
+     C     FNDRQ5        BEGSR
+    Š *
+     C     *LIKE         DEFINE    FIND5         CHK5A
+     C     *LIKE         DEFINE    TEXT          CHK5B
+    Š *
+     C     FOUND         IFEQ      'Y'
+    Š *šCLEAR LAST FOUND RECORD
+     C     Y             CHAIN     SFL                                34
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+    Š *
+     C                   UPDATE    SFL
+     C                   ADD       1             Y
+     C                   ELSE
+     C                   Z-ADD     IFSFLD        Y
+     C                   ENDIF
+    Š *
+    Š *šSKIP LEADING BLANK
+     C                   Z-ADD     1             N
+     C                   MOVEA     FIND5         STR2
+     C     STR2(N)       DOWEQ     ' '
+     C                   ADD       1             N
+     C                   ENDDO
+     C                   MOVEA(P)  STR2(N)       FIND5
+     C     *IN59         IFEQ      '1'
+     C     LEN           OREQ      0
+     C     ' '           CHECKR    FIND5         LEN
+     C                   ENDIF
+    Š *
+     C     Y             IFLE      WHNFLD
+     C                   Z-ADD     Y             SY
+     C                   ELSE
+     C                   Z-ADD     WHNFLD        SY
+     C                   ENDIF
+     C                   MOVE      'N'           FOUND             1
+    Š *
+     C     Y             DOWLE     WHNFLD
+     C     FOUND         ANDEQ     'N'
+    Š *
+     C     Y             CHAIN     SFL                                34
+    Š *
+     C     LOCS:UPCS     XLATE     FIND5         CHK5A
+     C     LOCS:UPCS     XLATE     TEXT          CHK5B
+     C     CHK5A:LEN     SCAN      CHK5B         LMP               3 0
+    Š *
+     C     LMP           IFGT      0
+     C                   MOVE      'Y'           FOUND
+     C                   MOVE      '1'           *IN60
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+     C                   UPDATE    SFL
+     C                   ELSE
+     C                   ADD       1             Y
+     C                   ENDIF
+    Š *
+     C                   ENDDO
+    Š *
+     C     FOUND         IFEQ      'N'
+     C                   Z-ADD     SY            Y
+     C                   MOVE      '1'           *IN46
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š ***************************************************
+    Š *˜FNDRQ1 - FIND REQUEST                          Š*
+    Š ***************************************************
+     C     FNDRQ1        BEGSR
+    Š *
+     C     FOUND         IFEQ      'Y'
+    Š *šCLEAR LAST FOUND RECORD
+     C     Y             CHAIN     SFL                                34
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+    Š *
+     C                   UPDATE    SFL
+     C                   ADD       1             Y
+     C                   ELSE
+     C                   Z-ADD     IFSFLD        Y
+     C                   ENDIF
+    Š *
+     C     Y             IFLE      WHNFLD
+     C                   Z-ADD     Y             SY
+     C                   ELSE
+     C                   Z-ADD     WHNFLD        SY
+     C                   ENDIF
+     C                   MOVE      'N'           FOUND             1
+    Š *
+     C     Y             DOWLE     WHNFLD
+     C     FOUND         ANDEQ     'N'
+    Š *
+     C     Y             CHAIN     SFL                                34
+    Š *
+     C     FIND3         IFEQ      'A'
+     C     FIND1         ANDEQ     WHFLDB
+     C     FIND3         ANDEQ     WHFLDT
+     C     FIND3         ORNE      'A'
+     C     WHFLDT        ANDNE     'A'
+     C     FIND1         ANDEQ     WHFLDB
+     C     FIND2         ANDEQ     WHFLDP
+     C                   MOVE      'Y'           FOUND
+     C                   MOVE      '1'           *IN70
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+     C                   UPDATE    SFL
+     C                   ELSE
+     C                   ADD       1             Y
+     C                   ENDIF
+    Š *
+     C                   ENDDO
+    Š *
+     C     FOUND         IFEQ      'N'
+     C                   Z-ADD     SY            Y
+     C                   MOVE      '1'           *IN46
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š ***************************************************
+    Š *˜FNDRQ4 - FIND REQUEST                          Š*
+    Š ***************************************************
+     C     FNDRQ4        BEGSR
+    Š *
+     C     FOUND         IFEQ      'Y'
+    Š * CLEAR LAST FOUND RECORD
+     C     Y             CHAIN     SFL                                34
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+    Š *
+     C                   UPDATE    SFL
+     C                   ADD       1             Y
+     C                   ELSE
+     C                   Z-ADD     IFSFLD        Y
+     C                   ENDIF
+    Š *
+     C     Y             IFLE      WHNFLD
+     C                   Z-ADD     Y             SY
+     C                   ELSE
+     C                   Z-ADD     WHNFLD        SY
+     C                   ENDIF
+     C                   MOVE      'N'           FOUND             1
+    Š *
+     C     Y             DOWLE     WHNFLD
+     C     FOUND         ANDEQ     'N'
+    Š *
+     C     Y             CHAIN     SFL                                34
+    Š *
+     C     FIND4         IFEQ      WHFOBO
+     C                   MOVE      'Y'           FOUND
+     C                   MOVE      '1'           *IN80
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN40
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+     C                   UPDATE    SFL
+     C                   ELSE
+     C                   ADD       1             Y
+     C                   ENDIF
+    Š *
+     C                   ENDDO
+    Š *
+     C     FOUND         IFEQ      'N'
+     C                   Z-ADD     SY            Y
+     C                   MOVE      '1'           *IN46
+     C                   ENDIF
+    Š *
+     C                   ENDSR
+    Š ***************************************************
+    Š *˜WRKSEL - WORK WITH SELECT/OMIT                 Š*
+    Š ***************************************************
+     C     WRKSEL        BEGSR
+    Š *šOPEN
+     C                   OPEN      QAFDSELO
+    Š *
+     C                   MOVE      '1'           *IN75
+     C                   WRITE     SFLSC
+     C                   MOVE      '0'           *IN75
+     C                   Z-ADD     0             X                 4 0
+    Š *
+     C                   READ      QWHFDSO                                33
+    Š *
+     C     *IN33         DOWEQ     '0'
+    Š *
+     C                   ADD       1             X
+     C                   WRITE     SFLS
+    Š *
+     C                   READ      QWHFDSO                                33
+     C                   ENDDO
+    Š *
+     C     X             IFGT      0
+     C                   MOVE      '0'           *IN78
+     C                   ELSE
+     C                   MOVE      '1'           *IN78
+     C                   ENDIF
+    Š *šCLOSE
+     C                   CLOSE     QAFDSELO
+    Š *
+     C                   ENDSR
+    Š ***************************************************
+    Š *˜REFRSH - REFRESH SUBFILE                       Š*
+    Š ***************************************************
+     C     REFRSH        BEGSR
+    Š *šCLEAR LAST FOUND RECORD
+     C     Y             CHAIN     SFL                                34
+     C                   MOVE      '0'           *IN40
+     C                   MOVE      '0'           *IN60
+     C                   MOVE      '0'           *IN70
+     C                   MOVE      '0'           *IN80
+     C     WHFLDT        IFEQ      'A'
+     C                   MOVE      1             *IN50
+     C                   ELSE
+     C                   MOVE      0             *IN50
+     C                   ENDIF
+    Š *
+     C                   UPDATE    SFL
+    Š *
+     C                   MOVE      '0'           *IN76
+     C                   MOVE      'N'           FOUND
+    Š *
+     C                   ENDSR
+

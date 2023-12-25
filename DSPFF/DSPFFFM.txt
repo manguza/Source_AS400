@@ -1,4 +1,4 @@
-     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A*%%TS  SD  20231225  135110  SSPRUK      REL-V7R4M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      REF(*LIBL/QADSPFFD)
@@ -6,21 +6,22 @@
      A                                      CF03(03 'F3=EXIT')
      A                                      HELP(88 'HELP')
      A          R SFL                       SFL
+     A*%%TS  SD  20231225  135110  SSPRUK      REL-V7R4M0  5770-WDS
      A            WHFLDI    R        O  9  2
      A  40                                  DSPATR(RI)
      A            WHFLDB    R        O  9 13EDTCDE(Z)
-RBN  A  70                                  DSPATR(RI)
+     A  70                                  DSPATR(RI)
      A            WHFLDP    R        O  9 19EDTCDE(3)
-RBN  A  70                                  DSPATR(RI)
+     A  70                                  DSPATR(RI)
      A  50                                  DSPATR(ND)
      A            WHFLDT    R        O  9 22
-RBN  A N50                                  DSPATR(ND)
+     A N50                                  DSPATR(ND)
      A            WHFOBO    R        O  9 24EDTCDE(Z)
-RBN  A  80                                  DSPATR(RI)
+     A  80                                  DSPATR(RI)
      A            TEXT          45A  O  9 33
-RBN  A  60                                  DSPATR(RI)
+     A  60                                  DSPATR(RI)
      A          R SFLC                      SFLCTL(SFL)
-     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A*%%TS  SD  20231225  135110  SSPRUK      REL-V7R4M0  5770-WDS
      A                                      SFLSIZ(0100)
      A                                      SFLPAG(0012)
      A                                      INDTXT(74 'Subfile end')
@@ -157,11 +158,13 @@ RBN  A  60                                  DSPATR(RI)
      A                                 23 12'F12=Previous'
      A                                      COLOR(BLU)
      A          R SFLS                      SFL
+     A*%%TS  SD  20231225  135110  SSPRUK      REL-V7R4M0  5770-WDS
      A            SOFLD     R        O 12  2REFFLD(SOFLD QAFDSELO)
      A            SORULE    R        O 12 19REFFLD(SORULE QAFDSELO)
      A            SOCOMP    R        O 12 29REFFLD(SOCOMP QAFDSELO)
      A            SOVALU    R        O 12 39REFFLD(SOVALU QAFDSELO)
      A          R SFLSC                     SFLCTL(SFLS)
+     A*%%TS  SD  20231225  135110  SSPRUK      REL-V7R4M0  5770-WDS
      A                                      SFLSIZ(0100)
      A                                      SFLPAG(0010)
      A                                      INDTXT(74 'Subfile end')

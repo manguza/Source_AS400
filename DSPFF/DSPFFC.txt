@@ -11,23 +11,12 @@
      /*                                                              */
      /*  DESCRIPTION...: Display Physical File Field                 */
      /*                                                              */
-     /*  DATE CREATED..: FEB 2004                                    */
-     /*                                                              */
-     /*  AUTHOR........: SILVERLAKE                                  */
-     /*                                                              */
-     /****************************************************************/
-     /*                                                              */
-     /*   DSPFFC   IS A PART OF SILVERLAKE INTEGRATED PROVIDENT FUND */
-     /*       SYSTEM COPYRIGHT 2004 BY SILVERLAKE SYSTEM SDN BHD     */
-     /*                      KUALA LUMPUR, MALAYSIA.                 */
-     /*                                                              */
      /****************************************************************/
      /*                                                              */
      /*  MODIFICATION LOGS:                                          */
      /*                                                              */
      /*  INIT  REF.#    DATE    DESCRIPTION                          */
      /*  ----  ----- ---------- ------------------------------------ */
-     /*  xxxx  xxxx  dd/mm/yyyy Description of changes               */
      /*                                                              */
      /****************************************************************/
 
@@ -126,7 +115,8 @@
              IF         (&OUTPUT *EQ '*PRINT') +
                           OVRPRTF DSPFFP USRDTA(&FILE)
 /*                                                                  */
-             CALL       DSPFFR PARM(&OUTPUT &OBJATR &KEYINF &SELINF)
+             CALL       PGM(DSPFFRLE) PARM((&OUTPUT) (&OBJATR) +
+                          (&KEYINF) (&SELINF))
 /*                                                                  */
              DLTOVR     *ALL
 /*                                                                  */
