@@ -1,0 +1,629 @@
+     F*
+     F** CPP FOR DISPLAY FILE FIELDS COMMAND - DSPFF
+     F*
+     F***********************************************************
+     F*                                                         *
+     F*  DSPFF    IS A PART OF CIF/38 BANK ACCOUNTING SYSTEM    *
+     F*    COPYRIGHT 1976 BY JACK HENRY & ASSOCIATES            *
+     F*    MONETT, MISSOURI  65708                              *
+     F*                                                         *
+     F***********************************************************
+     F*
+     FQADSPFFDIF  E                    DISK
+     FQAFDACCPIF  E                    DISK                           UC
+     FQAFDSELOIF  E                    DISK                           UC
+     FDSPFFP  O   E                    PRINTER                        UC
+     FDSPFFFM CF  E                    WORKSTN                        UC
+     F                                              KINFDS INFDS
+     F                                        X     KSFILE SFLS
+     F                                        Y     KSFILE SFL
+     F                                        Z     KSFILE SFLK
+RBN  E                    STR1       10  1
+RBN  E                    STR2       40  1
+     **
+S001 I              'ABCDEFGHIJKLMNOPQRST-C         UPCS
+S001 I              'UVWXYZ'
+S001 I              'abcdefghijklmnopqrst-C         LOCS
+S001 I              'uvwxyz'
+     **
+     IINFDS       DS
+     I* WORKSTATION FILE INFO DATA STRUCTURE
+     I                                       83  92 IFFILO
+     I                                      261 270 IFFMTN
+     I                                      370 371 IFCSRL
+     I                                    B 378 3790IFSFLD
+     ISDS        SDS
+     I* PROGRAM STATUS DATA STRUCTURE
+     I                                        1  10 PSPGM
+     I                                       37  390PSPARM
+     I                                      244 253 PSJOBN
+     I                                      254 263 PSUSRN
+     I*QADSPFFD
+     I*             WHHDNCOL                        WHHDN
+     C*
+     C           *ENTRY    PLIST
+     C                     PARM           OUTPUT  8
+     C                     PARM           OBJATR 10
+     C                     PARM           KEYINF  1
+     C                     PARM           SELINF  1
+     C*
+     C           *LIKE     DEFN WHNAME    SAVFMT
+     C           *LIKE     DEFN WHCNT     NUMFMT
+     C*
+     C           OUTPUT    IFEQ '*'
+     C* DISPLAY
+     C                     OPEN DSPFFFM
+     C                     ELSE
+     C* PRINT
+     C                     OPEN DSPFFP
+     C                     ENDIF
+     C*
+     C           NUMFMT    DOUEQ0
+     C           *IN03     OREQ '1'
+     C                     READ QWHDRFFD                 33
+     C*
+     C           NUMFMT    IFEQ 0
+     C                     MOVE WHCNT     NUMFMT
+     C                     ENDIF
+     C*
+     C                     SUB  1         NUMFMT
+     C                     MOVE WHNAME    SAVFMT
+     C*
+     C           OUTPUT    IFEQ '*'
+     C* DISPLAY
+     C                     MOVE '1'       *IN75
+     C                     WRITESFLC
+     C                     WRITESFLKC
+     C                     MOVE '0'       *IN75
+     C                     Z-ADD0         Y       40
+     C                     Z-ADD0         Z       40
+     C                     ELSE
+     C* PRINT
+     C                     WRITEHEADNG
+     C                     ENDIF
+     C*
+     C           *IN33     DOWEQ'0'
+     C           WHNAME    ANDEQSAVFMT
+     C*
+     C           WHFLDT    IFEQ 'A'
+     C                     MOVE 1         *IN50
+     C                     ELSE
+     C                     MOVE 0         *IN50
+     C                     Z-ADDWHFLDD    WHFLDB
+     C                     ENDIF
+     C*
+     C           OUTPUT    IFEQ '*'
+     C*
+     C                     MOVELWHFTXT    TEXT
+     C*
+     C                     ADD  1         Y
+     C                     WRITESFL
+     C*
+     C                     ELSE
+     C* PRINT
+     C                     WRITEDETAIL                 OF
+     C           *INOF     IFEQ '1'
+     C                     WRITEHEADNG
+     C                     ENDIF
+     C*
+     C                     ENDIF
+     C*
+     C                     READ QWHDRFFD                 33
+     C                     ENDDO
+     C* KEY INFO
+     C           KEYINF    IFEQ 'Y'
+     C*
+     C                     OPEN QAFDACCP
+     C*
+     C                     READ QWHFDACP                 33
+     C           *IN33     DOWEQ'0'
+     C*
+     C           OUTPUT    IFEQ '*'
+     C* CHECK KEY FIELDS
+     C           APNKYF    IFEQ 0
+     C                     MOVE '1'       *IN78
+     C                     ENDIF
+     C* DISPLAY
+     C                     ADD  1         Z
+     C                     WRITESFLK
+     C*
+     C                     ELSE
+     C* PRINT
+     C           PRT       IFNE '1'
+     C                     WRITEKEYHDG                 OF
+     C           *INOF     IFEQ '1'
+     C                     WRITEHEADNG
+     C                     ENDIF
+     C                     MOVE '1'       PRT     1
+     C                     ENDIF
+     C*
+     C                     WRITEKEY                    OF
+     C           *INOF     IFEQ '1'
+     C                     WRITEHEADNG
+     C                     ENDIF
+     C                     ENDIF
+     C*
+     C                     READ QWHFDACP                 33
+     C                     ENDDO
+     C*
+     C                     CLOSEQAFDACCP
+     C                     ENDIF
+     C* SELECT/OMIT
+     C           APSELO    IFEQ 'Y'
+     C                     EXSR WRKSEL
+     C                     ENDIF
+     C* PRINT DONE
+     C           OUTPUT    IFEQ '*PRINT'
+     C                     MOVE '1'       *INLR
+     C                     RETRN
+     C                     ENDIF
+     C* MULTIPLE FORMATS
+     C           NUMFMT    IFNE 0
+     C                     READPQWHDRFFD                 33
+     C                     ENDIF
+     C* FIELDS
+     C           Y         IFGT 0
+     C                     MOVE '0'       *IN76
+     C                     Z-ADD1         Y
+     C                     ELSE
+     C                     MOVE '1'       *IN76
+     C                     ENDIF
+     C* KEYS
+     C           Z         IFGT 0
+     C                     MOVE '0'       *IN78
+     C                     ELSE
+     C                     MOVE '1'       *IN78
+     C                     ENDIF
+     C*
+     C                     WRITESFLOPT
+     C                     EXFMTSFLC
+     C*
+     C           *IN03     DOWEQ'0'
+     C           *IN12     ANDEQ'0'
+     C           *IN76     ANDEQ'0'
+     C*
+     C                     MOVE '1'       *IN76
+     C*
+     C           *IN16     IFEQ '1'
+     C* SCAN FOR FIELD
+     C                     MOVE '0'       *IN76
+     C*
+     C           FIND      IFEQ *BLANKS
+RBN  C           FIND1     ANDEQ*ZEROS
+RBN  C           FIND2     ANDEQ*ZEROS
+RBN  C           FIND3     ANDEQ*BLANKS
+RBN  C           FIND4     ANDEQ*ZEROS
+RBN  C           FIND5     ANDEQ*BLANKS
+     C* NO FIND STRING
+     C                     MOVE '1'       *IN45
+     C                     ELSE
+     C* FIND REQUEST
+RBN  C           FIND      IFNE *BLANKS
+     C                     EXSR FNDREQ
+RBN  C                     ELSE
+RBN  C           FIND1     IFNE *ZEROS
+ |   C                     EXSR FNDRQ1
+RBN  C                     ELSE
+RBN  C           FIND4     IFNE *ZEROS
+ |   C                     EXSR FNDRQ4
+RBN  C                     ELSE
+ |   C                     EXSR FNDRQ5
+RBN  C                     ENDIF
+RBN  C                     ENDIF
+RBN  C                     ENDIF
+RBN  C                     ENDIF
+     C*
+     C                     ELSE
+     C*
+     C           *IN11     IFEQ '1'
+     C* DISPLAY KEY INFO
+     C                     MOVE '0'       *IN76
+     C                     MOVE *IN76     SAV76   1
+     C                     Z-ADDIFSFLD    SY      40
+     C*
+     C           Z         IFGT 0
+     C                     MOVE '0'       *IN76
+     C                     ELSE
+     C                     MOVE '1'       *IN76
+     C                     ENDIF
+     C*
+     C                     WRITESFLKOP
+     C                     EXFMTSFLKC
+     C*
+     C           *IN03     DOWEQ'0'
+     C           *IN12     ANDEQ'0'
+     C           APSELO    ANDEQ'Y'
+     C* SELECT/OMIT INFO
+     C                     EXFMTSFLSC
+     C*
+     C           *IN03     IFEQ '0'
+     C           *IN12     ANDEQ'1'
+     C                     WRITESFLKOP
+     C                     EXFMTSFLKC
+     C                     ELSE
+     C                     MOVE '1'       *IN12
+     C                     ENDIF
+     C                     ENDDO
+     C*
+     C                     Z-ADDSY        Y
+     C                     MOVE SAV76     *IN76
+     C*
+RBN  C                     ELSE
+ |   C           *IN18     IFEQ '1'                        BOTTOM
+ |   C                     EXSR REFRSH
+ |   C                     Z-ADDWHNFLD    Y
+ |   C                     ELSE
+ |   C           *IN20     IFEQ '1'                        TOP
+ |   C                     EXSR REFRSH
+ |   C                     Z-ADD1         Y
+ |   C                     ENDIF
+RBN  C                     ENDIF
+     C                     ENDIF
+     C                     ENDIF
+     C*
+     C           *IN03     IFEQ '0'
+     C           *IN76     ANDEQ'0'
+     C                     WRITESFLOPT
+     C                     EXFMTSFLC
+     C                     ENDIF
+     C                     ENDDO
+     C*
+     C                     ENDDO
+     C*
+     C                     MOVE '1'       *INLR
+     C*
+     C*****************************************************
+     C* FNDREQ - FIND REQUEST
+     C*****************************************************
+     C*
+     C           FNDREQ    BEGSR
+     C*
+S001 C           *LIKE     DEFN FIND      CHK1A
+S001 C           *LIKE     DEFN WHFLDI    CHK1B
+     C*
+     C           FOUND     IFEQ 'Y'
+     C* CLEAR LAST FOUND RECORD
+     C           Y         CHAINSFL                  34
+     C                     MOVE '0'       *IN40
+     C                     MOVE '0'       *IN60
+RBN  C                     MOVE '0'       *IN70
+RBN  C                     MOVE '0'       *IN80
+     C           WHFLDT    IFEQ 'A'
+     C                     MOVE 1         *IN50
+     C                     ELSE
+     C                     MOVE 0         *IN50
+     C                     ENDIF
+     C*
+     C                     UPDATSFL
+     C                     ADD  1         Y
+     C                     ELSE
+     C                     Z-ADDIFSFLD    Y
+     C                     ENDIF
+     C*
+RBN  C* SKIP LEADING BLANK
+ |   C                     Z-ADD1         N       30
+ |   C                     MOVEAFIND      STR1
+ |   C           STR1,N    DOWEQ' '
+ |   C                     ADD  1         N
+ |   C                     ENDDO
+RBN  C                     MOVEASTR1,N    FIND      P
+     C           *IN39     IFEQ '1'
+RBN  C           LEN       OREQ 0
+     C*S001      ' '       SCAN FIND      LEN     30
+     C*S001                SUB  1         LEN
+S001 C           ' '       CHEKRFIND      LEN     30
+     C                     ENDIF
+     C*
+     C           Y         IFLE WHNFLD
+     C                     Z-ADDY         SY
+     C                     ELSE
+     C                     Z-ADDWHNFLD    SY
+     C                     ENDIF
+     C                     MOVE 'N'       FOUND   1
+     C*
+     C           Y         DOWLEWHNFLD
+     C           FOUND     ANDEQ'N'
+     C*
+     C           Y         CHAINSFL                  34
+     C*
+     C*S001      FIND:LEN  SCAN WHFLDI    LMP     30
+S001 C           LOCS:UPCS XLATEFIND      CHK1A
+S001 C           LOCS:UPCS XLATEWHFLDI    CHK1B
+S001 C           CHK1A:LEN SCAN CHK1B     LMP     30
+     C*
+     C           LMP       IFGT 0
+     C                     MOVE 'Y'       FOUND
+     C                     MOVE '1'       *IN40
+RBN  C                     MOVE '0'       *IN60
+RBN  C                     MOVE '0'       *IN70
+RBN  C                     MOVE '0'       *IN80
+     C           WHFLDT    IFEQ 'A'
+     C                     MOVE 1         *IN50
+     C                     ELSE
+     C                     MOVE 0         *IN50
+     C                     ENDIF
+     C                     UPDATSFL
+     C                     ELSE
+     C                     ADD  1         Y
+     C                     ENDIF
+     C*
+     C                     ENDDO
+     C*
+     C           FOUND     IFEQ 'N'
+     C                     Z-ADDSY        Y
+     C                     MOVE '1'       *IN46
+     C                     ENDIF
+     C*
+     C                     ENDSR
+     C*
+RBN  C*****************************************************
+ |   C* FNDRQ5 - FIND REQUEST
+ |   C*****************************************************
+ |   C*
+ |   C           FNDRQ5    BEGSR
+ |   C*
+S001 C           *LIKE     DEFN FIND5     CHK5A
+S001 C           *LIKE     DEFN TEXT      CHK5B
+ |   C*
+ |   C           FOUND     IFEQ 'Y'
+ |   C* CLEAR LAST FOUND RECORD
+ |   C           Y         CHAINSFL                  34
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C*
+ |   C                     UPDATSFL
+ |   C                     ADD  1         Y
+ |   C                     ELSE
+ |   C                     Z-ADDIFSFLD    Y
+ |   C                     ENDIF
+ |   C*
+ |   C* SKIP LEADING BLANK
+ |   C                     Z-ADD1         N
+ |   C                     MOVEAFIND5     STR2
+ |   C           STR2,N    DOWEQ' '
+ |   C                     ADD  1         N
+ |   C                     ENDDO
+ |   C                     MOVEASTR2,N    FIND5     P
+ |   C           *IN59     IFEQ '1'
+ |   C           LEN       OREQ 0
+ |   C*S001      ' '       SCAN FIND5     LEN
+ |   C*S001                SUB  1         LEN
+S001 C           ' '       CHEKRFIND5     LEN
+ |   C                     ENDIF
+ |   C*
+ |   C           Y         IFLE WHNFLD
+ |   C                     Z-ADDY         SY
+ |   C                     ELSE
+ |   C                     Z-ADDWHNFLD    SY
+ |   C                     ENDIF
+ |   C                     MOVE 'N'       FOUND   1
+ |   C*
+ |   C           Y         DOWLEWHNFLD
+ |   C           FOUND     ANDEQ'N'
+ |   C*
+ |   C           Y         CHAINSFL                  34
+ |   C*
+ |   C*S001      FIND5:LEN SCAN TEXT      LMP     30
+S001 C           LOCS:UPCS XLATEFIND5     CHK5A
+S001 C           LOCS:UPCS XLATETEXT      CHK5B
+S001 C           CHK5A:LEN SCAN CHK5B     LMP     30
+ |   C*
+ |   C           LMP       IFGT 0
+ |   C                     MOVE 'Y'       FOUND
+ |   C                     MOVE '1'       *IN60
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C                     UPDATSFL
+ |   C                     ELSE
+ |   C                     ADD  1         Y
+ |   C                     ENDIF
+ |   C*
+ |   C                     ENDDO
+ |   C*
+ |   C           FOUND     IFEQ 'N'
+ |   C                     Z-ADDSY        Y
+ |   C                     MOVE '1'       *IN46
+ |   C                     ENDIF
+ |   C*
+RBN  C                     ENDSR
+     C*
+RBN  C*****************************************************
+ |   C* FNDRQ1 - FIND REQUEST
+ |   C*****************************************************
+ |   C*
+ |   C           FNDRQ1    BEGSR
+ |   C*
+ |   C           FOUND     IFEQ 'Y'
+ |   C* CLEAR LAST FOUND RECORD
+ |   C           Y         CHAINSFL                  34
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C*
+ |   C                     UPDATSFL
+ |   C                     ADD  1         Y
+ |   C                     ELSE
+ |   C                     Z-ADDIFSFLD    Y
+ |   C                     ENDIF
+ |   C*
+ |   C           Y         IFLE WHNFLD
+ |   C                     Z-ADDY         SY
+ |   C                     ELSE
+ |   C                     Z-ADDWHNFLD    SY
+ |   C                     ENDIF
+ |   C                     MOVE 'N'       FOUND   1
+ |   C*
+ |   C           Y         DOWLEWHNFLD
+ |   C           FOUND     ANDEQ'N'
+ |   C*
+ |   C           Y         CHAINSFL                  34
+ |   C*
+ |   C           FIND3     IFEQ 'A'
+ |   C           FIND1     ANDEQWHFLDB
+ |   C           FIND3     ANDEQWHFLDT
+ |   C           FIND3     ORNE 'A'
+ |   C           WHFLDT    ANDNE'A'
+ |   C           FIND1     ANDEQWHFLDB
+ |   C           FIND2     ANDEQWHFLDP
+ |   C                     MOVE 'Y'       FOUND
+ |   C                     MOVE '1'       *IN70
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C                     UPDATSFL
+ |   C                     ELSE
+ |   C                     ADD  1         Y
+ |   C                     ENDIF
+ |   C*
+ |   C                     ENDDO
+ |   C*
+ |   C           FOUND     IFEQ 'N'
+ |   C                     Z-ADDSY        Y
+ |   C                     MOVE '1'       *IN46
+ |   C                     ENDIF
+ |   C*
+RBN  C                     ENDSR
+     C*
+RBN  C*****************************************************
+ |   C* FNDRQ4 - FIND REQUEST
+ |   C*****************************************************
+ |   C*
+ |   C           FNDRQ4    BEGSR
+ |   C*
+ |   C           FOUND     IFEQ 'Y'
+ |   C* CLEAR LAST FOUND RECORD
+ |   C           Y         CHAINSFL                  34
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C*
+ |   C                     UPDATSFL
+ |   C                     ADD  1         Y
+ |   C                     ELSE
+ |   C                     Z-ADDIFSFLD    Y
+ |   C                     ENDIF
+ |   C*
+ |   C           Y         IFLE WHNFLD
+ |   C                     Z-ADDY         SY
+ |   C                     ELSE
+ |   C                     Z-ADDWHNFLD    SY
+ |   C                     ENDIF
+ |   C                     MOVE 'N'       FOUND   1
+ |   C*
+ |   C           Y         DOWLEWHNFLD
+ |   C           FOUND     ANDEQ'N'
+ |   C*
+ |   C           Y         CHAINSFL                  34
+ |   C*
+ |   C           FIND4     IFEQ WHFOBO
+ |   C                     MOVE 'Y'       FOUND
+ |   C                     MOVE '1'       *IN80
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN40
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C                     UPDATSFL
+ |   C                     ELSE
+ |   C                     ADD  1         Y
+ |   C                     ENDIF
+ |   C*
+ |   C                     ENDDO
+ |   C*
+ |   C           FOUND     IFEQ 'N'
+ |   C                     Z-ADDSY        Y
+ |   C                     MOVE '1'       *IN46
+ |   C                     ENDIF
+ |   C*
+RBN  C                     ENDSR
+     C*
+     C*****************************************************
+     C* WRKSEL - WORK WITH SELECT/OMIT
+     C*****************************************************
+     C*
+     C           WRKSEL    BEGSR
+     C* OPEN
+     C                     OPEN QAFDSELO
+     C*
+     C                     MOVE '1'       *IN75
+     C                     WRITESFLSC
+     C                     MOVE '0'       *IN75
+     C                     Z-ADD0         X       40
+     C*
+     C                     READ QWHFDSO                  33
+     C*
+     C           *IN33     DOWEQ'0'
+     C*
+     C                     ADD  1         X
+     C                     WRITESFLS
+     C*
+     C                     READ QWHFDSO                  33
+     C                     ENDDO
+     C*
+     C           X         IFGT 0
+     C                     MOVE '0'       *IN78
+     C                     ELSE
+     C                     MOVE '1'       *IN78
+     C                     ENDIF
+     C* CLOSE
+     C                     CLOSEQAFDSELO
+     C*
+     C                     ENDSR
+     C*
+RBN  C*****************************************************
+ |   C* REFRSH - REFRESH SUBFILE
+ |   C*****************************************************
+ |   C*
+ |   C           REFRSH    BEGSR
+ |   C* CLEAR LAST FOUND RECORD
+ |   C           Y         CHAINSFL                  34
+ |   C                     MOVE '0'       *IN40
+ |   C                     MOVE '0'       *IN60
+ |   C                     MOVE '0'       *IN70
+ |   C                     MOVE '0'       *IN80
+ |   C           WHFLDT    IFEQ 'A'
+ |   C                     MOVE 1         *IN50
+ |   C                     ELSE
+ |   C                     MOVE 0         *IN50
+ |   C                     ENDIF
+ |   C*
+ |   C                     UPDATSFL
+ |   C*
+ |   C                     MOVE '0'       *IN76
+ |   C                     MOVE 'N'       FOUND
+ |   C*
+RBN  C                     ENDSR
+

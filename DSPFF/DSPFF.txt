@@ -1,0 +1,47 @@
+     /*                                                              */
+     /* SOURCE DESCRIPTION: Display Physical File Fields             */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /* CPP : DSPFFC - DISPLAY PHYSICAL FILE FIELDS                  */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*  COMMAND NAME..: DSPFF              REF.NO:                  */
+     /*                                                              */
+     /*  DESCRIPTION...: Display Physical File Fields                */
+     /*                                                              */
+     /*  DATE CREATED..: FEB 2004                                    */
+     /*                                                              */
+     /*  AUTHOR........: SILVERLAKE                                  */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*   DSPFF    IS A PART OF SILVERLAKE INTEGRATED PROVIDENT FUND */
+     /*       SYSTEM COPYRIGHT 2004 BY SILVERLAKE SYSTEM SDN BHD     */
+     /*                      KUALA LUMPUR, MALAYSIA.                 */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*  MODIFICATION LOGS:                                          */
+     /*                                                              */
+     /*  INIT  REF.#    DATE    DESCRIPTION                          */
+     /*  ----  ----- ---------- ------------------------------------ */
+     /*  xxxx  xxxx  dd/mm/yyyy Description of changes               */
+     /*                                                              */
+     /****************************************************************/
+
+             CMD        PROMPT('Display File Fields')
+/*                                                                  */
+             PARM       KWD(FILE) TYPE(QUAL1) PROMPT('File +
+                          ')
+             PARM       KWD(OUTPUT) TYPE(*CHAR) LEN(8) RSTD(*YES) +
+                          DFT(*) VALUES(* *PRINT) PROMPT('Output +
+                          ')
+             PARM       KWD(CREATE) TYPE(*CHAR) LEN(4) RSTD(*YES) +
+                          DFT(*NO) VALUES(*YES *NO) PROMPT('Create +
+                          display')
+ QUAL1:      QUAL       TYPE(*NAME) LEN(10)
+             QUAL       TYPE(*NAME) LEN(10) DFT(*LIBL) +
+                          SPCVAL(*LIBL) PROMPT('Library')
+

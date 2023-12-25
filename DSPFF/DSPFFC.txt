@@ -1,0 +1,153 @@
+     /*                                                              */
+     /* SOURCE DESCRIPTION: Display Physical File Fields             */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /* CPP FOR DSPFF - DISPLAY PHYSICAL FILE FIELDS                 */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*  PROGRAM NAME..: DSPFFC             REF.NO:                  */
+     /*                                                              */
+     /*  DESCRIPTION...: Display Physical File Field                 */
+     /*                                                              */
+     /*  DATE CREATED..: FEB 2004                                    */
+     /*                                                              */
+     /*  AUTHOR........: SILVERLAKE                                  */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*   DSPFFC   IS A PART OF SILVERLAKE INTEGRATED PROVIDENT FUND */
+     /*       SYSTEM COPYRIGHT 2004 BY SILVERLAKE SYSTEM SDN BHD     */
+     /*                      KUALA LUMPUR, MALAYSIA.                 */
+     /*                                                              */
+     /****************************************************************/
+     /*                                                              */
+     /*  MODIFICATION LOGS:                                          */
+     /*                                                              */
+     /*  INIT  REF.#    DATE    DESCRIPTION                          */
+     /*  ----  ----- ---------- ------------------------------------ */
+     /*  xxxx  xxxx  dd/mm/yyyy Description of changes               */
+     /*                                                              */
+     /****************************************************************/
+
+             PGM        PARM(&FILENM &OUTPUT &CREATE)
+/*                                                                  */
+             DCL        &FILENM  *CHAR LEN(20)
+             DCL        &FILE    *CHAR LEN(10)
+             DCL        &LIB     *CHAR LEN(10)
+             DCL        &OUTPUT  *CHAR LEN(8)
+             DCL        &OUTFIL  *CHAR LEN(10)
+             DCL        &KEYFIL  *CHAR LEN(10)
+             DCL        &SELFIL  *CHAR LEN(10)
+             DCL        &KEYINF  *CHAR LEN(10) VALUE('Y')
+             DCL        &SELINF  *CHAR LEN(10) VALUE('Y')
+             DCL        &CREATE  *CHAR LEN(4)
+             DCL        &TEXT    *CHAR LEN(50)
+             DCL        &CRTDATE *CHAR LEN(13)
+             DCL        &OBJATR  *CHAR LEN(10)
+/*                                                                  */
+             DCL        &ERROR   *LGL
+             DCL        &MSGID   *CHAR LEN(7)
+             DCL        &MSGDTA  *CHAR LEN(100)
+             DCL        &MSGF    *CHAR LEN(10)
+             DCL        &MSGFLIB *CHAR LEN(10)
+/*                                                                  */
+             MONMSG     MSGID(CPF0000) EXEC(GOTO ONERROR)
+/*                                                                  */
+             CHGVAR     &FILE  VALUE(%SST(&FILENM 1 10))
+             CHGVAR     &LIB  VALUE(%SST(&FILENM 11 10))
+             CHKOBJ     OBJ(&LIB/&FILE) OBJTYPE(*FILE)
+/* OUT FILE NAME                                                    */
+             CHGVAR     &OUTFIL VALUE('DS' *CAT &FILE)
+/* KEY FILE NAME                                                    */
+             CHGVAR     &KEYFIL VALUE('KY' *CAT &FILE)
+/* SELECT FILE NAME                                                 */
+             CHGVAR     &SELFIL VALUE('SL' *CAT &FILE)
+/*                                                                  */
+             RTVOBJD    OBJ(&LIB/&FILE) OBJTYPE(*FILE) +
+                          OBJATR(&OBJATR) CRTDATE(&CRTDATE)
+/*                                                                  */
+             IF         (&CREATE *EQ '*NO') DO
+             CHKOBJ     OBJ(QTEMP/&OUTFIL) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+             CHGVAR     &CREATE '*YES'
+             ENDDO
+             ENDDO
+/*                                                                  */
+             IF         (&CREATE *EQ '*NO') DO
+             RTVOBJD    OBJ(QTEMP/&OUTFIL) OBJTYPE(*FILE) TEXT(&TEXT)
+             IF         (%SST(&TEXT 24 13) *NE &CRTDATE) +
+                          CHGVAR &CREATE '*YES'
+             ENDDO
+/*                                                                  */
+             IF         (&CREATE *EQ '*YES') DO
+/* FIELD INFO                                                       */
+             DSPFFD     FILE(&LIB/&FILE) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/&OUTFIL)
+             CHGOBJD    OBJ(QTEMP/&OUTFIL) OBJTYPE(*FILE) +
+                          TEXT('Output file for DSPFFD' *BCAT &CRTDATE)
+/* KEY INFO                                                         */
+             IF         ((&OBJATR *EQ 'PF') *OR +
+                        (&OBJATR *EQ 'LF')) DO
+             DSPFD      FILE(&LIB/&FILE) TYPE(*ACCPTH) +
+                          OUTPUT(*OUTFILE) FILEATR(*ALL) +
+                          OUTFILE(QTEMP/&KEYFIL)
+                        MONMSG MSGID(CPF3011)
+                        ENDDO
+/* SELECT INFO                                                      */
+  /* TYC     IF         ((&OBJATR *EQ 'PF') *OR +    */
+  /* TYC     IF         (&OBJATR *EQ 'LF')) DO       */
+             IF         (&OBJATR *EQ 'LF')  DO
+             DSPFD      FILE(&LIB/&FILE) TYPE(*SELECT) +
+                          OUTPUT(*OUTFILE) FILEATR(*ALL) +
+                          OUTFILE(QTEMP/&SELFIL)
+                        MONMSG MSGID(CPF3011)
+                        ENDDO
+/*                                                                  */
+             ENDDO
+/* CHECK *ACCPTH INFO                                               */
+             CHKOBJ     OBJ(QTEMP/&KEYFIL) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+             CHGVAR     &KEYINF 'N'
+             ENDDO
+/* CHECK *SELECT INFO                                               */
+             CHKOBJ     OBJ(QTEMP/&SELFIL) OBJTYPE(*FILE)
+             MONMSG     CPF9801 EXEC(DO)
+             CHGVAR     &SELINF 'N'
+             ENDDO
+/* OVERRIDE                                                         */
+             OVRDBF     QADSPFFD QTEMP/&OUTFIL
+             OVRDBF     QAFDACCP QTEMP/&KEYFIL
+/* TYC */    IF         COND(&SELINF *NE N) THEN( +
+             OVRDBF     QAFDSELO QTEMP/&SELFIL +
+/* TYC */    )
+/* PRINT FILE USER DATA                                             */
+             IF         (&OUTPUT *EQ '*PRINT') +
+                          OVRPRTF DSPFFP USRDTA(&FILE)
+/*                                                                  */
+             CALL       DSPFFR PARM(&OUTPUT &OBJATR &KEYINF &SELINF)
+/*                                                                  */
+             DLTOVR     *ALL
+/*                                                                  */
+             RETURN     /* TYC */
+/*                                                                  */
+ ONERROR:
+             IF         &ERROR SNDPGMMSG MSGID(CPF9999) +
+                          MSGF(QCPFMSG) MSGTYPE(*ESCAPE) /* Func chk */
+             CHGVAR     &ERROR '1' /* Set to fail if error occurs */
+ DIAG:
+             RCVMSG     MSGTYPE(*DIAG) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+             IF         (&MSGID *EQ '       ') GOTO ESCAPE
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*DIAG)
+             GOTO       DIAG    /* Loop back for addl diagnostics */
+ ESCAPE:
+             RCVMSG     MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                          MSGF(&MSGF) MSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+/*                                                                  */
+             ENDPGM
+

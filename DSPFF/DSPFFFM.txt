@@ -1,0 +1,207 @@
+     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      REF(*LIBL/QADSPFFD)
+     A                                      PRINT(*LIBL/QSYSPRT)
+     A                                      CF03(03 'F3=EXIT')
+     A                                      HELP(88 'HELP')
+     A          R SFL                       SFL
+     A            WHFLDI    R        O  9  2
+     A  40                                  DSPATR(RI)
+     A            WHFLDB    R        O  9 13EDTCDE(Z)
+RBN  A  70                                  DSPATR(RI)
+     A            WHFLDP    R        O  9 19EDTCDE(3)
+RBN  A  70                                  DSPATR(RI)
+     A  50                                  DSPATR(ND)
+     A            WHFLDT    R        O  9 22
+RBN  A N50                                  DSPATR(ND)
+     A            WHFOBO    R        O  9 24EDTCDE(Z)
+RBN  A  80                                  DSPATR(RI)
+     A            TEXT          45A  O  9 33
+RBN  A  60                                  DSPATR(RI)
+     A          R SFLC                      SFLCTL(SFL)
+     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A                                      SFLSIZ(0100)
+     A                                      SFLPAG(0012)
+     A                                      INDTXT(74 'Subfile end')
+     A                                      INDTXT(75 'Subfile clear')
+     A                                      INDTXT(76 'Subfile display')
+     A N78                                  CF11(11 'F11=Keys')
+     A                                      CF12(12 'F12=Previous')
+     A                                      CF16(16 'F16=Find')
+     A                                      CF18(18 'F18=Bottom')
+     A                                      CF20(20 'F20=Top')
+     A                                      SETOF(45)
+     A                                      SETOF(46)
+     A                                      OVERLAY
+     A                                      PUTOVR
+     A  45                                  SFLMSG('Find string required.')
+     A  46                                  SFLMSG('End of field list reached. -
+     A                                      Find string not found.')
+     A N75N76                               SFLDSP
+     A N75                                  SFLDSPCTL
+     A  75                                  SFLCLR
+     A N74                                  SFLEND
+     A            Y              4S 0H      SFLRCDNBR(CURSOR)
+     A                                  1  4DATE
+     A                                      EDTCDE(Y)
+     A                                  1 31'Display File Fields'
+     A                                      DSPATR(HI)
+     A                                  1 70TIME
+     A                                  2  2'File . . . . .'
+     A            WHFILE    R        O  2 18
+     A                                  2 42'Attribute  . . . . .'
+     A            OBJATR    R        O  2 64REFFLD(WHLIB)
+     A                                  3  4'Library  . .'
+     A            WHLIB     R        O  3 18
+     A                                  3 42'Record format length'
+     A            WHRLEN    R        O  3 64EDTCDE(Z)
+     A                                      OVRDTA
+     A                                  4  2'Format . . . .'
+     A            WHNAME    R        O  4 18OVRDTA
+     A                                  4 42'Number of fields . .'
+     A            WHNFLD    R        O  4 64EDTCDE(Z)
+     A                                      OVRDTA
+     A            FIND      R        B  8  2REFFLD(WHFLDI)
+     A                                      DSPATR(PC)
+     A                                      CHANGE(39)
+     A            FIND1          5Y 0B  8 13EDTCDE(Z)
+     A            FIND2          2Y 0B  8 19EDTCDE(Z)
+     A            FIND3          1A  B  8 22
+     A            FIND4          5Y 0B  8 24EDTCDE(Z)
+     A            FIND5         40A  B  8 33CHECK(LC)
+     A                                      CHANGE(59)
+     A                                  6  2'Field'
+     A                                      DSPATR(HI)
+     A                                  6 15'Length'
+     A                                      DSPATR(HI)
+     A                                  6 24'Position'
+     A                                      DSPATR(HI)
+     A                                  6 37'Text'
+     A                                      DSPATR(HI)
+     A          R SFLOPT
+     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A                                 23  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A N78                             23 12'F11=Keys'
+     A                                      COLOR(BLU)
+     A  78                             23 12'F12=Previous'
+     A N78                             23 23'F12=Previous'
+     A                                      COLOR(BLU)
+     A  78                             23 27'F16=Repeat find'
+     A N78                             23 38'F16=Repeat find'
+     A                                      COLOR(BLU)
+     A N78                             23 56'F18=Bottom'
+     A                                      COLOR(BLU)
+     A N78                             23 69'F20=Top'
+     A                                      COLOR(BLU)
+     A          R SFLK                      SFL
+     A            APKEYF    R        O 12  2REFFLD(APKEYF QAFDACCP)
+     A            APKSEQ    R        O 12 19REFFLD(APKSEQ QAFDACCP)
+     A            APKSIN    R        O 12 29REFFLD(APKSIN QAFDACCP)
+     A          R SFLKC                     SFLCTL(SFLK)
+     A                                      SFLSIZ(0100)
+     A                                      SFLPAG(0010)
+     A                                      INDTXT(74 'Subfile end')
+     A                                      INDTXT(75 'Subfile clear')
+     A                                      INDTXT(76 'Subfile dsply')
+     A                                      CF12(12 'F12=Previous')
+     A                                      OVERLAY
+     A                                      PUTOVR
+     A N75N76                               SFLDSP
+     A N75                                  SFLDSPCTL
+     A  75                                  SFLCLR
+     A N74                                  SFLEND
+     A                                  1  4DATE
+     A                                      EDTCDE(Y)
+     A                                  1 29'Display File Key Fields'
+     A                                      DSPATR(HI)
+     A                                  1 70TIME
+     A                                  3  2'File:'
+     A            APFILE    R        O  3 14REFFLD(APFILE QAFDACCP)
+     A                                  3 42'File attribute:'
+     A            APFATR    R        O  3 67REFFLD(APFATR QAFDACCP)
+     A                                  4  4'Library:'
+     A            APLIB     R        O  4 14REFFLD(APLIB QAFDACCP)
+     A                                  4 42'Number of key fields:'
+     A            APNKYF    R        O  4 67REFFLD(APNKYF QAFDACCP)
+     A                                      EDTCDE(Z)
+     A                                  5  2'Format:'
+     A            WHNAME    R        O  5 14
+     A                                  5 42'Access path maintenance:'
+     A            APMANT    R        O  5 67REFFLD(APMANT QAFDACCP)
+     A                                  6 42'Unique keys:'
+     A            APUNIQ    R        O  6 67REFFLD(APUNIQ QAFDACCP)
+     A                                  7 42'Key order:'
+     A            APKEYO    R        O  7 67REFFLD(APKEYO QAFDACCP)
+     A                                  8 42'Select/omit:'
+     A            APSELO    R        O  8 67REFFLD(APSELO QAFDACCP)
+     A                                  9 42'Access path:'
+     A            APACCP    R        O  9 67REFFLD(APACCP QAFDACCP)
+     A                                 10  3'Key'
+     A                                      DSPATR(HI)
+     A                                 10 18'Key'
+     A                                      DSPATR(HI)
+     A                                 10 28'Key'
+     A                                      DSPATR(HI)
+     A                                 11  2'Field'
+     A                                      DSPATR(HI)
+     A                                 11 16'Sequence'
+     A                                      DSPATR(HI)
+     A                                 11 28'Sign'
+     A                                      DSPATR(HI)
+     A          R SFLKOP
+     A*%%TS  SD  20010329  204524  SILMARY     REL-V4R4M0  5769-PW1
+     A                                 23  2'F3=Exit'
+     A                                      COLOR(BLU)
+     A                                 23 12'F12=Previous'
+     A                                      COLOR(BLU)
+     A          R SFLS                      SFL
+     A            SOFLD     R        O 12  2REFFLD(SOFLD QAFDSELO)
+     A            SORULE    R        O 12 19REFFLD(SORULE QAFDSELO)
+     A            SOCOMP    R        O 12 29REFFLD(SOCOMP QAFDSELO)
+     A            SOVALU    R        O 12 39REFFLD(SOVALU QAFDSELO)
+     A          R SFLSC                     SFLCTL(SFLS)
+     A                                      SFLSIZ(0100)
+     A                                      SFLPAG(0010)
+     A                                      INDTXT(74 'Subfile end')
+     A                                      INDTXT(75 'Subfile clear')
+     A                                      INDTXT(76 'Subfile dsply')
+     A                                      CF12(12 'F12=Previous')
+     A                                      OVERLAY
+     A                                      PUTOVR
+     A N75N76                               SFLDSP
+     A N75                                  SFLDSPCTL
+     A  75                                  SFLCLR
+     A N74                                  SFLEND
+     A                                  1  4DATE
+     A                                      EDTCDE(Y)
+     A                                  1 26'Display File Select/Omit Rules'
+     A                                      DSPATR(HI)
+     A                                  1 70TIME
+     A                                  3  2'File:'
+     A            SOFILE    R        O  3 14REFFLD(SOFILE QAFDSELO)
+     A                                  3 42'File attribute:'
+     A            SOFATR    R        O  3 67REFFLD(SOFATR QAFDSELO)
+     A                                  4  4'Library:'
+     A            SOLIB     R        O  4 14REFFLD(SOLIB QAFDSELO)
+     A                                  4 42'Number of S/O rules:'
+     A            SONRUL    R        O  4 67REFFLD(SONRUL QAFDSELO)
+     A                                      EDTCDE(Z)
+     A                                  5  2'Format:'
+     A            SORFMT    R        O  5 14REFFLD(SORFMT QAFDSELO)
+     A                                  5 42'Dynamic select/omit:'
+     A            SODYNS    R        O  5 67REFFLD(SODYNS QAFDSELO)
+     A                                 10  2'Field'
+     A                                      DSPATR(HI)
+     A                                 10 18'S/O'
+     A                                      DSPATR(HI)
+     A                                 11  2'Name'
+     A                                      DSPATR(HI)
+     A                                 11 18'Rule'
+     A                                      DSPATR(HI)
+     A                                 11 25'Comparison'
+     A                                      DSPATR(HI)
+     A                                 11 39'Value'
+     A                                      DSPATR(HI)
+

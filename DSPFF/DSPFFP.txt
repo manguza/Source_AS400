@@ -1,0 +1,87 @@
+     A                                      REF(QADSPFFD)
+     A          R HEADNG
+     A                                      SKIPB(2)
+     A                                     1'Date printed '
+     A                                    +1DATE
+     A                                      EDTCDE(Y)
+     A                                    +1TIME
+     A                                    50'DSPFF'
+     A                                      SKIPA(3)
+     A                                     1'Display File Fields     '
+     A                                    65'Page'
+     A                                    70PAGNBR
+     A                                      EDTCDE(Z)
+     A                                      SPACEA(2)
+     A                                     2'File . . . . .'
+     A            WHFILE    R             29
+     A                                    42'Format . . . . . . .'
+     A            WHNAME    R             64
+     A                                      SPACEA(1)
+     A                                     4'Library  . .'
+     A            WHLIB     R             29
+     A                                    42'Length . . . . . . .'
+     A            WHRLEN    R             64EDTCDE(Z)
+     A                                      SPACEA(1)
+     A                                    42'Number of fields . .'
+     A            WHNFLD    R             64EDTCDE(Z)
+     A                                      SPACEA(1)
+     A                                     1'File Field information  '
+     A                                      SPACEA(1)
+     A                                     2'Field'
+     A                                    16'Length'
+     A                                    24'Position'
+     A                                    37'Text'
+     A                                      SPACEA(1)
+     A          R DETAIL
+     A                                      SPACEA(1)
+     A            WHFLDI    R              2
+     A            WHFLDB    R             13EDTCDE(Z)
+     A N50        WHFLDP    R             19EDTCDE(3)
+     A            WHFOBO    R             24EDTCDE(Z)
+     A            WHFTXT    R             33
+     A          R KEY
+     A                                      SPACEA(1)
+     A            APKEYF    R              2REFFLD(APKEYF QAFDACCP)
+     A            APKSEQ    R             19REFFLD(APKSEQ QAFDACCP)
+     A            APKSIN    R             29REFFLD(APKSIN QAFDACCP)
+     A          R KEYHDG
+     A                                      SPACEB(1)
+     A                                      SPACEA(1)
+     A                                     1'File Key Information'
+     A                                      SPACEA(1)
+     A                                     2'File . . . . . . . .'
+     A            APFILE    R             25REFFLD(APFILE QAFDACCP)
+     A                                    42'File attribute:'
+     A            APFATR    R             66REFFLD(APFATR QAFDACCP)
+     A                                      SPACEA(1)
+     A                                     4'Library  . . . . .'
+     A            APLIB     R             25REFFLD(APLIB QAFDACCP)
+     A                                    42'Number of key fields:'
+     A            APNKYF    R             65REFFLD(APNKYF QAFDACCP)
+     A                                      EDTCDE(Z)
+     A                                      SPACEA(1)
+     A                                     2'Format . . . . . . .'
+     A            WHNAME    R             25
+     A                                    42'Access path maintenance:'
+     A            APMANT    R             67REFFLD(APMANT QAFDACCP)
+     A                                      SPACEA(1)
+     A                                    42'Unique keys:'
+     A            APUNIQ    R             67REFFLD(APUNIQ QAFDACCP)
+     A                                      SPACEA(1)
+     A                                    42'Key order:'
+     A            APKEYO    R             67REFFLD(APKEYO QAFDACCP)
+     A                                      SPACEA(1)
+     A                                    42'Select/omit:'
+     A            APSELO    R             67REFFLD(APSELO QAFDACCP)
+     A                                      SPACEA(1)
+     A                                    42'Access path:'
+     A            APACCP    R             67REFFLD(APACCP QAFDACCP)
+     A                                      SPACEA(1)
+     A                                     3'Key'
+     A                                    18'Key'
+     A                                    28'Key'
+     A                                      SPACEA(1)
+     A                                     2'Field'
+     A                                    16'Sequence'
+     A                                    28'Sign'
+
