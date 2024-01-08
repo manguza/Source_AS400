@@ -1,0 +1,19 @@
+
+ --- pcssnd log -  11:19:20  -  8/1/2567  --- 
+Forcing key replacement
+
+Copying key AppEvents\Schemes\Apps\PComm
+Copying key AppEvents\EventLabels\pcsSoundConnectionComplete
+Copying key AppEvents\EventLabels\pcsSoundCopyComplete
+Copying key AppEvents\EventLabels\pcsSoundDefault
+Copying key AppEvents\EventLabels\pcsSoundDefaultError
+Copying key AppEvents\EventLabels\pcsSoundDisconnectionComplete
+Copying key AppEvents\EventLabels\pcsSoundFileXferComplete
+Copying key AppEvents\EventLabels\pcsSoundHostBell
+Copying key AppEvents\EventLabels\pcsSoundKeyboardClicker
+Copying key AppEvents\EventLabels\pcsSoundKeyboardClickerError
+Copying key AppEvents\EventLabels\pcsSoundPasteComplete
+Copying key AppEvents\EventLabels\pcsSoundPasteIncomplete
+Copying key AppEvents\EventLabels\pcsSoundSystemPolicyNoAccess
+ finished.  Exiting...
+

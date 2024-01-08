@@ -1,0 +1,30 @@
+[Profile]
+ID=KMP
+Version=5
+[KEYBOARD]
+C-KEY18=apl 23
+A-KEY18=apl 22
+C-KEY20=apl 29
+A-KEY20=apl 28
+C-KEY21=apl 31
+A-KEY21=apl 30
+C-KEY22=apl 33
+A-KEY22=apl 32
+C-KEY26=apl 39
+A-KEY26=apl 38
+C-KEY35=apl 21
+A-KEY35=apl 20
+KEY43=[enter]
+S-KEY43=[enter]
+C-KEY43=[dead]
+C-KEY47=[edit-cut]
+C-KEY48=[edit-copy]
+C-KEY49=[edit-paste]
+C-KEY50=apl 3b
+A-KEY50=apl 3a
+KEY64=[field+]
+S-KEY64=[field+]
+KEY81=[end field]
+S-KEY81=[erase eof]
+KEY108=[enter]
+S-KEY108=[enter]
