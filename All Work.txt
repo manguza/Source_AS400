@@ -1,0 +1,32 @@
+User Computer
+prukho
+nki@2024
+
+User AS400 Production
+prukho
+prukho2539
+
+User Production Test AS400
+DTEST01
+DTEST01
+
+User Dev AS400
+TPISD046
+P@34325340
+
+
+Library List Prod
+RGGNDTANKI	File Backup by Navakij
+RGGNSYSNKI	Backup Program by Navakij
+XGGNDTANKI	Source File by Navakij
+XGGNDTA   	Source File 
+XGGNSYSNKI	Source Program by Navakij
+XGGNSYS   	Source Program 
+
+Library List Test
+RGGNDTTNKI
+RGGNSYTNKI
+XGGNDTTNKI
+XGGNDTT   
+XGGNSYTNKI
+XGGNSYT   
