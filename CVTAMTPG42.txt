@@ -1,0 +1,304 @@
+     H OPTION(*SRCSTMT:*NODEBUGIO)
+     H DFTACTGRP(*NO)
+     H DEBUG(*YES)
+     H FIXNBR(*INPUTPACKED:*ZONED)
+      *************************************************************************
+     D                SDS
+     D  PGMNAM                 1     10
+     D  DEVICE               244    253
+     D  USERID               254    263
+     D  SYSDAT               276    281  0
+     D  SYSTIM               282    287  0
+     D  SYSTM6               282    285  0
+     D  USER8                254    261
+
+     D                 DS
+     D SDATE                   1      6  0
+     D SDD                     3      4  0
+     D SMM                     1      2  0
+     D SYY                     5      6  0
+
+     D                 DS
+     D YMD7                    1      7  0
+     D MIN7                    1      1  0
+     D YY7                     2      3  0
+     D MM7                     4      5  0
+     D DD7                     6      7  0
+
+     D IX1             S              4S 0
+     D IX2             S              4S 0
+     D IX3             S              4S 0
+     D STT050          S              2A   INZ(*BLANK)
+
+     D NUM_STR_DEF     DS
+     D  FILLER1                1     10    INZ('หนึ่ง     ')
+	 D  FILLER2               11     20    INZ('สอง       ')
+	 D  FILLER3               21     30    INZ('สาม       ')
+	 D  FILLER4               31     40    INZ('สี่       ')
+	 D  FILLER5               41     50    INZ('ห้า       ')
+	 D  FILLER6               51     60    INZ('หก        ')
+	 D  FILLER7               61     70    INZ('เจ็ด      ')
+	 D  FILLER8               71     80    INZ('แปด       ')
+	 D  FILLER9               81     90    INZ('เก้า      ')
+	 D  FILLER10              91    100    INZ('สิบ       ')
+	 D  FILLER11             101    110    INZ('สิบเอ็ด   ')
+	 D  FILLER12             111    120    INZ('สิบสอง    ')
+	 D  FILLER13             121    130    INZ('สิบสาม    ')
+	 D  FILLER14             131    140    INZ('สิบสี่    ')
+	 D  FILLER15             141    150    INZ('สิบห้า    ')
+	 D  FILLER16             151    160    INZ('สิบหก     ')
+	 D  FILLER17             161    170    INZ('สิบเจ็ด   ')
+	 D  FILLER18             171    180    INZ('สิบแปด    ')
+	 D  FILLER19             181    190    INZ('สิบเก้า   ')
+	 D  FILLER20             191    200    INZ('ยี่สิบ    ')
+     D  FILLER21             201    210    INZ('สามสิบ    ')
+	 D  FILLER22             211    220    INZ('สี่สิบ    ')
+	 D  FILLER23             221    230    INZ('ห้าสิบ    ')
+	 D  FILLER24             231    240    INZ('หกสิบ     ')
+	 D  FILLER25             241    250    INZ('เจ็ดสิบ   ')
+	 D  FILLER26             251    260    INZ('แปดสิบ    ')
+	 D  FILLER27             261    270    INZ('เก้าสิบ   ')
+     D  NUM_STR                      10A   DIM(27) OVERLAY(NUM_STR_DEF)
+
+     D STR_LEN_DEF     DS
+     D  F2LLER1                1      1  0 INZ(5)
+     D  F2LLER2                2      2  0 INZ(3)
+     D  F2LLER3                3      3  0 INZ(3)
+     D  F2LLER4                4      4  0 INZ(3)
+     D  F2LLER5                5      5  0 INZ(3)
+     D  F2LLER6                6      6  0 INZ(2)
+     D  F2LLER7                7      7  0 INZ(4)
+     D  F2LLER8                8      8  0 INZ(3)
+     D  F2LLER9                9      9  0 INZ(4)
+     D  F2LLER10              10     10  0 INZ(3)
+     D  F2LLER11              11     11  0 INZ(7)
+     D  F2LLER12              12     12  0 INZ(6)
+     D  F2LLER13              13     13  0 INZ(6)
+     D  F2LLER14              14     14  0 INZ(6)
+     D  F2LLER15              15     15  0 INZ(6)
+     D  F2LLER16              16     16  0 INZ(5)
+     D  F2LLER17              17     17  0 INZ(7)
+     D  F2LLER18              18     18  0 INZ(6)
+     D  F2LLER19              19     19  0 INZ(7)
+     D  F2LLER20              20     20  0 INZ(6)
+     D  F2LLER21              21     21  0 INZ(6)
+     D  F2LLER22              22     22  0 INZ(6)
+     D  F2LLER23              23     23  0 INZ(6)
+     D  F2LLER24              24     24  0 INZ(5)
+     D  F2LLER25              25     25  0 INZ(7)
+     D  F2LLER26              26     26  0 INZ(6)
+     D  F2LLER27              27     27  0 INZ(7)
+     D  STR_LEN                       1  0 DIM(27) OVERLAY(STR_LEN_DEF)
+
+     D MONEY_STR       DS
+     D  FILLER                      120A
+     D  MONEY_CHR                     1A   DIM(120) OVERLAY(MONEY_STR:1)
+
+     D WK_SRC          DS
+     D  WK_SRC_FIL                   20A
+     D  NEW_CHR                       1A   DIM(20) OVERLAY(WK_SRC_FIL:1)
+
+     D WK_LENGTH       S              2S 0 INZ(0)
+     D WKIAMT1         S              4S 0
+     D WKIAMT2         S              4S 0
+
+     D WK_AMT_RDF      DS
+     D WK_AMT                        11S 2
+     D WK_DIGIT                       1S 0 DIM(12) OVERLAY(WK_AMT_RDF)
+      *************************************************************************
+     C     *ENTRY        PLIST
+     C                   PARM                    AMT              11
+     C                   PARM                    MON_STR         120
+      *************************************************************************
+      * MAIN PROGRAM                                                          *
+      *************************************************************************
+      *
+     C                   EXSR      CHGSTR
+     C                   MOVEL     MONEY_STR     MON_STR
+      *
+     C                   SETON                                        LR
+      *************************************************************************
+      * CHGSTR - CHANGE-TO-STRING                                             *
+      *************************************************************************
+     C     CHGSTR        BEGSR
+      *
+     C                   EVAL      WK_AMT = %DEC(AMT:11:2)
+     C                   MOVEL     *BLANK        MONEY_STR
+     C                   Z-ADD     0             IX1
+      *
+     C     WK_AMT        IFEQ      0
+     C                   GOTO      EXTSR
+     C                   ENDIF
+      *
+     C                   MOVEL     '('           WK_SRC
+     C                   Z-ADD     1             WK_LENGTH
+      *
+     C                   EXSR      ADDSTR
+      *
+     C     HUNMILL       TAG
+     C     WK_DIGIT(1)   IFNE      0
+     C                   Z-ADD     WK_DIGIT(1)   IX2
+     C                   EXSR      PDIGIT
+     C                   MOVEL     'ร้อย'        WK_SRC
+     C                   Z-ADD     4             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     TENMILL       TAG
+     C     WK_DIGIT(2)   IFEQ      0
+     C     WK_DIGIT(3)   ANDEQ     0
+     C                   GOTO      MILLION
+     C                   ENDIF
+     C                   EVAL      WKIAMT1  = WK_DIGIT(2) * 10 + WK_DIGIT(3)
+     C                   EXSR      PTENTY
+      *
+     C     MILLION       TAG
+     C     IX1           IFGT      1
+     C                   MOVEL     'ล้าน'        WK_SRC
+     C                   Z-ADD     4             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     HUNTHOU       TAG
+     C     WK_DIGIT(4)   IFNE      0
+     C                   Z-ADD     WK_DIGIT(4)   IX2
+     C                   EXSR      PDIGIT
+     C                   MOVEL     'แสน'         WK_SRC
+     C                   Z-ADD     3             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     TENTHOU       TAG
+     C     WK_DIGIT(5)   IFNE      0
+     C                   Z-ADD     WK_DIGIT(5)   IX2
+     C                   EXSR      PDIGIT
+     C                   MOVEL     'หมื่น'       WK_SRC
+     C                   Z-ADD     5             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     THOUSAN       TAG
+     C     WK_DIGIT(6)   IFNE      0
+     C                   Z-ADD     WK_DIGIT(6)   IX2
+     C                   EXSR      PDIGIT
+     C                   MOVEL     'พัน'         WK_SRC
+     C                   Z-ADD     3             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     HUNDRED       TAG
+     C     WK_DIGIT(7)   IFNE      0
+     C                   Z-ADD     WK_DIGIT(7)   IX2
+     C                   EXSR      PDIGIT
+     C                   MOVEL     'ร้อย'        WK_SRC
+     C                   Z-ADD     4             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     TEN           TAG
+     C     WK_DIGIT(8)   IFEQ      0
+     C     WK_DIGIT(9)   ANDEQ     0
+     C                   GOTO      STANG
+     C                   ENDIF
+     C                   EVAL      WKIAMT1  = WK_DIGIT(8) * 10 + WK_DIGIT(9)
+     C                   EXSR      PTENTY
+      *
+     C     STANG         TAG
+     C     WK_DIGIT(11)  IFEQ      0
+     C     WK_DIGIT(12)  ANDEQ     0
+     C                   MOVEL     'บาทถ้วน)'    WK_SRC
+     C                   Z-ADD     8             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   GOTO      EXTSR
+     C                   ENDIF
+      *
+     C     IX1           IFGT      1
+     C                   MOVEL     'บาท'         WK_SRC
+     C                   Z-ADD     3             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+     C                   EVAL      WKIAMT1  = WK_DIGIT(11) * 10 + WK_DIGIT(12)
+     C                   EXSR      PTENTY
+     C                   MOVEL     'สตางค์)'     WK_SRC
+     C                   Z-ADD     7             WK_LENGTH
+     C                   EXSR      ADDSTR
+      *
+     C     EXTSR         TAG
+      *
+     C                   ENDSR
+      *************************************************************************
+      * ADDSTR - ADD SOURCE STRING TO MONEY STRING                            *
+      *************************************************************************
+     C     ADDSTR        BEGSR
+      *
+     C                   FOR       IX2 = 1 TO WK_LENGTH BY 1
+     C                   EXSR      MOVSTR
+     C                   ENDFOR
+      *
+     C                   ENDSR
+      *************************************************************************
+      * MOVSTR - MOVE STRING TO MONEY STRING                                  *
+      *************************************************************************
+     C     MOVSTR        BEGSR
+      *
+     C                   ADD       1             IX1
+     C                   MOVEL     NEW_CHR(IX2)  MONEY_CHR(IX1)
+      *
+     C                   ENDSR
+      *************************************************************************
+      * PDIGIT - PROCESS-DIGIT                                                *
+      *************************************************************************
+     C     PDIGIT        BEGSR
+      *
+     C                   MOVEL     NUM_STR(IX2)  WK_SRC
+     C                   Z-ADD     STR_LEN(IX2)  WK_LENGTH
+     C                   EXSR      ADDSTR
+      *
+     C                   ENDSR
+      *************************************************************************
+      * PTENTY - PROCESS-TENTY                                                *
+      *************************************************************************
+     C     PTENTY        BEGSR
+      *
+     C                   Z-ADD     0             I                 4 0
+     C                   Z-ADD     0             J                 4 0
+      *
+     C     WKIAMT1       IFEQ      0
+     C                   GOTO      EXTTEN
+     C                   ENDIF
+      *
+     C     WKIAMT1       IFLT      20
+     C                   Z-ADD     WKIAMT1       I
+     C                   MOVEL     NUM_STR(I)    WK_SRC
+     C                   Z-ADD     STR_LEN(I)    WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   GOTO      EXTTEN
+     C                   ENDIF
+      *
+     C                   EVAL      WKIAMT2 = WKIAMT1 / 10
+     C                   EVAL      WKIAMT1 = WKIAMT1 - WKIAMT2 * 10
+     C                   ADD       18            WKIAMT2
+     C                   Z-ADD     WKIAMT2       J
+     C                   MOVEL     NUM_STR(J)    WK_SRC
+     C                   Z-ADD     STR_LEN(J)    WK_LENGTH
+     C                   EXSR      ADDSTR
+      *
+     C     WKIAMT1       IFEQ      0
+     C                   GOTO      EXTTEN
+     C                   ENDIF
+      *
+     C     WKIAMT1       IFEQ      1
+     C                   MOVEL     'เอ็ด'        WK_SRC
+     C                   Z-ADD     4             WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ELSE
+     C                   Z-ADD     WKIAMT1       I
+     C                   MOVEL     NUM_STR(I)    WK_SRC
+     C                   Z-ADD     STR_LEN(I)    WK_LENGTH
+     C                   EXSR      ADDSTR
+     C                   ENDIF
+      *
+     C     EXTTEN        TAG
+      *
+     C                   ENDSR
+
