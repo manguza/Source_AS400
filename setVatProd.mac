@@ -1,0 +1,1703 @@
+[PCOMM SCRIPT HEADER]
+LANGUAGE=VBSCRIPT
+DESCRIPTION=
+[PCOMM SCRIPT SOURCE]
+OPTION EXPLICIT
+autECLSession.SetConnectionByName(ThisSessionName)
+
+
+REM This line calls the macro subroutine
+
+subSub2_
+
+sub subSub2_()
+
+Dim objExcel, objWorkbook, objSheet, lastRow
+Set objExcel = GetObject(, "Excel.Application") ' เชื่อมต่อกับ Excel ที่เปิดอยู่
+	
+	If objExcel Is Nothing Then
+		MsgBox "Excel is not open. Please open the Excel file and try again."
+		WScript.Quit
+	End If
+	
+	objExcel.Visible = True ' ตั้งค่า False หากไม่ต้องการให้เห็นหน้าจอ Excel
+'Set objWorkbook = objExcel.Workbooks("set Doc type (Update).xls")
+'Set objWorkbook = objExcel.Workbooks("2023-S3-OUTPUT.xls")
+Set objWorkbook = objExcel.Workbooks("2023-S3-OUTPUT.xlsx")
+Set objSheet = objWorkbook.Sheets(2) ' เลือก Sheet ที่ต้องการ
+	lastRow = objSheet.Cells(objSheet.Rows.Count, 1).End(-4162).Row ' ใช้ -4162 ซึ่งเท่ากับ xlUp เพื่อหาแถวสุดท้ายที่มีข้อมูลในคอลัมน์ A
+
+' ประกาศตัวแปรสำหรับการวนลูป
+Dim i, value1, value2
+
+' วนลูปข้อมูลใน Excel โดยเริ่มจากแถวที่ 2 (สมมติแถวที่ 1 เป็นหัวตาราง)
+For i = 1 To lastRow
+    ' ดึงข้อมูลจากคอลัมน์ A และ B (ปรับได้ตามโครงสร้างไฟล์ Excel)
+    value1 = objSheet.Cells(i, 1).Value ' คอลัมน์ A
+    value2 = objSheet.Cells(i, 2).Value ' คอลัมน์ B
+
+	autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "2"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   ' ส่งข้อมูลไปยังหน้าจอ AS400
+   autECLSession.autECLPS.SendKeys value1
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys value2
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 22,12,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 22,13,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "11"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P10YVDN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+	
+	autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P40YVDN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P80YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P95YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P96YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable   
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E10YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable   
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVCN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable   
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVCN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVCE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVCE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVDN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVDN"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVDE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVRV"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVRV"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "P00YVCV"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf6]"
+   
+   autECLSession.autECLPS.WaitForAttrib 4,17,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 4,18,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "E00YVCV"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "4"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "VAT000"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 19,78,"00","3c",3,1000
+
+   autECLSession.autECLPS.WaitForCursor 19,79,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[backtab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "YGENCODE"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1DY"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 12,4,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLPS.WaitForAttrib 24,72,"10","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   autECLSession.autECLPS.WaitForAttrib 9,1,"00","3c",3,1000
+   
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[pf3]"
+   
+   autECLSession.autECLPS.WaitForAttrib 17,62,"00","3c",3,1000
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+    
+    ' รอให้ระบบพร้อมสำหรับการทำงานถัดไป
+    autECLSession.autECLOIA.WaitForInputReady
+Next
+
+' ปิดไฟล์ Excel และเคลียร์วัตถุ
+objWorkbook.Close False
+objExcel.Quit
+Set objSheet = Nothing
+Set objWorkbook = Nothing
+Set objExcel = Nothing
+
+end sub
+

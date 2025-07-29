@@ -1,0 +1,211 @@
+[PCOMM SCRIPT HEADER]
+LANGUAGE=VBSCRIPT
+DESCRIPTION=
+[PCOMM SCRIPT SOURCE]
+OPTION EXPLICIT
+autECLSession.SetConnectionByName(ThisSessionName)
+
+REM This line calls the macro subroutine
+subSub1_
+
+sub subSub1_()
+
+Dim objExcel, objWorkbook, objSheet, lastRow
+Set objExcel = GetObject(, "Excel.Application") ' เชื่อมต่อกับ Excel ที่เปิดอยู่
+	
+	If objExcel Is Nothing Then
+		MsgBox "Excel is not open. Please open the Excel file and try again."
+		WScript.Quit
+	End If
+	
+	objExcel.Visible = True ' ตั้งค่า False หากไม่ต้องการให้เห็นหน้าจอ Excel
+Set objWorkbook = objExcel.Workbooks("2023-S3-OUTPUT.xlsx")
+Set objSheet = objWorkbook.Sheets(2) ' เลือก Sheet ที่ต้องการ
+	lastRow = objSheet.Cells(objSheet.Rows.Count, 1).End(-4162).Row ' ใช้ -4162 ซึ่งเท่ากับ xlUp เพื่อหาแถวสุดท้ายที่มีข้อมูลในคอลัมน์ A
+
+' ประกาศตัวแปรสำหรับการวนลูป
+Dim i, value1, value2
+
+' วนลูปข้อมูลใน Excel โดยเริ่มจากแถวที่ 2 (สมมติแถวที่ 1 เป็นหัวตาราง)
+For i = 1 To lastRow
+    ' ดึงข้อมูลจากคอลัมน์ A และ B (ปรับได้ตามโครงสร้างไฟล์ Excel)
+    value1 = objSheet.Cells(i, 1).Value ' คอลัมน์ A
+    value2 = objSheet.Cells(i, 2).Value ' คอลัมน์ B
+
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "102"
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[enter]"
+
+   autECLSession.autECLOIA.WaitForAppAvailable
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[field+]"
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[tab]"
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[tab]"
+
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[tab]"
+   
+   autECLSession.autECLPS.SendKeys value1
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys value2
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[down]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[down]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[down]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[down]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[down]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "2"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "sff"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "001"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "qts/fir/ghb/23"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "10"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "2"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "sne"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "002"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[left]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[left]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "1"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "qts/fir/ghb/23"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "10"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "3"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "snc"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "001"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "qts/fir/ghb/23"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[tab]"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "10"
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   autECLSession.autECLOIA.WaitForInputReady
+   autECLSession.autECLPS.SendKeys "[enter]"
+   
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[tab]"
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[tab]"
+   
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[field+]"
+   'autECLSession.autECLOIA.WaitForInputReady
+   'autECLSession.autECLPS.SendKeys "[enter]"
+   
+   
+Next
+
+' ปิดไฟล์ Excel และเคลียร์วัตถุ
+'objWorkbook.Close False
+'objExcel.Quit
+'Set objSheet = Nothing
+'Set objWorkbook = Nothing
+'Set objExcel = Nothing
+
+
+
+
+end sub
