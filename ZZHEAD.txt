@@ -3,7 +3,7 @@
      H FIXNBR(*INPUTPACKED:*ZONED)
       *************************************************************************
      FQADSPFFD  IF   E             DISK
-     FZZHEAD    O    E             DISK
+     FZZHEAD    O  A E             DISK    USROPN
 
       *
      C                   MOVEL(P)  *OFF          WKILOOP           1
@@ -35,7 +35,9 @@
       *
      C                   ENDDO
       *
+     C                   OPEN      ZZHEAD
      C                   WRITE     RZZHEAD
+     C                   CLOSE     ZZHEAD
       *
      C                   SETON                                        LR
 
