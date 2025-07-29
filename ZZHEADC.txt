@@ -1,0 +1,31 @@
+             PGM        PARM(&FILENM)
+     /* Declear Field */
+             DCL        VAR(&FILENM) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OUTFIL) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&OUTFIL) VALUE('XX' *CAT &FILENM)
+     /* Delete Object */
+             DLTOBJ     OBJ(QTEMP/&OUTFIL) OBJTYPE(*FILE)
+             MONMSG     MSGID(CPF2105 CPF9801)
+
+     /* Field Info */
+             DSPFFD     FILE(&FILENM) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/&OUTFIL)
+             CHGOBJD    OBJ(QTEMP/&OUTFIL) OBJTYPE(*FILE) +
+                          TEXT('Output file for DSPFFD')
+
+     /* Override File */
+             OVRDBF     QADSPFFD QTEMP/&OUTFIL
+
+     /* Clear Physical File Member */
+             CLRPFM     ZZHEAD
+
+     /* Call Program */
+             CALL       ZZHEAD
+
+     /* Delete Override */
+             DLTOVR     QADSPFFD
+
+     /* End Program */
+             ENDPGM
+

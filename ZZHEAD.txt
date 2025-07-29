@@ -1,0 +1,41 @@
+     H OPTION(*SRCSTMT:*NODEBUGIO)
+     H DEBUG(*YES)
+     H FIXNBR(*INPUTPACKED:*ZONED)
+      *************************************************************************
+     FQADSPFFD  IF   E             DISK
+     FZZHEAD    O    E             DISK
+
+      *
+     C                   MOVEL(P)  *OFF          WKILOOP           1
+     C     WKILOOP       DOUEQ     *ON
+     C                   READ      QADSPFFD
+     C                   IF        %EOF(QADSPFFD)
+     C                   LEAVE
+     C                   ENDIF
+      *
+     C     WHFTXT        IFNE      *BLANK
+      *
+     C     FIELD         IFEQ      *BLANK
+     C                   EVAL      FIELD = %TRIM(WHFTXT)
+     C                   ELSE
+     C                   EVAL      FIELD = %TRIM(FIELD) + '|' +
+     C                                     %TRIM(WHFTXT)
+     C                   ENDIF
+      *
+     C                   ELSE
+      *
+     C     FIELD         IFEQ      *BLANK
+     C                   EVAL      FIELD = %TRIM(WHCHD1)
+     C                   ELSE
+     C                   EVAL      FIELD = %TRIM(FIELD) + '|' +
+     C                                     %TRIM(WHCHD1)
+     C                   ENDIF
+      *
+     C                   ENDIF
+      *
+     C                   ENDDO
+      *
+     C                   WRITE     RZZHEAD
+      *
+     C                   SETON                                        LR
+
