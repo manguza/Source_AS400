@@ -2,6 +2,7 @@
      /* Declear Field */
              DCL        VAR(&FILENM) TYPE(*CHAR) LEN(10)
              DCL        VAR(&OUTFIL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&PATH)   TYPE(*CHAR) LEN(50)
 
              CHGVAR     VAR(&OUTFIL) VALUE('XX' *CAT &FILENM)
      /* Delete Object */
@@ -22,6 +23,14 @@
 
      /* Call Program */
              CALL       ZZHEAD
+
+             CHGVAR     VAR(&PATH) VALUE('\QDLS\XML\ZZHEAD.XML')
+             CPYTOIMPF  FROMFILE(&FILENM) TOSTMF(&PATH) +
+                          MBROPT(*REPLACE) STMFCODPAG(*STDASCII) +
+                          RCDDLM(*CRLF) STRDLM(*NONE) FLDDLM(X'05') +
+                          DATFMT(*USA)
+             CHGAUT     OBJ(&PATH) USER(*PUBLIC) DTAAUT(*RWX) +
+                          OBJAUT(*ALL)
 
      /* Delete Override */
              DLTOVR     QADSPFFD
