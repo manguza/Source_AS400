@@ -24,7 +24,8 @@
      /* Call Program */
              CALL       ZZHEAD
 
-             CHGVAR     VAR(&PATH) VALUE('\QDLS\XML\ZZHEAD.XML')
+             CHGVAR     VAR(&PATH) VALUE('\QDLS\XML\' *CAT &FILENM +
+                                         *CAT '.XML')
              CPYTOIMPF  FROMFILE(&FILENM) TOSTMF(&PATH) +
                           MBROPT(*REPLACE) STMFCODPAG(*STDASCII) +
                           RCDDLM(*CRLF) STRDLM(*NONE) FLDDLM(X'05') +
